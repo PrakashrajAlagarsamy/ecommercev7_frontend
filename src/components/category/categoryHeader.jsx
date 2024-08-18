@@ -6,7 +6,7 @@ function CategoryHeader({ CategoryHeading, categoryId, categoryValue }) {
   return (
     <div className="flex justify-between items-center mb-4">
       <h2 
-        className="font-semibold"
+        className="font-bold"
         style={{ 
           fontSize: 'clamp(1rem, 4vw, 1.5rem)' // Responsive font size
         }}

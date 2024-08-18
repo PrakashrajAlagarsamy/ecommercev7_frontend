@@ -1,5 +1,5 @@
 import { createStore, applyMiddleware, combineReducers } from 'redux';
-import { thunk } from 'redux-thunk'; // Correct named import
+import { thunk } from 'redux-thunk';
 import { settingsReducer } from './settingsReducer';
 
 const rootReducer = combineReducers({

@@ -8,6 +8,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import AppLogo from '../logo/AppLogo';
 import AppRegister from '../authentication/AppRegister';
 import AppLogin from '../authentication/AppLogin';
+import AppCart from '../cart/AppCart';
 import AppForgetPassword from '../authentication/AppForgetPassword';
 import { useAuth } from '../../context/authContext';
 
@@ -32,10 +33,12 @@ const drawerContent = (
 );
 
 export default function AppHeader() {
+  // eslint-disable-next-line no-unused-vars
   const { isAuthenticated, setIsAuthenticated } = useAuth();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [registerDrawerOpen, setRegisterDrawerOpen] = useState(false);
   const [loginDrawerOpen, setLoginDrawerOpen] = useState(false);
+  const [cartDrawerOpen, setCartDrawerOpen] = useState(false);
   const [forgetPasswordDrawerOpen, setForgetPasswordDrawerOpen] = useState(false);
   
   const [isScrolled, setIsScrolled] = useState(false);
@@ -54,7 +57,7 @@ export default function AppHeader() {
         setLoginDrawerOpen((prev) => !prev);
       }
       else{
-        setForgetPasswordDrawerOpen((prev) => !prev);
+        setCartDrawerOpen((prev) => !prev);
       }
     }
     else{
@@ -66,7 +69,7 @@ export default function AppHeader() {
         setLoginDrawerOpen((prev) => !prev);
       }
       else{
-        setForgetPasswordDrawerOpen((prev) => !prev);
+        setCartDrawerOpen((prev) => !prev);
       }    
     }
   };
@@ -155,7 +158,7 @@ export default function AppHeader() {
             {/* Navigation and User Action Section */}
             <Grid item xs={6} sm={3} md={5} sx={{ display: { xs: 'none', sm: 'flex' }, justifyContent: 'flex-end', alignItems: 'center', gap: '30px' }}>
               <Button sx={{ color: '#333', textTransform: 'none', display: { xs: 'none', md: 'block' } }}>
-                <Typography component={"p"}>WhatsApp Only</Typography>
+                <Typography component={"p"} sx={{fontFamily: 'inherit', fontWeight: 500}}>WhatsApp Only</Typography>
               </Button>
               <Button sx={{ color: '#333', textTransform: 'none', display: { xs: 'none', md: 'block' } }}><Link to={"/categories"}>Home</Link></Button>
               {!isAuthenticated && (
@@ -165,7 +168,7 @@ export default function AppHeader() {
                     sx={{ color: '#333', textTransform: 'none' }}
                     onClick={handleAuthDrawerToggle}
                   >
-                    Register
+                    <Typography sx={{fontFamily: 'inherit', fontWeight: 500}}>Register</Typography>
                   </Button>
 
                   <Button
@@ -173,7 +176,7 @@ export default function AppHeader() {
                     sx={{ color: '#333', textTransform: 'none' }}
                     onClick={handleAuthDrawerToggle}
                   >
-                    Sign In
+                    <Typography sx={{fontFamily: 'inherit', fontWeight: 500}}>Sign In</Typography>
                     <PersonIcon sx={{ ml: 1 }} />
                   </Button>
                 </>
@@ -185,11 +188,11 @@ export default function AppHeader() {
                   sx={{ color: '#333', textTransform: 'none' }}
                 >
                   <PersonIcon sx={{ ml: 1 }} />
-                  Profile
+                  <Typography sx={{fontFamily: 'inherit', fontWeight: 600}}>Profile</Typography>
                 </Button>
               )}
 
-              <IconButton color="inherit">
+              <IconButton color="inherit" onClick={handleAuthDrawerToggle}>
                 <ShoppingBagIcon />
               </IconButton>
             </Grid>
@@ -202,6 +205,7 @@ export default function AppHeader() {
         </Drawer>
         <AppRegister RegisterDrawerOpen={registerDrawerOpen} handleAuthDrawerToggle={handleAuthDrawerToggle} />
         <AppLogin LoginDrawerOpen={loginDrawerOpen} handleAuthDrawerToggle={handleAuthDrawerToggle} />
+        <AppCart CartDrawerOpen={cartDrawerOpen} handleAuthDrawerToggle={handleAuthDrawerToggle} />
         <AppForgetPassword ForgetPasswordDrawerOpen={forgetPasswordDrawerOpen} handleAuthDrawerToggle={handleAuthDrawerToggle} />
       </AppBar>
     </>

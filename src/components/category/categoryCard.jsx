@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Grid, Typography, Box } from '@mui/material';
-import { API_SelectCategory } from '../../services/categoryServices';
+import { API_FetchCategory } from '../../services/categoryServices';
 import { ImagePathRoutes } from '../../routes/ImagePathRoutes';
 
 const CategoryCard = () => {
@@ -8,7 +8,7 @@ const CategoryCard = () => {
 
     const ShopByCategoryLists = async () => {
         try {
-            const categoryList = await API_SelectCategory();
+            const categoryList = await API_FetchCategory();
             setCategoryLists(categoryList);
         } catch (error) {
             console.error("Error fetching categories:", error);

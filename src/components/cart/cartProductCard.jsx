@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { Box, Typography, Button, Card, CardContent, CardMedia } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import { ImagePathRoutes } from '../routes/ImagePathRoutes';
-import { ServerURL } from '../server/serverUrl';
+import { ImagePathRoutes } from '../../routes/ImagePathRoutes';
+import { ServerURL } from '../../server/serverUrl';
 
-const ProductCard = ({ product }) => {
+const CartProductCard = ({ product }) => {
   const [quantity, setQuantity] = useState(0);
   const [totalPrice, setTotalPrice] = useState(product.Price);
 
@@ -32,8 +32,8 @@ const ProductCard = ({ product }) => {
     <Card 
       id={product.Productid} 
       sx={{ 
-        width: { xs: 160, sm: 220, md: 260 }, 
-        height: { xs: 320, sm: 380, md: 400 },
+        width: { xs: 160, sm: 220, md: 200 }, 
+        height: { xs: 320, sm: 380, md: 250 },
         margin: '0 auto', 
         textAlign: "left", 
         border: '1px solid #e8e8e8',
@@ -41,16 +41,10 @@ const ProductCard = ({ product }) => {
         display: 'flex',
         flexDirection: 'column', 
         justifyContent: 'space-between',
-        cursor: 'pointer',
-        '&:hover': { 
-          boxShadow: '0 4px 7px 0 rgb(218 220 230 / 60%)',
-        }, 
-        '&:hover .card-media': { 
-          transform: 'scale(1.1)',
-        } 
+        cursor: 'pointer',        
       }}
     >
-      <Box sx={{ position: 'relative', height: { xs: '50%', sm: '55%', md: '60%' } }}>
+      <Box sx={{ position: 'relative', height: { xs: '50%', sm: '55%', md: '30%' } }}>
         <CardMedia
           component="img"
           image={ImagePathRoutes.ProductImagePath + product.Img0}
@@ -61,7 +55,7 @@ const ProductCard = ({ product }) => {
             transform: 'scale(1)',
             width: '100%',
             height: '100%', 
-            padding: { xs: '10px', sm: '12px', md: '15px' },
+            padding: { xs: '10px', sm: '12px', md: '5px' },
             objectFit: 'contain', 
           }}
         />
@@ -105,7 +99,7 @@ const ProductCard = ({ product }) => {
             variant="body2" 
             component={"p"}
             sx={{
-              fontSize: '14px',
+              fontSize: '12px',
               fontWeight: 'bold',
               overflow: 'hidden',
               display: '-webkit-box',
@@ -229,8 +223,7 @@ const ProductCard = ({ product }) => {
           marginTop: '10px', 
           width: '100%', 
           textTransform: 'none', 
-          fontFamily: 'inherit',
-          fontWeight: 600,  
+          fontFamily: 'inherit',  
           border: '1px solid #3BB77E', 
           backgroundColor: '#3bb77e1c',
           color: '#3BB77E',
@@ -268,4 +261,4 @@ const ProductCard = ({ product }) => {
   );
 };
 
-export default ProductCard;
+export default CartProductCard;

@@ -1,7 +1,7 @@
 import APIRoutes from '../routes/APIRoutes';
 import {ServerURL} from '../server/serverUrl';
 
-export const API_SelectBannerOfferPost = async () => {
+export const API_FetchBannerOfferPost = async () => {
     let objData = "";
     let objlist = {
         Comid: ServerURL.COMPANY_REF_ID,

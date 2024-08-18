@@ -24,7 +24,7 @@ export const fetchUsers = () => {
     try {
       const response = await fetch('https://jsonplaceholder.typicode.com/users');
       const data = await response.json();
-      console.log("data:", response);
+      console.log("datauser:", response);
       dispatch(fetchUserSuccess(data));
     } catch (error) {
       dispatch(fetchUserFailure(error.message));

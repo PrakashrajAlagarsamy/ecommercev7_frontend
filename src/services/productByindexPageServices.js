@@ -1,7 +1,7 @@
 import APIRoutes from '../routes/APIRoutes';
 import {ServerURL} from '../server/serverUrl';
 
-export const API_SelectProductByIndexPage = async () => {
+export const API_FetchProductByIndexPage = async () => {
     let objData = "";
     let objlist = {
         Comid: ServerURL.COMPANY_REF_ID,

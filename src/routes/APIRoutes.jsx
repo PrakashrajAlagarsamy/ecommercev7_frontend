@@ -1,6 +1,9 @@
 import ServerURL from "../server/serverUrl";
 
 export const APIRoutes = {
+    //Settings API
+    GET_SETTINGS_DETAILS: `${ServerURL.PRODUCTION_HOST_URL}/api/WebMobileApp//SelectSettingsNew1`,
+
     //Authentication API's
     APP_CHECK_EXISTING_USER: `${ServerURL.PRODUCTION_HOST_URL}api/WebMobileApp/AppEmailMobileCheck`,
     APP_REGISTER_USER: `${ServerURL.PRODUCTION_HOST_URL}api/CustomerApp/InsertCustomer`,

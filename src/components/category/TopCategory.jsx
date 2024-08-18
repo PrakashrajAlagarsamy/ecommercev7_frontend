@@ -6,7 +6,7 @@ import Typography from '@mui/material/Typography';
 import Avatar from '@mui/material/Avatar';
 import Skeleton from '@mui/material/Skeleton';
 import { Container } from '@mui/material';
-import { API_SelectCategory } from '../../services/categoryServices';
+import { API_FetchCategory } from '../../services/categoryServices';
 import { ImagePathRoutes } from '../../routes/ImagePathRoutes';
 
 export default function TopCategory() {
@@ -20,7 +20,7 @@ export default function TopCategory() {
 
     const FetchTopCategoryLists = async () => {
         try {
-            const categoryList = await API_SelectCategory();
+            const categoryList = await API_FetchCategory();
             setCategoryLists(categoryList);
             setIsLoading(false); 
         } catch (error) {

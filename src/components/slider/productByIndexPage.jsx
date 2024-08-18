@@ -6,8 +6,8 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import CategoryHeader from '../category/categoryHeader';
 import ImageCategorySlider from './ImageCategorySlider';
-import { API_SelectCategory } from '../../services/categoryServices';
-import { API_SelectProductByIndexPage } from '../../services/productByindexPageServices';
+import { API_FetchCategory } from '../../services/categoryServices';
+import { API_FetchProductByIndexPage } from '../../services/productByindexPageServices';
 
 const ProductByIndexPage = () => {
   const [categoryLists, setCategoryLists] = useState([]);
@@ -17,7 +17,7 @@ const ProductByIndexPage = () => {
 
   const GetCategoryLists = async () => {
     try {
-      const categoryList = await API_SelectCategory();
+      const categoryList = await API_FetchCategory();
       setCategoryLists(categoryList);
       return categoryList;
     } catch (error) {
@@ -29,7 +29,7 @@ const ProductByIndexPage = () => {
 
   const GetProductsByCategory = async (categories) => {
     try {
-      const products = await API_SelectProductByIndexPage();
+      const products = await API_FetchProductByIndexPage();
       const productsByCategory = categories.reduce((acc, category) => {
         const filteredProducts = products.data1.filter(product => product.CId === category.Id);
         if (filteredProducts.length > 0) {

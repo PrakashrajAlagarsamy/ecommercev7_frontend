@@ -1,6 +1,5 @@
 import React from 'react';
 import { Grid, Typography } from '@mui/material';
-import { API_SelectCategory } from '../../services/categoryServices';
 
 const categories = [    
       { "id": 1, "category_name": "Fruits & Vegetables" },

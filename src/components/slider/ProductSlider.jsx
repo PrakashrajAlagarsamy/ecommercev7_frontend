@@ -4,7 +4,7 @@ import { Box, Typography, Container } from '@mui/material';
 import ProductCard from '../ProductCard';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import {API_SelectOfferFastMovingProduct} from '../../services/offerFasMovingProducts';
+import {API_FetchOfferFastMovingProduct} from '../../services/offerFasMovingProducts';
 
 const products = [
   {
@@ -113,7 +113,7 @@ const ProductSlider = ({productLits, categoryLists}) => {
 
   const GetBannerSliderLists = async () => {
       try {
-          const objLists = await API_SelectOfferFastMovingProduct();
+          const objLists = await API_FetchOfferFastMovingProduct();
           setproductLists(objLists);
       } catch (error) {
           console.error("Error fetching categories:", error);

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Slider from "react-slick";
 import { Container, Box } from '@mui/material';
 import Skeleton from '@mui/material/Skeleton'; // Import Skeleton
-import { API_SelectBannerOfferPost } from '../../services/bannerOfferPostServices';
+import { API_FetchBannerOfferPost } from '../../services/bannerOfferPostServices';
 import { ImagePathRoutes } from '../../routes/ImagePathRoutes';
 
 export default function BannerSlider() {
@@ -11,7 +11,7 @@ export default function BannerSlider() {
 
   const GetBannerSliderLists = async () => {
       try {
-          const bannerList = await API_SelectBannerOfferPost();
+          const bannerList = await API_FetchBannerOfferPost();
           setBannerSliderLists(bannerList);
           setIsLoading(false); // Stop loading when data is fetched
       } catch (error) {
