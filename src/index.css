@@ -13,10 +13,6 @@ body {
   color: var(--primary-color);
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
-}
 
 .offer_box {
   margin-top: "64px";

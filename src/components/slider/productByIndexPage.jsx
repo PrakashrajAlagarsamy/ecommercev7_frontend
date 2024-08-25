@@ -7,7 +7,7 @@ import "slick-carousel/slick/slick-theme.css";
 import CategoryHeader from '../category/categoryHeader';
 import ImageCategorySlider from './ImageCategorySlider';
 import { API_FetchCategory } from '../../services/categoryServices';
-import { API_FetchProductByIndexPage } from '../../services/productByindexPageServices';
+import { API_FetchProductByIndexPage } from '../../services/productListServices';
 
 const ProductByIndexPage = () => {
   const [categoryLists, setCategoryLists] = useState([]);
@@ -107,7 +107,6 @@ const ProductByIndexPage = () => {
         categoryLists.map((category) => {
           const products = productsByCategory[category.Id];
           const categoryImages = categoryImageLists[category.Id];
-          console.log("CategoryImageLists:", categoryImages);
           // Only render the category section if products are available and at least 5 products
           if (!products || products.length < 5) return null;
 

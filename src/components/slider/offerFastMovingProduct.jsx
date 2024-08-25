@@ -74,7 +74,7 @@ const OfferFastMovingProduct = () => {
           <CategoryHeader
             CategoryHeading="Offer products for you"
             categoryId="offer_product"
-            categoryValue="offer_product"
+            categoryValue="Offer Products"
           />
         )}
 

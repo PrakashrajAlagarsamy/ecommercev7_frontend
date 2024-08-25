@@ -65,7 +65,8 @@ export const loginUser = async (mobileNumber, password) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json', 
-        MobileNumber: mobileNumber, Password: password
+        MobileNumber: mobileNumber, 
+        Password: password
       },
       body: JSON.stringify({
         Comid: ServerURL.COMPANY_REF_ID,        

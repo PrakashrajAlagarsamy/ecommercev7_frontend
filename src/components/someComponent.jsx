@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchUsers } from '../redux/settingsActions';
+//import { fetchUsers } from '../redux/settingsActions';
 
 const SomeComponent = () => {
   const dispatch = useDispatch();
@@ -10,7 +10,7 @@ const SomeComponent = () => {
 
   useEffect(() => {
     // Fetch users on component mount
-    dispatch(fetchUsers());
+    //dispatch(fetchUsers());
   }, [dispatch]);
 
   if (loading) {
