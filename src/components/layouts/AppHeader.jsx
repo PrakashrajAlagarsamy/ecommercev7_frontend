@@ -188,7 +188,7 @@ export default function AppHeader() {
                   sx={{ color: '#333', textTransform: 'none' }}
                 >
                   <PersonIcon sx={{ ml: 1 }} />
-                  <Typography sx={{fontFamily: 'inherit', fontWeight: 600}}>Profile</Typography>
+                  <Typography sx={{fontFamily: 'inherit', fontWeight: 600}}><Link to={"/myaccount"}>Profile</Link></Typography>
                 </Button>
               )}
 

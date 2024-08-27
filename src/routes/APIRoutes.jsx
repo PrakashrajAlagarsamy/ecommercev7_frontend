@@ -10,6 +10,10 @@ export const APIRoutes = {
     APP_LOGIN_USER: `${ServerURL.PRODUCTION_HOST_URL}api/WebMobileApp/Login`,
     APP_FORGET_PASSWORD: `${ServerURL.PRODUCTION_HOST_URL}api/WebMobileApp/ForgetPassword`,
 
+    //User details for address, orders, wallets, profile etc..
+    GET_MY_ORDERS: `${ServerURL.PRODUCTION_HOST_URL}api/WebMobileApp/MyOrder`,
+    GET_CUSTOMER_ADDRESS: `${ServerURL.PRODUCTION_HOST_URL}api/WebMobileApp/SelectCustomerAddress`,
+
     //Category and Subcategory API's
     GET_TOP_CATEGORIES: `${ServerURL.PRODUCTION_HOST_URL}api/CategoryApp/SelectCategory`,
     GET_CATEGORY_SUBCATEGORY: `${ServerURL.PRODUCTION_HOST_URL}api/ItemmasterApp/SelectSubCategorId`,
@@ -17,11 +21,13 @@ export const APIRoutes = {
     //Offer post (banner slider) and offer product API's
     GET_BANNER_OFFER_POST: `${ServerURL.PRODUCTION_HOST_URL}api/OfferPost/SelectOfferPost`,
     GET_OFFER_FAST_MOVING_PRODUCT: `${ServerURL.PRODUCTION_HOST_URL}api/WebMobileApp/OfferProductFastingMovingProduct`,
+    GET_PRODUCT_ID_MORE_ITEMS: `${ServerURL.PRODUCTION_HOST_URL}api/WebMobileApp/SelectProductIdMoreItems`,
 
     //Main product index page
     GET_PRODUCT_BY_INDEX_PAGE: `${ServerURL.PRODUCTION_HOST_URL}api/WebMobileApp/SelectProductByCategoryIndexPage`,
     GET_PRODUCT_BY_CATEGORY: `${ServerURL.PRODUCTION_HOST_URL}api/WebMobileApp/SelectProductByCategory`,
     GET_PRODUCT_BY_SUBCATEGORY: `${ServerURL.PRODUCTION_HOST_URL}api/WebMobileApp/SelectProductBySubCategory`,
+    GET_PRODUCT_BY_ID: `${ServerURL.PRODUCTION_HOST_URL}api/WebMobileApp/SelectProductId`,
 };
 
 export default APIRoutes;

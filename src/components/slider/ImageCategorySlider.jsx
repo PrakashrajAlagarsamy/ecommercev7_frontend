@@ -11,7 +11,7 @@ export default function ImageCategorySlider({ CategoryImageLists = [] }) {
   // Filter and flatten the image list
   const images = CategoryImageLists.flatMap((item) =>
     [item.Bannerimg1, item.Bannerimg2, item.Bannerimg3, item.Bannerimg4]
-      .filter(img => img && img !== "Undefined.jpg")
+      .filter(img => img && (img !== "Undefined.jpg" || img !== "Undefined.png"))
   );
 
   // Slider settings

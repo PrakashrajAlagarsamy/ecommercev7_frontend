@@ -4,7 +4,7 @@ import { Box, Container, Skeleton } from '@mui/material';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import CartProductCard from './cartProductCard';
-import { API_FetchOfferFastMovingProduct } from '../../services/offerFasMovingProducts';
+import { API_FetchOfferFastMovingProduct } from '../../services/productListServices';
 
 const SpecialOfferProduct = () => {
   const [productLists, setProductLists] = useState([]);

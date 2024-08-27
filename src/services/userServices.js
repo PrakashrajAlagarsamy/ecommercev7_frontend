@@ -81,3 +81,61 @@ export const loginUser = async (mobileNumber, password) => {
 };
 
 
+// Fetch customer address
+export const API_FetchCustomerAddress = async (UserId) => {
+  let objlist = {
+      Comid: ServerURL.COMPANY_REF_ID,
+  };
+  try {
+      const response = await fetch(`${APIRoutes.GET_CUSTOMER_ADDRESS}`, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json; charset=utf-8',
+              Id: UserId
+          },
+          body: JSON.stringify(objlist)
+      });
+      if (!response.ok) {
+          throw new Error('Network response was not ok.');
+      }
+      const data = await response.json();
+      if (!data || !Array.isArray(data)) {
+          throw new Error('No data found.');
+      }
+      return data;
+  } catch (error) {
+      console.error('Failed to fetch customer details:', error);
+      throw error; // Re-throw so the calling function can handle it
+  }
+};
+
+
+// Fetch My orders
+export const API_FetchMyOrders = async (UserId) => {
+  let objlist = {
+      Comid: ServerURL.COMPANY_REF_ID,
+  };
+  try {
+      const response = await fetch(`${APIRoutes.GET_MY_ORDERS}`, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json; charset=utf-8',
+              Cid: UserId
+          },
+          body: JSON.stringify(objlist)
+      });
+      if (!response.ok) {
+          throw new Error('Network response was not ok.');
+      }
+      const data = await response.json();
+      if (!data || !Array.isArray(data)) {
+          throw new Error('No data found.');
+      }
+      return data;
+  } catch (error) {
+      console.error('Failed to fetch order details:', error);
+      throw error; // Re-throw so the calling function can handle it
+  }
+};
+
+

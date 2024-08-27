@@ -23,7 +23,8 @@ function CategoryHeader({ CategoryHeading, categoryId, categoryValue }) {
       </h2>
       <Button
         id={categoryId}
-        value={CategoryHeading}
+        name={CategoryHeading}
+        value={categoryValue}
         variant="outlined"
         onClick={handleViewBtnClick}
         endIcon={<ArrowForward />}

@@ -19,20 +19,23 @@ const ProductCard = ({ product, isLoading }) => {
     const pdValue = event.currentTarget.getAttribute('name');
     setProductId(pdId); 
     setProductValue(pdValue);
-    navigate(`/product-details?pdid=${btoa(pdId)}&pdname=${btoa(pdValue)}`);
+    navigate(`/product-details?pdid=${encodeURIComponent(btoa(pdId))}&pdname=${encodeURIComponent(btoa(pdId))}`);
   };
+  
 
   const handleIncrement = (event) => {
-    event.stopPropagation();  // Prevents click event from triggering card navigation
+    event.stopPropagation();
     setQuantity((prevQuantity) => {
       const newQuantity = prevQuantity + 1;
-      setTotalPrice((prevPrice) => prevPrice + product.Price);
+      if (newQuantity > 1) {
+        setTotalPrice((prevPrice) => prevPrice + product.Price);
+      }
       return newQuantity;
     });
   };
 
   const handleDecrement = (event) => {
-    event.stopPropagation();  // Prevents click event from triggering card navigation
+    event.stopPropagation();
     setQuantity((prevQuantity) => {
       if (prevQuantity > 1) {
         setTotalPrice((prevPrice) => prevPrice - product.Price);

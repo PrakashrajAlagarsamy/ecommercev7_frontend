@@ -5,6 +5,7 @@ export const ImagePathRoutes = {
     BannerOfferPostImagePath: ServerURL.PRODUCTION_HOST_URL,  
     ProductImagePath: ServerURL.PRODUCTION_HOST_URL + ``, 
     SubCategoryImagePath: ServerURL.PRODUCTION_HOST_URL,  
+    ProductDetailsImagePath: ServerURL.PRODUCTION_HOST_URL +`/productimages/`, 
 };
 
 

@@ -1,30 +1,39 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import Slider from 'react-slick';
 import { Box, Container, Skeleton } from '@mui/material';
 import ProductCard from '../ProductCard';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import CategoryHeader from '../category/categoryHeader';
-import { API_FetchOfferFastMovingProduct } from '../../services/productListServices';
+import { API_FetchProductIdMoreItems } from '../../services/productListServices';
 
-const OfferFastMovingProduct = () => {
+const RelatedProducts = ({ProductId}) => {
+  const [productId, setProductId] = useState(0);
   const [productLists, setProductLists] = useState([]);
   const [loading, setLoading] = useState(true);
+  const location = useLocation();
 
-  const GetOfferProductLists = async () => {
+  const GetProductIdMoreItems = async (ProductId) => {
       try {
-          const objLists = await API_FetchOfferFastMovingProduct();
+          const objLists = await API_FetchProductIdMoreItems(ProductId);
           setProductLists(objLists);
       } catch (error) {
-          console.error("Error fetching categories:", error);
+          console.error("Error fetching products:", error);
       } finally {
           setLoading(false);
       }
   };
 
   useEffect(() => {
-    GetOfferProductLists();
-  }, []);
+    const queryParams = new URLSearchParams(location.search);
+    const encodedId = queryParams.get('pdid');
+    const productId = encodedId ? decodeURIComponent(atob(encodedId)) : null;
+    setProductId(productId);
+    if (productId) {
+        GetProductIdMoreItems(productId);
+    }
+}, [location.search, productId]);
 
   const settings = {
     dots: false,
@@ -72,9 +81,9 @@ const OfferFastMovingProduct = () => {
           <Skeleton variant="text" height={40} width="30%" />
         ) : (
           <CategoryHeader
-            CategoryHeading="Offer products for you"
-            categoryId="offer_product"
-            categoryValue="Offer Products"
+            CategoryHeading="Related products for you"
+            categoryId="related_product"
+            categoryValue={productId}
           />
         )}
 
@@ -103,4 +112,4 @@ const OfferFastMovingProduct = () => {
   );
 };
 
-export default OfferFastMovingProduct;
+export default RelatedProducts;

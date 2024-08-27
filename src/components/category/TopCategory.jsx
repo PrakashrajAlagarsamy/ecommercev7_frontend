@@ -116,10 +116,10 @@ const TopCategory = (props) => {
                       sx={{
                         textAlign: 'center',
                         textTransform: 'capitalize',
-                        color: 'inherit', // inherit color from parent (Tab)
                         fontFamily: 'inherit',
                         fontWeight: 500,
-                        fontSize: '14px'
+                        fontSize: '14px', 
+                        color: "#253D4E"
                       }}
                     >
                       {item.Category}

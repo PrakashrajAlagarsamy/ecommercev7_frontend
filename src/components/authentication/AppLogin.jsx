@@ -58,9 +58,9 @@ export default function AppLogin({ LoginDrawerOpen, handleAuthDrawerToggle }) {
 
     try {
       const response = await loginUser(loginData.MobileNumber, loginData.Password);
-      if (response.id !== 0) {
-        alert("Login successful!");
+      if (response[0].Id !== 0) {
         localStorage.setItem("userLogin", 'true');
+        localStorage.setItem("userId", btoa(response[0].Id));
         setIsAuthenticated(true);
         handleAuthDrawerToggle(false); // Close login drawer
       } else {

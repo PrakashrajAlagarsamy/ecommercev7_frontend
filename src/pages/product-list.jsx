@@ -19,8 +19,7 @@ import {
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import ProductCard from '../components/ProductCard';
-import {API_FetchOfferFastMovingProduct} from '../services/offerFasMovingProducts';
-import { API_FetchProductByCategory, API_FetchProductBySubCategory } from '../services/productListServices';
+import { API_FetchOfferFastMovingProduct, API_FetchProductIdMoreItems, API_FetchProductByCategory, API_FetchProductBySubCategory } from '../services/productListServices';
 import { API_FetchCategorySubCategory } from '../services/categoryServices';
 import { ImagePathRoutes } from '../routes/ImagePathRoutes';
 
@@ -38,6 +37,7 @@ const ProductList = () => {
   const [categoryId, setCategoryId] = useState(null);
   const [categoryName, setCategoryName] = useState(null);
   const [offerProducts, setOfferProducts] = useState(null);
+  const [relatedProducts, setRelatedProducts] = useState(null);
   const [subCategoryId, setSubCategoryId] = useState(null);
   const [subCategoryName, setSubCategoryName] = useState(null);
   const [Multipleitems, setMultipleitems] = useState(1);
@@ -46,7 +46,8 @@ const ProductList = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [productFilterName, setProductFilterName] = useState('All products');
 
-  const handleCategoryClick = (subCategoryName, SubCategoryId) => {
+  const handleSubCategoryClick = (subCategoryName, SubCategoryId) => {
+    setSubCategoryId(SubCategoryId);
     navigate(`/product-list?pcid=${btoa(atob(categoryId))}&pcname=${btoa(atob(categoryName))}&pscid=${btoa(SubCategoryId)}&pscname=${subCategoryName}`);
     setActiveCategory(subCategoryName);
     setProductLists([]);
@@ -59,16 +60,18 @@ const ProductList = () => {
 
   const GetCategoryBySubCategory = async (categoryId) => {
     try {
-      setLoading(true);
-      setBackdropOpen(true); 
-
-      const subcategories = await API_FetchCategorySubCategory(categoryId);
-      setLoading(false);
-      setBackdropOpen(false); 
-
-      const allProductsCategory = { SubCategory: 'All Products' };
-      setSubcategories([allProductsCategory, ...subcategories]);
-      return subcategories;
+      if(categoryId !== "offer_product" && categoryId !== "related_product"){
+        setLoading(true);
+        setBackdropOpen(true); 
+  
+        const subcategories = await API_FetchCategorySubCategory(categoryId);
+        setLoading(false);
+        setBackdropOpen(false); 
+  
+        const allProductsCategory = { SubCategory: 'All Products' };
+        setSubcategories([allProductsCategory, ...subcategories]);
+        return subcategories;
+      }      
     } catch (error) {
       console.error("Error fetching subcategory:", error);
       setLoading(false);
@@ -84,12 +87,20 @@ const ProductList = () => {
       setProductLists([]);
       let productLists = [];
       if(categoryId === "offer_product"){
+        setRelatedProducts(null);
         setOfferProducts(categoryId);
         setActiveCategory("Offer products for you");
         productLists = await API_FetchOfferFastMovingProduct();
       }
+      else if(categoryId === "related_product"){
+        setOfferProducts(null);
+        setRelatedProducts(atob(categoryName));
+        setActiveCategory("You might also like products");
+        productLists = await API_FetchProductIdMoreItems(atob(categoryName));
+      }
       else{
         setOfferProducts(null);
+        setRelatedProducts(null);
         productLists = await API_FetchProductByCategory(categoryId, Multipleitems, Startindex, PageCount);
       }
       setProductLists(productLists);
@@ -104,14 +115,17 @@ const ProductList = () => {
   };
 
   const GetProductListsBySubCategory = async (SubCategoryId, Multipleitems, Startindex, PageCount) => {
+    console.log("SubCategoryId:", SubCategoryId);
     try {
-      setLoading(true);
-      setBackdropOpen(true); 
-      setProductLists([]);
-      const productLists = await API_FetchProductBySubCategory(SubCategoryId, Multipleitems, Startindex, PageCount);
-      setProductLists(productLists);
-      setLoading(false);
-      setBackdropOpen(false); 
+      if(SubCategoryId !== null){
+        setLoading(true);
+        setBackdropOpen(true); 
+        setProductLists([]);
+        const productLists = await API_FetchProductBySubCategory(SubCategoryId, Multipleitems, Startindex, PageCount);
+        setProductLists(productLists);
+        setLoading(false);
+        setBackdropOpen(false); 
+      }      
     } catch (error) {
       console.error("Error fetching products by subcategory:", error);
       setLoading(false);
@@ -136,7 +150,7 @@ const ProductList = () => {
       GetProductLists(atob(encodedId), Multipleitems, Startindex, PageCount);  
     }    
     
-  }, [location.search, categoryId, Multipleitems, Startindex, PageCount]);
+  }, [location.search, categoryId, categoryName, Multipleitems, Startindex, PageCount]);
 
   // Function to filter products based on the selected option
   const handleProductFilterChange = (event) => {
@@ -187,7 +201,7 @@ const ProductList = () => {
     <Container maxWidth="xl">
       <Grid container>
         {/* Left-side Drawer */}
-        {offerProducts === null ? 
+        {offerProducts === null && relatedProducts === null ? 
          <Grid item sx={{ display: { xs: 'none', md: 'block' } }} style={{ position: 'sticky', top: 0, height: '100vh' }}>
          <Drawer
            variant="permanent"
@@ -207,7 +221,7 @@ const ProductList = () => {
                <ListItem
                  button
                  key={index}
-                 onClick={() => handleCategoryClick(category.SubCategory, category.Id)}
+                 onClick={() => handleSubCategoryClick(category.SubCategory, category.Id)}
                  sx={{
                    borderLeft: activeCategory === category.SubCategory ? '4px solid #3BB77E' : 'none',
                    backgroundColor: activeCategory === category.SubCategory ? '#3bb77e1c' : 'transparent',
@@ -273,7 +287,7 @@ const ProductList = () => {
                 <ListItem
                   button
                   key={index}
-                  onClick={() => handleCategoryClick(category.SubCategory, category.Id)}
+                  onClick={() => handleSubCategoryClick(category.SubCategory, category.Id)}
                   sx={{
                     borderLeft: activeCategory === category.SubCategory ? '4px solid #3BB77E' : 'none',
                     backgroundColor: activeCategory === category.SubCategory ? '#3bb77e1c' : 'transparent',
