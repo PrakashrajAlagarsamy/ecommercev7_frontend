@@ -355,7 +355,8 @@ const ProductList = () => {
             </Box>
 
             {/* Render filtered product list */}
-            {productLists.length > 0 ? (
+            <div className={offerProducts === null && relatedProducts === null ? "grid h-full w-full grid-cols-2 content-start gap-x-3 overflow-auto md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 pb-24 no-scrollbar" : "grid h-full w-full grid-cols-2 content-start gap-x-3 overflow-auto md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 pb-24 no-scrollbar"}>
+            {productLists.length > 0 ? (              
               productLists.map((product) => (
                 <Box key={product.id} sx={{ mb: 3 }}>
                   <ProductCard product={product} isLoading={loading} />
@@ -371,6 +372,7 @@ const ProductList = () => {
                 </Typography>
               )
             )}
+            </div>
           </Grid>
         </Grid>
       </Grid>

@@ -48,7 +48,7 @@ const AppLayout = (props) => {
 
   useEffect(() => {
     FetchSettingsLists();
-    FetchTopCategoryLists();
+    //FetchTopCategoryLists();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

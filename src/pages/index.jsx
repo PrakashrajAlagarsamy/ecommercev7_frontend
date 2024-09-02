@@ -13,7 +13,7 @@ export default function HomePage() {
                 <OfferFastMovingProduct/>            
                 <ImageCategorySlider />
                 <ProductByIndexPage/>
-                <SomeComponent/>
+                {/* <SomeComponent/> */}
             </Container>
         </>
     )

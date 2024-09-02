@@ -1,13 +1,66 @@
 import React from 'react';
-import { Box, Typography, Paper } from '@mui/material';
+import { Box, Typography, TextField, Button } from '@mui/material';
 
-const Profile = () => {
-    
-    return (
-      <Box sx={{ p: 2 }}>
-        
-      </Box>
-    );
-  };
-  export default Profile;
+const Profile = ({customerDetails}) => {
   
+  return (
+    <Box align="left" sx={{ background: '#FFF', maxHeight: '500px', overflowY: 'scroll', p: 2, borderRadius: 2 }}>
+              {/* Form Section */}
+              <Box component="form" noValidate autoComplete="off">
+                <Typography sx={{ width: '100%', display: 'block' }} variant="p" gutterBottom>
+                  Name
+                </Typography>
+                <TextField
+                  fullWidth
+                  size="small"
+                  variant="outlined"
+                  defaultValue={customerDetails[0].CustomerName}
+                  sx={{ mb: 2, mt: 0.5 }}
+                />
+                <Typography sx={{ width: '100%', display: 'block' }} variant="p" gutterBottom>
+                  Email Address
+                </Typography>
+                <TextField
+                  fullWidth
+                  size="small"
+                  variant="outlined"
+                  defaultValue={customerDetails[0].Email}
+                  sx={{ mb: 2, mt: 0.5 }}
+                />
+
+                <Typography sx={{ width: '100%', display: 'block' }} variant="p" gutterBottom>
+                  Mobile number
+                </Typography>
+                <TextField
+                  fullWidth
+                  size="small"
+                  variant="outlined"
+                  defaultValue={customerDetails[0].MobileNo}
+                  sx={{ mb: 2, mt: 0.5 }}
+                />
+
+              </Box>
+
+              {/* Delete Account Section */}
+              <Box>
+                <Typography variant="p" color="error">
+                  Deleting your account will remove all your orders, wallet amount and any active referral.
+                </Typography>
+                <Button
+                  variant="contained"
+                  color="error"
+                  sx={{
+                    marginTop: "16px",
+                    textTransform: "none",
+                    float: "right",
+                  }}
+                >
+                  Delete Account
+                </Button>
+              </Box>
+            </Box>
+
+  );
+};
+
+export default Profile;

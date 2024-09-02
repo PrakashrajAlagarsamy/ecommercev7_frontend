@@ -44,7 +44,7 @@ const ProductCard = ({ product, isLoading }) => {
     });
   };
 
-  return (
+  return (    
     <Card
       id={product?.Productid ? product.Productid : product?.Id}
       name={product.Description}
@@ -53,6 +53,7 @@ const ProductCard = ({ product, isLoading }) => {
       sx={{
         width: { xs: 160, sm: 220, md: 260, lg: 280 },
         height: { xs: 320, sm: 380, md: 400, lg: 420 },
+        //width: 'auto',
         margin: '0 auto',
         textAlign: 'left',
         border: '1px solid #e8e8e8',
@@ -87,7 +88,7 @@ const ProductCard = ({ product, isLoading }) => {
               objectFit: 'contain',
             }}
           />
-          {Math.round(product.Offer) > 0 && (
+          {Math.round(product.Offer) === 0 && (
             <Box
               sx={{
                 position: 'absolute',

@@ -93,17 +93,17 @@ export default function AppHeader() {
   return (
     <>      
       <AppBar
-        position={isScrolled ? 'fixed' : 'relative'} 
+        position={isScrolled ? 'sticky' : 'relative'} 
         color="transparent"
         elevation={isScrolled ? 7 : 0}
         sx={{
           borderBottom: isScrolled ? 'none' : '1px solid #ddd',
           backgroundColor: isScrolled ? '#FFF' : '#FFF',
-          transition: 'all 1s ease',
-          zIndex: 10,
+          transition: 'all 1.5s ease',
+          zIndex: 9999,
           top: 0, 
           '@media (max-width: 600px)': {
-            position: 'relative', // Change position to relative on mobile
+            position: 'relative', 
             width: '100%',
           },
         }}

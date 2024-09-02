@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Box, Container, Grid } from '@mui/material';
 import MyAccountSidebar from '../components/myAccount/MyAccountSidebar';
 import Orders from '../components/myAccount/Orders';
+import OrderDetails from '../components/myAccount/OrderDetails';
 import CustomerSupport from '../components/myAccount/CustomerSupport';
 import Profile from '../components/myAccount/Profile';
 import Wallet from '../components/myAccount/Wallet';
 import Addresses from '../components/myAccount/Addresses';
+import Referrals from '../components/myAccount/Referrals';
+import PasswordSettings from '../components/myAccount/PasswordSettings';
 import { API_FetchCustomerAddress } from '../services/userServices';
 
 const MyAccount = () => {
@@ -14,6 +17,7 @@ const MyAccount = () => {
     const [customerDetails, setCustomerDetails] = useState({});
     const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
+    const location = useLocation();
 
     const FetchCustomerAddress = async (userId) => {
         try {
@@ -35,31 +39,54 @@ const MyAccount = () => {
         }
     }, []);
 
+    // Set active component based on URL query parameter
     useEffect(() => {
-        navigate(`/myaccount?${activeComponent}`);
+        const params = new URLSearchParams(location.search);
+        const component = params.get('page');
+        if (component) {
+            setActiveComponent(component);
+        }
+    }, []);
+
+    // Update URL whenever active component changes
+    useEffect(() => {
+        if(activeComponent === 'Logout'){
+            navigate('/');
+        }
+        else{
+            navigate(`/myaccount?page=${activeComponent}`, { replace: false });
+        }
     }, [activeComponent, navigate]);
 
     const renderActiveComponent = () => {
         switch (activeComponent) {
             case 'Orders':
-                return <Orders />;
+                return <Orders setActiveComponent={setActiveComponent} />;
+            case 'OrderDetails':
+                return <OrderDetails setActiveComponent={setActiveComponent} />;
             case 'CustomerSupport':
                 return <CustomerSupport />;
             case 'Profile':
-                return <Profile />;
+                return <Profile customerDetails={customerDetails} />;
             case 'Wallet':
-                return <Wallet />;
+                return <Wallet customerDetails={customerDetails} />;
             case 'Addresses':
-                return <Addresses />;
+                return <Addresses customerDetails={customerDetails} />;
+            case 'ManageReferrals':
+                return <Referrals />;
+            case 'PasswordSettings':
+                return <PasswordSettings/>;
+            case 'Logout':
+                    return '/';
             default:
-                return <Orders />;
+                return <Orders setActiveComponent={setActiveComponent} />;
         }
     };
 
     return (
         <Container maxWidth="lg" sx={{ py: 3 }}>
             <Box>
-                <Grid container>
+                <Grid container sx={{ border: '2px solid #ececec', borderRadius: 3, p: 0 }}>
                     <Grid item xs={4}>
                         <MyAccountSidebar
                             CustomerDetails={customerDetails}

@@ -32,14 +32,14 @@ export const checkExistingUser = async (email, mobileNumber) => {
 
 // Function to register the user
 export const registerUser = async (userDetails) => {
-  console.log("userDetails:", userDetails);
+  let objData = "";
   const apiEndpoint = APIRoutes.APP_REGISTER_USER; 
   try {
     const response = await fetch(apiEndpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        objData: JSON.stringify(userDetails),
+        objData: objData,
       },
       body: JSON.stringify(userDetails),
     });
@@ -77,6 +77,33 @@ export const loginUser = async (mobileNumber, password) => {
   } catch (error) {
     console.error('Error logging in:', error);
     return { success: false };
+  }
+};
+
+
+// Function to Insert the customer address
+export const API_InsertCustomerDetails = async (customerDetails) => {  
+  let objData = "";
+  try {
+    const response = await fetch(`${APIRoutes.INSERT_CUSTOMER_DETAILS}`, {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+        objData: objData,
+      },
+      body: JSON.stringify(customerDetails),
+    }); 
+
+    if (response.ok) {
+      const data = await response.json();
+      return data; 
+    } else {
+      console.error("Failed to create account.");
+      return null;
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    throw new Error("An error occurred while creating the account.");
   }
 };
 
@@ -134,6 +161,35 @@ export const API_FetchMyOrders = async (UserId) => {
       return data;
   } catch (error) {
       console.error('Failed to fetch order details:', error);
+      throw error; // Re-throw so the calling function can handle it
+  }
+};
+
+
+// Fetch My Wallet Amount
+export const API_FetchMyWalletIn = async (UserId) => {
+  let objlist = {
+      Comid: ServerURL.COMPANY_REF_ID,
+  };
+  try {
+      const response = await fetch(`${APIRoutes.GET_MY_WALLET_IN}`, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json; charset=utf-8',
+              Cid: UserId
+          },
+          body: JSON.stringify(objlist)
+      });
+      if (!response.ok) {
+          throw new Error('Network response was not ok.');
+      }
+      const data = await response.json();
+      if (!data || !Array.isArray(data)) {
+          throw new Error('No data found.');
+      }
+      return data;
+  } catch (error) {
+      console.error('Failed to fetch wallet details:', error);
       throw error; // Re-throw so the calling function can handle it
   }
 };

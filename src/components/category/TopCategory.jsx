@@ -116,8 +116,7 @@ const TopCategory = (props) => {
                       sx={{
                         textAlign: 'center',
                         textTransform: 'capitalize',
-                        fontFamily: 'inherit',
-                        fontWeight: 500,
+                        fontWeight: 600,
                         fontSize: '14px', 
                         color: "#253D4E"
                       }}
