@@ -4,7 +4,7 @@ import { Box, Typography, TextField, Button } from '@mui/material';
 const Profile = ({customerDetails}) => {
   
   return (
-    <Box align="left" sx={{ background: '#FFF', maxHeight: '500px', overflowY: 'scroll', p: 2, borderRadius: 2 }}>
+    <Box align="left" sx={{ background: '#FFF', maxHeight: '700px', overflowY: 'scroll', p: 2, borderRadius: 2 }}>
               {/* Form Section */}
               <Box component="form" noValidate autoComplete="off">
                 <Typography sx={{ width: '100%', display: 'block' }} variant="p" gutterBottom>

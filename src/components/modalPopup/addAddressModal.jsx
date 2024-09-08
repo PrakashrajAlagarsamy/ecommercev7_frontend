@@ -53,10 +53,25 @@ const AddAddressModal = ({ AddressModalOpen, handleAddressModalClose, AddressDet
     useEffect(() => {
         if (AddressModalOpen) {
             const fullAddress = `${addressFields.Address1}, ${addressFields.City}, ${addressFields.Pincode}`;
-            geocodeAddress(fullAddress);
+            //geocodeAddress(fullAddress);
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [AddressModalOpen, addressFields]);
+
+    useEffect(() => {
+        if (AddressModalOpen) {
+            // Initialize address fields when the modal opens
+            setAddressFields({
+                Address1: defaultAddressDetails.Address1 || '',
+                Address2: defaultAddressDetails.Address2 || '',
+                City: defaultAddressDetails.City || '',
+                Pincode: defaultAddressDetails.Pincode || '',
+                Landmark: defaultAddressDetails.Landmark || '',
+                lattitude: markerPosition.lat,
+                longitude: markerPosition.lng,
+            });
+        }
+    }, [AddressModalOpen, defaultAddressDetails, markerPosition]);
 
     const geocodeAddress = useCallback((address) => {
         if (!isLoaded) return;
@@ -241,7 +256,7 @@ const AddAddressModal = ({ AddressModalOpen, handleAddressModalClose, AddressDet
                     {/* Search Input Section */}
                     <Box sx={{ mb: 2 }}>
                         <TextField
-                            autoComplete={"OFF"}
+                            autoComplete="off"
                             value={searchInput}
                             onChange={(e) => setSearchInput(e.target.value)}
                             onKeyPress={(e) => { if (e.key === 'Enter') handleSearch(); }}
@@ -283,7 +298,7 @@ const AddAddressModal = ({ AddressModalOpen, handleAddressModalClose, AddressDet
                                         <TextField
                                             size="small"
                                             name="Address1"
-                                            value={addressFields.Address1 ? addressFields.Address1 : defaultAddressDetails.Address1}
+                                            value={addressFields.Address1} 
                                             placeholder="Enter your address"
                                             variant="outlined"
                                             fullWidth
@@ -297,7 +312,7 @@ const AddAddressModal = ({ AddressModalOpen, handleAddressModalClose, AddressDet
                                         <TextField
                                             size="small"
                                             name="Address2"
-                                            value={addressFields.Address2 ? addressFields.Address2 : defaultAddressDetails.Address2}
+                                            value={addressFields.Address2}
                                             placeholder="Enter your address details"
                                             variant="outlined"
                                             fullWidth
@@ -311,7 +326,7 @@ const AddAddressModal = ({ AddressModalOpen, handleAddressModalClose, AddressDet
                                         <TextField
                                             size="small"
                                             name="City"
-                                            value={addressFields.City ? addressFields.City : defaultAddressDetails.City}
+                                            value={addressFields.City}
                                             placeholder="Enter your City"
                                             variant="outlined"
                                             fullWidth
@@ -325,7 +340,7 @@ const AddAddressModal = ({ AddressModalOpen, handleAddressModalClose, AddressDet
                                         <TextField
                                             size="small"
                                             name="Pincode"
-                                            value={addressFields.Pincode ? addressFields.Pincode : defaultAddressDetails.Pincode}
+                                            value={addressFields.Pincode}
                                             variant="outlined"
                                             fullWidth
                                             error={!!errors.Pincode}
@@ -338,7 +353,7 @@ const AddAddressModal = ({ AddressModalOpen, handleAddressModalClose, AddressDet
                                         <TextField
                                             size="small"
                                             name="Landmark"
-                                            value={addressFields.Landmark ? addressFields.Landmark : defaultAddressDetails.Landmark}
+                                            value={addressFields.Landmark}
                                             variant="outlined"
                                             fullWidth
                                             error={!!errors.Landmark}
@@ -380,7 +395,7 @@ const AddAddressModal = ({ AddressModalOpen, handleAddressModalClose, AddressDet
                                                 placeholder="Enter your own label"
                                                 variant="outlined"
                                                 name="AddressType"
-                                                value={addressFields.AddressType ? addressFields.AddressType : defaultAddressDetails.AddressType}
+                                                value={addressFields.AddressType}
                                                 error={!!errors.AddressType}
                                                 helperText={errors.AddressType}
                                                 onChange={handleInputChange}

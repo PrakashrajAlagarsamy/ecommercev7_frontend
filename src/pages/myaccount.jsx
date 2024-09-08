@@ -4,6 +4,7 @@ import { Box, Container, Grid } from '@mui/material';
 import MyAccountSidebar from '../components/myAccount/MyAccountSidebar';
 import Orders from '../components/myAccount/Orders';
 import OrderDetails from '../components/myAccount/OrderDetails';
+import Favorites from '../components/myAccount/Favorites';
 import CustomerSupport from '../components/myAccount/CustomerSupport';
 import Profile from '../components/myAccount/Profile';
 import Wallet from '../components/myAccount/Wallet';
@@ -64,6 +65,8 @@ const MyAccount = () => {
                 return <Orders setActiveComponent={setActiveComponent} />;
             case 'OrderDetails':
                 return <OrderDetails setActiveComponent={setActiveComponent} />;
+            case 'Favorites':
+                return <Favorites setActiveComponent={setActiveComponent}/>;
             case 'CustomerSupport':
                 return <CustomerSupport />;
             case 'Profile':
@@ -77,7 +80,7 @@ const MyAccount = () => {
             case 'PasswordSettings':
                 return <PasswordSettings/>;
             case 'Logout':
-                    return '/';
+                return '/';
             default:
                 return <Orders setActiveComponent={setActiveComponent} />;
         }

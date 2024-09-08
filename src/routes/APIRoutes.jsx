@@ -30,6 +30,11 @@ export const APIRoutes = {
     GET_PRODUCT_BY_CATEGORY: `${ServerURL.PRODUCTION_HOST_URL}api/WebMobileApp/SelectProductByCategory`,
     GET_PRODUCT_BY_SUBCATEGORY: `${ServerURL.PRODUCTION_HOST_URL}api/WebMobileApp/SelectProductBySubCategory`,
     GET_PRODUCT_BY_ID: `${ServerURL.PRODUCTION_HOST_URL}api/WebMobileApp/SelectProductId`,
+
+    //Wishlist product (favorite)
+    INSERT_FAVORITE_PRODUCT: `${ServerURL.PRODUCTION_HOST_URL}api/WhishlistApp/InsertWishlist`,
+    GET_PRODUCT_BY_FAVORITE_LISTS: `${ServerURL.PRODUCTION_HOST_URL}api/WhishlistApp/SelectProductByWishlist`,
+    DELETE_FAVORITE_PRODUCT: `${ServerURL.PRODUCTION_HOST_URL}api/WhishlistApp/DeleteWishlist`,
 };
 
 export default APIRoutes;

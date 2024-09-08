@@ -10,7 +10,7 @@ const OrderDetails = ({setActiveComponent}) => {
 
   return (
     <>
-    <Box sx={{ background: '#f0f4f9', maxHeight: '500px', overflowY: 'scroll', borderRadius: 2 }}>
+    <Box sx={{ background: '#f0f4f9', maxHeight: '700px', overflowY: 'scroll', borderRadius: 2 }}>
       {/* Header */}
       <Box sx={{backgroundColor: '#FFF', py: 2, px: 2, borderBottom: '1px solid #ececec' }} display="flex" justifyContent="space-between" alignItems="center">
         <Button onClick={() => setActiveComponent('Orders')} startIcon={<ArrowBackIosIcon />} sx={{ color: '#000', fontWeight: 500 }}>Back</Button>

@@ -32,7 +32,7 @@ useEffect(() => {
 }, []);
 
   return (
-    <Box sx={{ padding: 2 }}>
+    <Box align="left" sx={{ background: '#FFF', maxHeight: '700px', overflowY: 'scroll', p: 2, borderRadius: 2 }}>
               {/* Balance Card */}
               <Card sx={{ background: 'linear-gradient(135deg, #3BB77E 0%, #3BB77E 100%)', color: '#fff' }}>
                 <CardContent>

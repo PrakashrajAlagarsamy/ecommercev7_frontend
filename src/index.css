@@ -48,3 +48,16 @@ body {
   font-size: 20px !important;
   opacity: 1 !important;
 }
+
+/* .slick-slide div img {
+  width: 80% !important;
+  height: 420px !important;
+} */
+.slick-dots {
+  position: relative !important;
+  top: 25px !important;
+}
+.slick-dots li {
+  width: 100px !important;
+  height: 100px !important;
+}

@@ -10,40 +10,42 @@ import { ServerURL } from '../server/serverUrl';
 import { ImagePathRoutes } from '../routes/ImagePathRoutes';
 import { API_FetchProductById } from '../services/productListServices';
 import RelatedProducts from '../components/slider/relatedProducts';
+import BreadCrumbs from '../components/BreadCrumbs';
+
 
 const ProductDetails = () => {
     const [productId, setProductId] = useState(0);
     const [activeIndex, setActiveIndex] = useState(0);
     const [quantity, setQuantity] = useState(0);
+    const [totalPrice, setTotalPrice] = useState(0);
     const [productDetails, setProductDetails] = useState({});
     const [imageLists, setImageLists] = useState([]);
-    const [totalPrice, setTotalPrice] = useState(0);
     const [loading, setLoading] = useState(false);
     const [backdropOpen, setBackdropOpen] = useState(false);
     const location = useLocation();
-    const navigate = useNavigate();   
+    const navigate = useNavigate();
 
     const handleIncrement = (event) => {
         event.stopPropagation();
         setQuantity((prevQuantity) => {
-          const newQuantity = prevQuantity + 1;
-          if (newQuantity > 1) {
-            setTotalPrice((prevPrice) => prevPrice + productDetails.Price);
-          }
-          return newQuantity;
+            const newQuantity = prevQuantity + 1;
+            if (newQuantity > 1) {
+                setTotalPrice((prevPrice) => prevPrice + productDetails.Price);
+            }
+            return newQuantity;
         });
-      };
-    
-      const handleDecrement = (event) => {
+    };
+
+    const handleDecrement = (event) => {
         event.stopPropagation();
         setQuantity((prevQuantity) => {
-          if (prevQuantity > 1) {
-            setTotalPrice((prevPrice) => prevPrice - productDetails.Price);
-          }
-          return prevQuantity > 0 ? prevQuantity - 1 : 0;
+            if (prevQuantity > 1) {
+                setTotalPrice((prevPrice) => prevPrice - productDetails.Price);
+            }
+            return prevQuantity > 0 ? prevQuantity - 1 : 0;
         });
-      };
-    
+    };
+
 
     const GetProductDetails = async (productId) => {
         try {
@@ -84,95 +86,108 @@ const ProductDetails = () => {
         }
     }, [location.search, productId]);
 
-    const settings = {
-        dots: false,
+
+    // Slick Slider settings
+    const settings1 = {
+        customPaging: function (index) {
+            return (
+                <img src={ImagePathRoutes.ProductDetailsImagePath + imageLists[index]} alt={productDetails.Description || "Product name is not available" + index + 1} />
+            );
+        },
+        dots: true,
+        dotsClass: "slick-dots slick-thumb",
         infinite: true,
+        arrows: false,
         speed: 500,
-        slidesToShow: 3,
-        slidesToScroll: 1,
-        arrows: true,
-        autoplay: false,
-        beforeChange: (current, next) => setActiveIndex(next),
+        slidesToShow: 1,
+        slidesToScroll: 1
     };
 
     return (
         <>
-            <Container maxWidth="lg" sx={{ my: 3 }}>
+            <Box className="card-wrapper" sx={{ maxWidth: '100%', mx: 'auto', p: 2 }}>
+                <Box sx={{ display: 'block', justifyContent: 'space-between' }}>
+                    {/* Card Left - Image Slider */}
+                    <Box className="product-imgs" sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', }}>
+
+                    </Box>
+
+                    {/* Card Right - Product Content */}
+
+                </Box>
+            </Box>
+            <Container maxWidth="xl" sx={{ my: 3 }}>
                 <Grid container>
                     <Grid item xs={6}>
-                        <Box sx={{ mb: 3 }}>
-                            {imageLists.length > 0 && (
-                                // <img src={imageLists[activeIndex]} alt="Active Product" style={{ width: '100%', height: 'auto' }} />
-                                <img src={"https://www.healthysteps.in/assets/img/category/no-image.png"} alt="Active Product" style={{ width: '450px', height: '420px' }} />
-                            )}
-                        </Box>
-                        {imageLists.length > 0 && (
-                            <Slider {...settings}>
-                                {imageLists.map((image, index) => (
-                                    // <img key={index} src={ImagePathRoutes.ProductDetailsImagePath + image} alt={`Product ${index + 1}`} />
-                                    <img key={index} src={"https://www.healthysteps.in/assets/img/category/no-image.png"} alt={`Product ${index + 1}`} style={{ width: '150px !important', height: '150px !important' }} />
-                                ))}
-                            </Slider>
-                        )}
+                        <Slider {...settings1}>
+                            {imageLists.map((image, index) => (
+                                <img src={ImagePathRoutes.ProductDetailsImagePath + image} alt={productDetails.Description || "Product name is not available" + index + 1} />
+                            ))}
+                        </Slider>
                     </Grid>
                     <Grid item xs={6}>
                         <Box>
-                            <Typography component={"h4"} sx={{ fontSize: 18, fontWeight: 600, fontFamily: "inherit", textAlign: "left", }}>
-                                {productDetails.Description || "Description not available"}
+                            <Box sx={{ pb: 1 }}><BreadCrumbs CategoryId={productDetails.CId} SubCateoryId={productDetails.SId} SubCategoryName={productDetails.SubCategoryName} ProductName={productDetails.Description} /></Box>
+                            <Typography component={"h4"} sx={{ fontSize: 20, fontWeight: 600, fontFamily: "inherit", textAlign: "left", pb: 1.5 }}>
+                                {productDetails.Description || "Product name is not available"}
                             </Typography>
-                            {Math.round(productDetails.Offer) > 0 && (
+                            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: '100px', pb: 1 }}>
+                                {Math.round(productDetails.Offer) === 0 && (
+                                    <Typography sx={{
+                                        position: 'relative',
+                                        left: '8px',
+                                        backgroundColor: '#fff6e0',
+                                        color: '#5d3e03',
+                                        padding: '2px 5px',
+                                        borderRadius: '3px',
+                                        border: '1px solid #90784159',
+                                        fontSize: '12px',
+                                        fontWeight: 'bold',
+                                        fontFamily: 'inherit',
+                                        display: 'block'
+                                    }}>
+                                        {Math.round(productDetails.Offer)}% OFF
+                                    </Typography>
+                                )}
                                 <Box sx={{
-                                    position: 'absolute',
-                                    bottom: '8px',
-                                    left: '8px',
-                                    backgroundColor: '#fff6e0',
-                                    color: '#5d3e03',
-                                    padding: '2px 5px',
-                                    borderRadius: '3px',
-                                    border: '1px solid #90784159',
-                                    fontSize: '12px',
-                                    fontWeight: 'bold',
-                                    fontFamily: 'inherit',
+                                    position: 'relative',
+                                    color: productDetails.isFavorite ? '#3BB77E' : '#3BB77E',
                                 }}>
-                                    {Math.round(productDetails.Offer)}% OFF
+                                    {productDetails.isFavorite ? <FavoriteIcon /> : <FavoriteBorderIcon size="small" sx={{ color: '#ee4372', fontSize: '18px' }} />}
                                 </Box>
-                            )}
-                            <Box sx={{
-                                position: 'absolute',
-                                top: '8px',
-                                right: '8px',
-                                color: productDetails.isFavorite ? '#3BB77E' : '#FFF',
-                            }}>
-                                {productDetails.isFavorite ? <FavoriteIcon /> : <FavoriteBorderIcon size="small" sx={{ color: '#ee4372', fontSize: '18px' }} />}
                             </Box>
-                            <Box sx={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}>
+                            <Box sx={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', pb: 2 }}>
                                 <Typography variant="body2" sx={{ color: '#253D4E', fontSize: '14px', lineHeight: '24px', fontFamily: 'inherit' }}>
                                     {productDetails.MultiplePriceEnable === 0 ? productDetails.UnitType : <>Multiple price</>}
                                 </Typography>
                             </Box>
-                            <Typography variant="body2" sx={{ color: '#253D4E', fontSize: '16px', lineHeight: '24px', fontFamily: 'inherit', textAlign: 'left' }}>
-                                {totalPrice.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                            </Typography>
-                            {productDetails.MRP && (
-                                <Typography variant="body2" sx={{ textDecoration: 'line-through', fontSize: '16px', fontWeight: 200, color: '#a3a4ae', fontFamily: 'inherit', textAlign: 'left' }}>
-                                    {'MRP:' + productDetails.MRP.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                            <Box sx={{pb: 2, display: 'flex', justifyContent: 'flex-start', alignItems: 'center', gap: '30px'}}>
+                                <Typography variant="body2" sx={{ color: '#253D4E', fontSize: '16px', lineHeight: '30px', fontFamily: 'inherit', textAlign: 'left' }}>
+                                    {totalPrice.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                 </Typography>
-                            )}
+                                {productDetails.MRP && (
+                                    <Typography variant="body2" sx={{ textDecoration: 'line-through', fontSize: '14px', fontWeight: 200, color: '#a3a4ae', fontFamily: 'inherit', textAlign: 'left' }}>
+                                        {'MRP:' + productDetails.MRP.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                    </Typography>
+                                )}
+                            </Box>
                             <Button
                                 variant="outlined"
                                 sx={{
-                                    width: "auto",
+                                    width: "20%",
                                     display: quantity !== 0 ? 'flex' : 'none',
                                     alignItems: 'center',
                                     justifyContent: 'space-between',
                                     marginTop: '10px',
                                     border: '1px solid #3BB77E',
                                     fontFamily: 'inherit',
+                                    background: '#3BB77E',
+                                    color: '#FFF',
                                     padding: { xs: '6px 0px', sm: '7px 0px', md: '7.2px 0px' },
                                     '&:hover': {
-                                        background: 'none',
+                                        background: '#3BB77E',
                                         border: '1px solid #3BB77E',
-                                        color: '#3BB77E'
+                                        color: '#FFF'
                                     }
                                 }}
                             >
@@ -181,7 +196,8 @@ const ProductDetails = () => {
                                     onClick={(e) => { handleDecrement(e); }}
                                     sx={{
                                         width: '25%',
-                                        color: '#3BB77E',
+                                        color: '#FFF',
+                                        background: '#3BB77E',
                                         fontFamily: 'inherit',
                                     }}
                                 >
@@ -191,7 +207,8 @@ const ProductDetails = () => {
                                     variant="body2"
                                     sx={{
                                         width: '50%',
-                                        color: '#3BB77E',
+                                        color: '#FFF',
+                                        background: '#3BB77E',
                                         fontFamily: 'inherit',
                                     }}
                                 >
@@ -202,30 +219,31 @@ const ProductDetails = () => {
                                     onClick={(e) => { handleIncrement(e); }}
                                     sx={{
                                         width: '25%',
-                                        color: '#3BB77E',
+                                        color: '#FFF',
+                                        background: '#3BB77E',
                                         fontFamily: 'inherit',
                                     }}
                                 >
                                     +
                                 </Typography>
                             </Button>
-                            {productDetails.InStock > 0 ?
+                            {productDetails.InStock !== 0 ?
                                 <Button
                                     variant="outlined"
                                     sx={{
                                         display: quantity === 0 ? 'block' : 'none',
                                         marginTop: '10px',
-                                        width: "auto",
+                                        width: "20%",
                                         textTransform: 'none',
                                         fontFamily: 'inherit',
                                         fontWeight: 600,
                                         border: '1px solid #3BB77E',
-                                        backgroundColor: '#3bb77e1c',
-                                        color: '#3BB77E',
+                                        backgroundColor: '#3BB77E',
+                                        color: '#FFF',
                                         '&:hover': {
-                                            background: 'none',
+                                            background: '#3BB77E',
                                             border: '1px solid #3BB77E',
-                                            color: '#3BB77E'
+                                            color: '#FFF'
                                         }
                                     }}
                                     onClick={(e) => { handleIncrement(e); }}
@@ -254,6 +272,22 @@ const ProductDetails = () => {
                                     Out of Stock
                                 </Button>
                             }
+                        </Box>
+                        <Box sx={{ pb: 4, pt: 6.5 }}>
+                            <Typography sx={{ fontSize: 18, fontWeight: 600, textAlign: 'left', pb: 1 }}>About Product</Typography>
+                            <Typography component={'p'} sx={{ color: '#2b1e3580', textAlign: 'left', fontSize: 16 }}>
+                                {productDetails.ProductDescription ? productDetails.ProductDescription
+                                    :
+                                    `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Corrupti
+                                repellendus tenetur reiciendis magnam quae accusamus repellat debitis
+                                laboriosam error labore! Aperiam praesentium nisi quidem molestiae unde
+                                architecto quam adipisci ut!
+                                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Corrupti
+                                repellendus tenetur reiciendis magnam quae accusamus repellat debitis
+                                laboriosam error labore! Aperiam praesentium nisi quidem molestiae unde
+                                architecto quam adipisci ut!`
+                                }
+                            </Typography>
                         </Box>
                     </Grid>
                 </Grid>

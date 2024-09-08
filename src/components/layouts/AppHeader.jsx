@@ -158,9 +158,10 @@ export default function AppHeader() {
             {/* Navigation and User Action Section */}
             <Grid item xs={6} sm={3} md={5} sx={{ display: { xs: 'none', sm: 'flex' }, justifyContent: 'flex-end', alignItems: 'center', gap: '30px' }}>
               <Button sx={{ color: '#333', textTransform: 'none', display: { xs: 'none', md: 'block' } }}>
-                <Typography component={"p"} sx={{fontFamily: 'inherit', fontWeight: 500}}>WhatsApp Only</Typography>
+                <Typography component={"p"} sx={{fontFamily: 'inherit', fontWeight: 600}}>WhatsApp Only<br/>
+                </Typography>
               </Button>
-              <Button sx={{ color: '#333', textTransform: 'none', display: { xs: 'none', md: 'block' } }}><Link to={"/categories"}>Home</Link></Button>
+              <Button sx={{ color: '#333', fontWeight: 600, fontFamily: 'inherit', textTransform: 'none', display: { xs: 'none', md: 'block' } }}><Link to={"/categories"}>Home</Link></Button>
               {!isAuthenticated && (
                 <>
                   <Button
@@ -168,7 +169,7 @@ export default function AppHeader() {
                     sx={{ color: '#333', textTransform: 'none' }}
                     onClick={handleAuthDrawerToggle}
                   >
-                    <Typography sx={{fontFamily: 'inherit', fontWeight: 500}}>Register</Typography>
+                    <Typography sx={{fontFamily: 'inherit', fontWeight: 600}}>Register</Typography>
                   </Button>
 
                   <Button
@@ -176,7 +177,7 @@ export default function AppHeader() {
                     sx={{ color: '#333', textTransform: 'none' }}
                     onClick={handleAuthDrawerToggle}
                   >
-                    <Typography sx={{fontFamily: 'inherit', fontWeight: 500}}>Sign In</Typography>
+                    <Typography sx={{fontFamily: 'inherit', fontWeight: 600}}>Sign In</Typography>
                     <PersonIcon sx={{ ml: 1 }} />
                   </Button>
                 </>

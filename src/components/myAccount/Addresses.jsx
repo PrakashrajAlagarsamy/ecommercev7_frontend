@@ -98,7 +98,7 @@ const Address = () => {
         handleConfirmationClick={handleConfirmationAction}
       />
 
-      <Box sx={{ background: '#FFF', maxHeight: '500px', overflowY: 'scroll', p: 2, borderRadius: 2 }}>
+      <Box sx={{ background: '#FFF', maxHeight: '700px', overflowY: 'scroll', p: 2, borderRadius: 2 }}>
         <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
           <Typography variant="h6" fontWeight="bold" sx={{ color: '#253D4E' }}>All Saved Addresses</Typography>
           <Button

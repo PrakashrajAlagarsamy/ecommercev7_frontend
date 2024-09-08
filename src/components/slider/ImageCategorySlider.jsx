@@ -46,7 +46,6 @@ export default function ImageCategorySlider({ CategoryImageLists = [] }) {
     <Container 
       maxWidth="xl" 
       disableGutters
-      sx={{ py: 3 }}
     >
       {images.length > 2 ? (
         <Slider {...settings}>

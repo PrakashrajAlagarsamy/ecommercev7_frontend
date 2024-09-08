@@ -67,7 +67,7 @@ const Orders = ({ setActiveComponent }) => {
 
     return (
         <>
-            <Box sx={{ background: '#f0f4f9', maxHeight: '500px', overflowY: 'scroll', p: 2, borderRadius: 2 }}>
+            <Box sx={{ background: '#f0f4f9', maxHeight: '700px', overflowY: 'scroll', p: 2, borderRadius: 2 }}>
                     {orders.slice(0, visibleOrders).map((order, index) => (
                         <Paper onClick={() => setActiveComponent('OrderDetails')} key={index} sx={{ my: 2, boxShadow: '0 0 #0000, 0 0 #0000, 0px 0px 0px 0px rgba(0, 0, 0, 0.1), 0px 0px 0px 0px rgba(0, 0, 0, 0.1)', borderRadius: '1rem', cursor: 'pointer' }}>
                             <Box sx={{ p: 2, pb: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

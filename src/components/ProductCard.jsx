@@ -5,23 +5,25 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { ImagePathRoutes } from '../routes/ImagePathRoutes';
 import { ServerURL } from '../server/serverUrl';
+import { API_InsertMyFavoriteProducts } from '../services/userServices';
 
-const ProductCard = ({ product, isLoading }) => {
+const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => {
   const [quantity, setQuantity] = useState(0);
   const [totalPrice, setTotalPrice] = useState(product?.Price || 0);
   const [productId, setProductId] = useState(0);
   const [productValue, setProductValue] = useState(0);
+  let [isFavoriteProduct, setIsFavoriteProduct] = useState(0);
 
   const navigate = useNavigate();
 
   const handleProductClick = (event) => {
-    const pdId = event.currentTarget.id; 
+    const pdId = event.currentTarget.id;
     const pdValue = event.currentTarget.getAttribute('name');
-    setProductId(pdId); 
+    setProductId(pdId);
     setProductValue(pdValue);
     navigate(`/product-details?pdid=${encodeURIComponent(btoa(pdId))}&pdname=${encodeURIComponent(btoa(pdId))}`);
   };
-  
+
 
   const handleIncrement = (event) => {
     event.stopPropagation();
@@ -44,16 +46,32 @@ const ProductCard = ({ product, isLoading }) => {
     });
   };
 
-  return (    
+  //Add fav product
+  const handleAddFavProduct = async (ProductId, event, status) => {
+    event.stopPropagation();
+    let userId = localStorage.getItem("userId");
+    userId = userId ? decodeURIComponent(userId) : null;
+    console.log("Product added successfully:", status);
+    try {
+      const response = await API_InsertMyFavoriteProducts(ProductId, Number(atob(userId)));
+      if (response && response.ok) {
+        setIsFavoriteProduct(status === 'Add' ? isFavoriteProduct = 1 : isFavoriteProduct = 0);
+        console.log("Product added successfully:", response);
+      }
+    } catch (error) {
+      console.error("Error removing favorite product lists:", error);
+    }
+  }
+
+  return (
     <Card
       id={product?.Productid ? product.Productid : product?.Id}
       name={product.Description}
       value={product?.Productid ? product.Productid : product?.Id}
       onClick={handleProductClick}
       sx={{
-        width: { xs: 160, sm: 220, md: 260, lg: 280 },
+        width: { xs: offerProducts === null && relatedProducts === null ? 155 : 190, sm: 220, md: 260, lg: 280 },
         height: { xs: 320, sm: 380, md: 400, lg: 420 },
-        //width: 'auto',
         margin: '0 auto',
         textAlign: 'left',
         border: '1px solid #e8e8e8',
@@ -112,10 +130,11 @@ const ProductCard = ({ product, isLoading }) => {
               position: 'absolute',
               top: '8px',
               right: '8px',
-              color: product.isFavorite ? '#3BB77E' : '#FFF',
+              color: product.isFavorite !== 0 ? '#3BB77E' : '#FFF',
             }}
+            id={product.isFavorite !== null ? product.isFavorite : isFavoriteProduct}            
           >
-            {product.isFavorite ? <FavoriteIcon /> : <FavoriteBorderIcon size="small" sx={{ color: '#ee4372', fontSize: '18px' }} />}
+            {isFavoriteProduct !== 0 ? <FavoriteIcon size="small" sx={{ color: '#ee4372', fontSize: '18px' }} onClick={(event) => {handleAddFavProduct(product?.Productid ? product.Productid : product?.Id, event, 'Remove'); }} /> : <FavoriteBorderIcon onClick={(event) => {handleAddFavProduct(product?.Productid ? product.Productid : product?.Id, event, 'Add'); }} size="small" sx={{ color: '#ee4372', fontSize: '18px' }} />}
           </Box>
         </Box>
       )}
@@ -177,51 +196,51 @@ const ProductCard = ({ product, isLoading }) => {
                 </Typography>
               )}
             </Box>
-            <Button 
+            <Button
               variant="outlined"
-              sx={{ 
+              sx={{
                 width: "100%",
-                display: quantity !== 0 ? 'flex' : 'none', 
-                alignItems: 'center', 
+                display: quantity !== 0 ? 'flex' : 'none',
+                alignItems: 'center',
                 justifyContent: 'space-between',
-                marginTop: '10px',             
-                border: '1px solid #3BB77E', 
+                marginTop: '10px',
+                border: '1px solid #3BB77E',
                 fontFamily: 'inherit',
                 padding: { xs: '6px 0px', sm: '7px 0px', md: '7.2px 0px' },
-                '&:hover':{
+                '&:hover': {
                   background: 'none',
                   border: '1px solid #3BB77E',
                   color: '#3BB77E'
-                } 
+                }
               }}
             >
-              <Typography 
-                variant="body2" 
-                onClick={(e) => { handleDecrement(e); }} 
+              <Typography
+                variant="body2"
+                onClick={(e) => { handleDecrement(e); }}
                 disabled={quantity === 0}
-                sx={{    
-                  width: '25%',          
-                  color: '#3BB77E', 
+                sx={{
+                  width: '25%',
+                  color: '#3BB77E',
                   fontFamily: 'inherit',
                 }}
               >
                 -
               </Typography>
-              <Typography 
+              <Typography
                 variant="body2"
-                sx={{ 
-                  width: '50%',     
+                sx={{
+                  width: '50%',
                   color: '#3BB77E',
                   fontFamily: 'inherit',
                 }}
               >
                 {quantity}
               </Typography>
-              <Typography 
-                variant="body2" 
-                onClick={(e) => { handleIncrement(e); }} 
-                sx={{ 
-                  width: '25%',     
+              <Typography
+                variant="body2"
+                onClick={(e) => { handleIncrement(e); }}
+                sx={{
+                  width: '25%',
                   color: '#3BB77E',
                   fontFamily: 'inherit',
                 }}
@@ -232,38 +251,38 @@ const ProductCard = ({ product, isLoading }) => {
             {product.InStock !== 0 ?
               <Button
                 variant="outlined"
-                sx={{ 
-                  display: quantity !== 0 ? 'none' : 'block', 
-                  marginTop: '10px', 
-                  width: '100%', 
-                  textTransform: 'none', 
+                sx={{
+                  display: quantity !== 0 ? 'none' : 'block',
+                  marginTop: '10px',
+                  width: '100%',
+                  textTransform: 'none',
                   fontFamily: 'inherit',
-                  fontWeight: 600,  
-                  border: '1px solid #3BB77E', 
+                  fontWeight: 600,
+                  border: '1px solid #3BB77E',
                   backgroundColor: '#3bb77e1c',
                   color: '#3BB77E',
-                  '&:hover':{
+                  '&:hover': {
                     background: 'none',
                     border: '1px solid #3BB77E',
                     color: '#3BB77E'
-                  } 
+                  }
                 }}
                 id={product.Id}
-                onClick={(e) => { handleIncrement(e); }} 
+                onClick={(e) => { handleIncrement(e); }}
               >
                 Add to Cart
               </Button>
-            : 
+              :
               <Button
                 variant="outlined"
-                sx={{ 
-                  marginTop: '10px', 
-                  width: '100%', 
-                  textTransform: 'none', 
-                  fontFamily: 'inherit',  
-                  border: '1px solid #dc3545', 
+                sx={{
+                  marginTop: '10px',
+                  width: '100%',
+                  textTransform: 'none',
+                  fontFamily: 'inherit',
+                  border: '1px solid #dc3545',
                   backgroundColor: '#dc3545',
-                  color: '#FFF',          
+                  color: '#FFF',
                 }}
                 id={product.Id}
               >

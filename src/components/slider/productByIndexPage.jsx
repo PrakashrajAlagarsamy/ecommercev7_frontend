@@ -126,8 +126,10 @@ const ProductByIndexPage = () => {
               </Slider>
 
               {/* Render ImageCategorySlider if category images exist */}
-              {categoryLists && categoryLists.length > 0 && (
-                <ImageCategorySlider CategoryImageLists={categoryImages} />
+              {categoryLists && categoryLists.length > 0 && categoryImages.length !== 0 && (
+                <Box sx={{ py: 3 }}>
+                    <ImageCategorySlider CategoryImageLists={categoryImages} />
+                </Box>                
               )}
             </Box>
           );
