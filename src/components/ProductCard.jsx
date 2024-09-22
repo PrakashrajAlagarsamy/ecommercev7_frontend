@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Typography, Button, Card, CardContent, CardMedia, Skeleton } from '@mui/material';
@@ -6,12 +7,15 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { ImagePathRoutes } from '../routes/ImagePathRoutes';
 import { ServerURL } from '../server/serverUrl';
 import { API_InsertMyFavoriteProducts } from '../services/userServices';
+import { useCart } from '../context/CartContext';
 
 const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => {
+  const { cartItems, setCartItems } = useCart();
   const [quantity, setQuantity] = useState(0);
   const [totalPrice, setTotalPrice] = useState(product?.Price || 0);
   const [productId, setProductId] = useState(0);
   const [productValue, setProductValue] = useState(0);
+  
   let [isFavoriteProduct, setIsFavoriteProduct] = useState(0);
 
   const navigate = useNavigate();
@@ -25,36 +29,137 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => 
   };
 
 
+  // const handleIncrement = (event) => {
+  //   event.stopPropagation();
+  //   setQuantity((prevQuantity) => {
+  //     const newQuantity = prevQuantity + 1;
+  //     if (newQuantity > 1) {
+  //       setTotalPrice((prevPrice) => prevPrice + product.Price);
+  //     }
+  //     return newQuantity;
+  //   });
+
+
+  //   const existingProduct = cartItems.find((item) => item.id === product?.Productid ? product.Productid : product?.Id);
+
+  //   if (existingProduct) {
+  //     // If the product exists, update the item count
+  //     setCartItems((prevItems) =>
+  //       prevItems.map((item) =>
+  //         item.id === product.id
+  //           ? { ...item, item: item.item + 1 } // Increment the 'item' count
+  //           : item
+  //       )
+  //     );
+  //   } else {
+  //     // If it doesn't exist, add it to the cart with an initial 'item' count of 1
+  //     setCartItems([...cartItems, { ...product, item: 1 }]);
+  //   }
+
+  //   console.log("cartItems:", existingProduct);
+  // };
+
+
   const handleIncrement = (event) => {
     event.stopPropagation();
+    let cartItemsStorage = JSON.parse(localStorage.getItem('cartItems'));
+
     setQuantity((prevQuantity) => {
       const newQuantity = prevQuantity + 1;
-      if (newQuantity > 1) {
-        setTotalPrice((prevPrice) => prevPrice + product.Price);
-      }
+      setCartItems((prevCartItems) => {
+        const existingProductIndex = prevCartItems.findIndex(
+          (item) => item.Id === product?.Id
+        );
+
+        let updatedCartItems;
+
+        if (existingProductIndex >= 0) {
+          updatedCartItems = prevCartItems.map((item, index) =>
+            index === existingProductIndex
+              ? { ...item, item: item.item + 1, totalMRP: product.MRP * (item.item + 1), totalPrice: product.Price * (item.item + 1) }
+              : item
+          );
+        } else {
+          updatedCartItems = [...prevCartItems, { ...product, item: 1, totalMRP: product.MRP, totalPrice: product.Price }];
+        }
+
+        if (newQuantity > 1) {
+          setTotalPrice((prevPrice) => prevPrice + product.Price);
+        }
+        
+        localStorage.setItem("cartItems", JSON.stringify(updatedCartItems));
+        return updatedCartItems;
+      });
       return newQuantity;
     });
   };
 
   const handleDecrement = (event) => {
     event.stopPropagation();
+
+    // Decrement quantity and update total price
     setQuantity((prevQuantity) => {
       if (prevQuantity > 1) {
         setTotalPrice((prevPrice) => prevPrice - product.Price);
+        return prevQuantity - 1;
       }
-      return prevQuantity > 0 ? prevQuantity - 1 : 0;
+      return 0; // Set quantity to 0 if it goes below 1
     });
+
+    if (quantity > 1) {
+      // Update cartItems by checking if the product exists
+      setCartItems((prevCartItems) => {
+        const existingProductIndex = prevCartItems.findIndex(
+          (item) => item.Id === product?.Id
+        );
+
+        let updatedCartItems = [];
+
+        if (existingProductIndex >= 0) {
+          const updatedQuantity = prevCartItems[existingProductIndex].item - 1;
+
+          if (updatedQuantity > 0) {
+            // If the product exists and quantity is greater than 0, decrement its quantity
+            updatedCartItems = prevCartItems.map((item, index) =>
+              index === existingProductIndex
+                ? { ...item, item: updatedQuantity, totalMRP: product.MRP * updatedQuantity, totalPrice: product.Price * updatedQuantity } // Decrement item count
+                : item
+            );
+          } else {
+            // If the quantity is 0, remove the item from the cart
+            updatedCartItems = prevCartItems.filter((item, index) => index !== existingProductIndex);
+          }
+        } else {
+          updatedCartItems = prevCartItems; // Return the cart as-is if the product wasn't found
+        }       
+
+        // Store the updated cart in localStorage
+        localStorage.setItem("cartItems", JSON.stringify(updatedCartItems));
+
+        return updatedCartItems;
+      });
+    }
   };
+
+
+  // const handleDecrement = (event) => {
+  //   event.stopPropagation();
+  //   setQuantity((prevQuantity) => {
+  //     if (prevQuantity > 1) {
+  //       setTotalPrice((prevPrice) => prevPrice - product.Price);
+  //     }
+  //     return prevQuantity > 0 ? prevQuantity - 1 : 0;
+  //   });
+  // };
 
   //Add fav product
   const handleAddFavProduct = async (ProductId, event, status) => {
     event.stopPropagation();
     let userId = localStorage.getItem("userId");
-    userId = userId ? decodeURIComponent(userId) : null;
-    console.log("Product added successfully:", status);
+    userId = Number(atob(userId));
     try {
-      const response = await API_InsertMyFavoriteProducts(ProductId, Number(atob(userId)));
-      if (response && response.ok) {
+      const response = await API_InsertMyFavoriteProducts(ProductId, userId);
+      if (response.ok) {
         setIsFavoriteProduct(status === 'Add' ? isFavoriteProduct = 1 : isFavoriteProduct = 0);
         console.log("Product added successfully:", response);
       }
@@ -132,9 +237,9 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => 
               right: '8px',
               color: product.isFavorite !== 0 ? '#3BB77E' : '#FFF',
             }}
-            id={product.isFavorite !== null ? product.isFavorite : isFavoriteProduct}            
+            id={product.isFavorite !== null ? product.isFavorite : isFavoriteProduct}
           >
-            {isFavoriteProduct !== 0 ? <FavoriteIcon size="small" sx={{ color: '#ee4372', fontSize: '18px' }} onClick={(event) => {handleAddFavProduct(product?.Productid ? product.Productid : product?.Id, event, 'Remove'); }} /> : <FavoriteBorderIcon onClick={(event) => {handleAddFavProduct(product?.Productid ? product.Productid : product?.Id, event, 'Add'); }} size="small" sx={{ color: '#ee4372', fontSize: '18px' }} />}
+            {isFavoriteProduct !== 0 ? <FavoriteIcon size="small" sx={{ color: '#ee4372', fontSize: '18px' }} onClick={(event) => { handleAddFavProduct(product?.Productid ? product.Productid : product?.Id, event, 'Remove'); }} /> : <FavoriteBorderIcon onClick={(event) => { handleAddFavProduct(product?.Productid ? product.Productid : product?.Id, event, 'Add'); }} size="small" sx={{ color: '#ee4372', fontSize: '18px' }} />}
           </Box>
         </Box>
       )}
@@ -238,6 +343,9 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => 
               </Typography>
               <Typography
                 variant="body2"
+                id={product?.Productid ? product.Productid : product?.Id}
+                name={product.Description}
+                value={product?.Productid ? product.Productid : product?.Id}
                 onClick={(e) => { handleIncrement(e); }}
                 sx={{
                   width: '25%',

@@ -1,10 +1,10 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
-import { Container, Grid, Box, Typography, Button, IconButton, Divider } from '@mui/material';
+import { Grid, Box, Typography, Button, IconButton, Divider } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { Edit, Delete } from '@mui/icons-material';
 import AddAddressModal from '../modalPopup/addAddressModal';
 import ConfirmationPopup from '../modalPopup/confirmationPopup';
-import MyAccountSidebar from './MyAccountSidebar';
 import { API_FetchCustomerAddress } from '../../services/userServices';
 
 const Address = () => {
@@ -57,7 +57,6 @@ const Address = () => {
   const FetchCustomerAddress = async (userId) => {
     try {
       const address = await API_FetchCustomerAddress(userId);
-      console.log("Fetched address:", address); // Debugging log
       setcustomerDetails(address);
       objlist = {
         ParentId: address[0].Id,
@@ -78,6 +77,7 @@ const Address = () => {
     if (CId) {
       FetchCustomerAddress(atob(CId));
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

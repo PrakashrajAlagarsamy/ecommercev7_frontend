@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable jsx-a11y/alt-text */
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -24,16 +25,6 @@ import { ImagePathRoutes } from '../routes/ImagePathRoutes';
 import { styled } from '@mui/system';
 
 const drawerWidth = 240;
-
-const categories = [
-  { label: 'All', icon: 'path/to/icon1.png' }, // Add appropriate icon paths or components
-  { label: 'Fresh Fruits', icon: 'path/to/icon2.png' },
-  { label: 'Fresh Vegetables', icon: 'path/to/icon3.png' },
-  { label: 'Ganpathi Essential', icon: 'path/to/icon4.png' },
-  { label: 'Leafy, Herbs &...', icon: 'path/to/icon5.png' },
-  { label: 'Exotics & Premium', icon: 'path/to/icon6.png' },
-];
-
 
 const ListItemStyled = styled(ListItem)(({ theme, selected }) => ({
   display: 'flex',
@@ -71,7 +62,6 @@ const ProductList = () => {
   const [Multipleitems, setMultipleitems] = useState(1);
   const [Startindex, setStartindex] = useState(0);
   const [PageCount, setPageCount] = useState(1);
-  const [drawerOpen, setDrawerOpen] = useState(false);
   const [productFilterName, setProductFilterName] = useState('All products');
 
   const handleSubCategoryClick = (subCategoryName, SubCategoryId) => {
@@ -178,6 +168,7 @@ const ProductList = () => {
       GetProductLists(atob(encodedId), Multipleitems, Startindex, PageCount);
     }
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.search, categoryId, categoryName, Multipleitems, Startindex, PageCount]);
 
   // Function to filter products based on the selected option

@@ -1,7 +1,6 @@
 import React from 'react';
 import { Box, Typography, Button } from '@mui/material';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer'; // Icon for the tag
-import { styled } from '@mui/system';
 
 const DeliveryBanner = () => {
   return (
@@ -17,7 +16,7 @@ const DeliveryBanner = () => {
       }}
     >      
       <Box sx={{ display: 'flex', alignItems: 'center', color: '#3BB77E' }}>
-        <LocalOfferIcon size="small" sx={{ marginRight: 1, fontSize: '16px' }} />
+        <LocalOfferIcon size="small" sx={{ marginRight: 1, fontSize: '14px' }} />
         <Typography variant="span" sx={{ fontWeight: 'bold', marginRight: 1, fontSize: '12px' }}>
           ₹62.51 saved!
         </Typography>

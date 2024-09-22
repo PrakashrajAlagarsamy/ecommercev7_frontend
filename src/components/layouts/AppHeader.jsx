@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import {Link} from 'react-router-dom';
 import { AppBar, Toolbar, Grid, IconButton, InputAdornment, TextField, Button, Typography, Drawer, List, ListItem, ListItemText } from '@mui/material';
@@ -100,7 +101,7 @@ export default function AppHeader() {
           borderBottom: isScrolled ? 'none' : '1px solid #ddd',
           backgroundColor: isScrolled ? '#FFF' : '#FFF',
           transition: 'all 1.5s ease',
-          zIndex: 9999,
+          zIndex: 9,
           top: 0, 
           '@media (max-width: 600px)': {
             position: 'relative', 

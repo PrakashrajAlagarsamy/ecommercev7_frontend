@@ -1,14 +1,102 @@
-import React from 'react';
+/* eslint-disable no-unused-vars */
+import React, {useState} from 'react';
 import { Box, Typography, Button, IconButton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
+import { ImagePathRoutes } from '../../routes/ImagePathRoutes';
+import { useCart } from '../../context/CartContext';
 
 const ProductItemCard = ({ product }) => {
+  const { cartItems, setCartItems } = useCart();
+  const [quantity, setQuantity] = useState(0);
+  const [totalPrice, setTotalPrice] = useState(product?.Price || 0);
+
+  const handleIncrement = (event) => {
+    event.stopPropagation();
+
+    setQuantity((prevQuantity) => {
+      const newQuantity = prevQuantity + 1;
+      setCartItems((prevCartItems) => {
+        const existingProductIndex = prevCartItems.findIndex(
+          (item) => item.Id === product?.Id
+        );
+
+        let updatedCartItems;
+
+        if (existingProductIndex >= 0) {
+          updatedCartItems = prevCartItems.map((item, index) =>
+            index === existingProductIndex
+              ? { ...item, item: item.item + 1, totalMRP: product.MRP * (item.item + 1), totalPrice: product.Price * (item.item + 1) }
+              : item
+          );
+        } else {
+          updatedCartItems = [...prevCartItems, { ...product, item: 1, totalMRP: product.MRP, totalPrice: product.Price }];
+        }
+
+        if (newQuantity > 1) {
+          setTotalPrice((prevPrice) => prevPrice + product.Price);
+        }
+        
+        localStorage.setItem("cartItems", JSON.stringify(updatedCartItems));
+        return updatedCartItems;
+      });
+      return newQuantity;
+    });
+  };
+
+  const handleDecrement = (event) => {
+    event.stopPropagation();
+
+    // Decrement quantity and update total price
+    setQuantity((prevQuantity) => {
+      if (prevQuantity > 1) {
+        setTotalPrice((prevPrice) => prevPrice - product.Price);
+        return prevQuantity - 1;
+      }
+      return 0; // Set quantity to 0 if it goes below 1
+    });
+
+    if (quantity > 1) {
+      // Update cartItems by checking if the product exists
+      setCartItems((prevCartItems) => {
+        const existingProductIndex = prevCartItems.findIndex(
+          (item) => item.Id === product?.Id
+        );
+
+        let updatedCartItems = [];
+
+        if (existingProductIndex >= 0) {
+          const updatedQuantity = prevCartItems[existingProductIndex].item - 1;
+
+          if (updatedQuantity > 0) {
+            // If the product exists and quantity is greater than 0, decrement its quantity
+            updatedCartItems = prevCartItems.map((item, index) =>
+              index === existingProductIndex
+                ? { ...item, item: updatedQuantity, totalMRP: product.MRP * updatedQuantity, totalPrice: product.Price * updatedQuantity } // Decrement item count
+                : item
+            );
+          } else {
+            // If the quantity is 0, remove the item from the cart
+            updatedCartItems = prevCartItems.filter((item, index) => index !== existingProductIndex);
+          }
+        } else {
+          updatedCartItems = prevCartItems; // Return the cart as-is if the product wasn't found
+        }       
+
+        // Store the updated cart in localStorage
+        localStorage.setItem("cartItems", JSON.stringify(updatedCartItems));
+
+        return updatedCartItems;
+      });
+    }
+  };
   return (
     <Box
       sx={{
         display: 'flex',
         alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: '5px',
         padding: '10px 0px',
         borderBottom: '1px solid #e0e0e0',
         backgroundColor: '#FFF',
@@ -17,13 +105,13 @@ const ProductItemCard = ({ product }) => {
       <Box
         component="img"
         sx={{
-          width: 65,
-          height: 65,
+          width: 60,
+          height: 60,
           borderRadius: 1,
-          marginRight: 1.5,
+          marginRight: 0,
         }}
-        src={product.image}
-        alt={product.name}
+        src={ImagePathRoutes.ProductImagePath + product.Img0}
+        alt={product.Description}
       />
       <Box>
         <Typography variant="p" 
@@ -39,42 +127,46 @@ const ProductItemCard = ({ product }) => {
             fontFamily: 'inherit',
             minHeight: '20px', 
             width: '150px',
-            marginRight: 1.5,
+            marginRight: 0,
           }}
         >
-          {product.name}
+          {product.Description}
         </Typography>
         <Typography variant="p" color="textSecondary"
         sx={{
             fontSize: '10px',            
           }}
         >
-          {product.details}
+          {product.UnitType}
         </Typography>
       </Box>
       <Button 
         variant="outlined"
           sx={{ 
-            width: "50%",
+            width: "20%",
             display: 'flex', 
             alignItems: 'center', 
             justifyContent: 'space-between',
-            background: '#3BB77E',
+            background: '#3bb77e1c',
+            border: '1px solid #3BB77E',
+            color: '#3BB77E',
             fontFamily: 'inherit',
-            marginRight: 1.5,
+            marginRight: 0,
             padding: { xs: '4px 0px', sm: '5px 0px', md: '5px 0px' },
             '&:hover':{
-              background: '#3BB77E',
+              background: '#3bb77e1c',
               border: '1px solid #3BB77E',
-              color: '#FFF'
+              color: '#3BB77E'
             } 
           }}
         >
           <Typography 
             variant="body2" 
+            onClick={(e) => { handleDecrement(e); }}
+            disabled={quantity === 0}
             sx={{    
               width: '25%',          
-              color: '#FFF', 
+              color: '#3BB77E', 
               fontFamily: 'inherit',
             }}
           >
@@ -84,17 +176,21 @@ const ProductItemCard = ({ product }) => {
             variant="body2"
             sx={{ 
               width: '50%',     
-              color: '#FFF',
+              color: '#3BB77E',
               fontFamily: 'inherit',
             }}
           >
-            1
+            {product.item}
           </Typography>
           <Typography 
             variant="body2" 
+            id={product?.Productid ? product.Productid : product?.Id}
+            name={product.Description}
+            value={product?.Productid ? product.Productid : product?.Id}
+            onClick={(e) => { handleIncrement(e); }}
             sx={{ 
               width: '25%',     
-              color: '#FFF',
+              color: '#3BB77E',
               fontFamily: 'inherit',
             }}
           >
@@ -103,13 +199,13 @@ const ProductItemCard = ({ product }) => {
         </Button>
       <Box sx={{ textAlign: 'right' }}>
         <Typography variant="p" sx={{ fontWeight: 500, fontSize: '14px' }}>
-          ₹{product.price}
+          ₹{product.totalPrice}
         </Typography>
         <Typography
           variant="body2"
           sx={{ textDecoration: 'line-through', color: '#9e9e9e', fontSize: '12px' }}
         >
-          ₹{product.originalPrice}
+          ₹{product.MRP}
         </Typography>
       </Box>
     </Box>
