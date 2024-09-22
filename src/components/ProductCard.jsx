@@ -56,7 +56,6 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => 
   //     setCartItems([...cartItems, { ...product, item: 1 }]);
   //   }
 
-  //   console.log("cartItems:", existingProduct);
   // };
 
 
@@ -96,50 +95,55 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => 
 
   const handleDecrement = (event) => {
     event.stopPropagation();
-
-    // Decrement quantity and update total price
-    setQuantity((prevQuantity) => {
+  
+    // Update cartItems by checking if the product exists
+    setCartItems((prevCartItems) => {
+      const existingProductIndex = prevCartItems.findIndex(
+        (item) => item.Id === product?.Id
+      );
+  
+      let updatedCartItems = [];
+  
+      if (existingProductIndex >= 0) {
+        const updatedQuantity = prevCartItems[existingProductIndex].item - 1;
+  
+        if (updatedQuantity > 0) {
+          // If the product exists and quantity is greater than 0, decrement its quantity
+          updatedCartItems = prevCartItems.map((item, index) =>
+            index === existingProductIndex
+              ? {
+                  ...item,
+                  item: updatedQuantity,
+                  totalMRP: product.MRP * updatedQuantity,
+                  totalPrice: product.Price * updatedQuantity,
+                } // Decrement item count
+              : item
+          );
+        } else {
+          // If the quantity is 0, remove the item from the cart
+          updatedCartItems = prevCartItems.filter(
+            (item, index) => index !== existingProductIndex
+          );
+        }
+      } else {
+        updatedCartItems = prevCartItems; // Return the cart as-is if the product wasn't found
+      }
+  
+      // Store the updated cart in localStorage
+      localStorage.setItem("cartItems", JSON.stringify(updatedCartItems));
+  
+      return updatedCartItems;
+    });
+  
+    //Decrement quantity state only after checking cart items
+      setQuantity((prevQuantity) => {
       if (prevQuantity > 1) {
         setTotalPrice((prevPrice) => prevPrice - product.Price);
-        return prevQuantity - 1;
       }
-      return 0; // Set quantity to 0 if it goes below 1
+      return prevQuantity > 0 ? prevQuantity - 1 : 0;
     });
-
-    if (quantity > 1) {
-      // Update cartItems by checking if the product exists
-      setCartItems((prevCartItems) => {
-        const existingProductIndex = prevCartItems.findIndex(
-          (item) => item.Id === product?.Id
-        );
-
-        let updatedCartItems = [];
-
-        if (existingProductIndex >= 0) {
-          const updatedQuantity = prevCartItems[existingProductIndex].item - 1;
-
-          if (updatedQuantity > 0) {
-            // If the product exists and quantity is greater than 0, decrement its quantity
-            updatedCartItems = prevCartItems.map((item, index) =>
-              index === existingProductIndex
-                ? { ...item, item: updatedQuantity, totalMRP: product.MRP * updatedQuantity, totalPrice: product.Price * updatedQuantity } // Decrement item count
-                : item
-            );
-          } else {
-            // If the quantity is 0, remove the item from the cart
-            updatedCartItems = prevCartItems.filter((item, index) => index !== existingProductIndex);
-          }
-        } else {
-          updatedCartItems = prevCartItems; // Return the cart as-is if the product wasn't found
-        }       
-
-        // Store the updated cart in localStorage
-        localStorage.setItem("cartItems", JSON.stringify(updatedCartItems));
-
-        return updatedCartItems;
-      });
-    }
   };
+  
 
 
   // const handleDecrement = (event) => {
