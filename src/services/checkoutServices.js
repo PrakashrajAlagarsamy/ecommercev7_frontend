@@ -11,10 +11,14 @@ export const API_InsertSaleOrderSave = async (objlist) => {
           objData: ''
         },
         body: JSON.stringify(objlist)
-      });
-      if (!response.ok) {
-        throw new Error('Network response was not ok.');
-      }    
+      });      
+      if (response.ok) {
+        const data = await response.json();
+        return data; 
+      } else {
+        console.error("Error checking existing user");
+        return null;
+      }
     } catch (error) {
       console.error('Failed to insert favorite product list:', error);
       throw error; // Re-throw so the calling function can handle it

@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Modal, Container, TextField, Button, Typography, Grid, Box, RadioGroup, FormControlLabel, Radio, Divider } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { useCart } from '../context/CartContext';
@@ -22,14 +22,15 @@ const style = {
 };
 
 export default function ProductCheckout() {
-    const { cartItems } = useCart();
+    const { cartItems, setCartItems } = useCart();
     const location = useLocation();
+    const navigate = useNavigate();
     const [MRPAmount, setMRPAmount] = React.useState(0);
     const [SavingsAmount, setSavingsAmount] = React.useState(0);
     const [TotalPrice, setTotalPrice] = React.useState(0);
-    const [ExtraDiscount, setExtraDiscount] = React.useState(10);
-    const [HandlingCharge, setHandlingCharge] = React.useState(5);
-    const [DeliveryFee, setDeliveryFee] = React.useState(25.77);
+    const [ExtraDiscount, setExtraDiscount] = React.useState(0);
+    const [HandlingCharge, setHandlingCharge] = React.useState(0);
+    const [DeliveryFee, setDeliveryFee] = React.useState(0);
     const [walletAmount, setwalletAmount] = React.useState(0);
     const [DeliveryTimeList, setDeliveryTimeList] = React.useState([]);
     const [DateValue, setDateValue] = React.useState(null);
@@ -183,7 +184,6 @@ export default function ProductCheckout() {
                     // PaymentId: PaymentId
                 },
             ];
-            console.log('master', master);
             InsertSaleOrderSave(master);
         }
     };
@@ -192,10 +192,15 @@ export default function ProductCheckout() {
     const InsertSaleOrderSave = async (master) => {
         try {
             const response = await API_InsertSaleOrderSave(master);
-            if (response.ok) {
-                console.log('Your order saved');
-            }
+            console.log("OrderSavedData", response);
             setLoading(false);
+            localStorage.removeItem('cartItems');
+            setCartItems([]);
+            setInfoStatus('Your order has been placed');
+            handleAlertOpen(true);
+            const timer = setTimeout(() => {
+                navigate('/');  
+            }, 5000);
         } catch (error) {
             console.error("Error inserting order details:", error);
             setLoading(false);

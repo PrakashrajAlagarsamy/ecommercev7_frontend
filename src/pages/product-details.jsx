@@ -15,15 +15,15 @@ import BreadCrumbs from '../components/BreadCrumbs';
 
 
 const ProductDetails = () => {
+    const location = useLocation();
+    const navigate = useNavigate();
     const [productId, setProductId] = useState(0);
     const [quantity, setQuantity] = useState(0);
     const [totalPrice, setTotalPrice] = useState(0);
     const [productDetails, setProductDetails] = useState({});
     const [imageLists, setImageLists] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [backdropOpen, setBackdropOpen] = useState(false);
-    const location = useLocation();
-    const navigate = useNavigate();
+    const [backdropOpen, setBackdropOpen] = useState(false);    
 
     const handleIncrement = (event) => {
         event.stopPropagation();

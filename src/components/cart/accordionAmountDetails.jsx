@@ -51,9 +51,9 @@ export default function AccordionAmountDetails({ useWallet, walletAmount }) {
   const [MRPAmount, setMRPAmount] = React.useState(0);
   const [SavingsAmount, setSavingsAmount] = React.useState(0);
   const [TotalPrice, setTotalPrice] = React.useState(0);
-  const [ExtraDiscount, setExtraDiscount] = React.useState(10);
-  const [HandlingCharge, setHandlingCharge] = React.useState(5);
-  const [DeliveryFee, setDeliveryFee] = React.useState(25.77);
+  const [ExtraDiscount, setExtraDiscount] = React.useState(0);
+  const [HandlingCharge, setHandlingCharge] = React.useState(0);
+  const [DeliveryFee, setDeliveryFee] = React.useState(0);
 
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
