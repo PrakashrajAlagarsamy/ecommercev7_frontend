@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable jsx-a11y/alt-text */
 import * as React from 'react';
 import { styled, useTheme } from '@mui/material/styles';
@@ -11,6 +12,9 @@ import Drawer from '@mui/material/Drawer';
 import Typography from '@mui/material/Typography';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogTitle from '@mui/material/DialogTitle';
 import DeliveryBanner from './deliveryBanner';
 import ProductItemCard from './productItemCard';
 import AccordionAmountDetails from './accordionAmountDetails';
@@ -18,7 +22,8 @@ import CouponModal from './couponsModal';
 import emptyCartImage from '../../assets/empty-cart.png';
 import addressHomeIcon from '../../assets/address_home_icon.webp';
 import AddressChangeModal from './addressChangeModal';
-import { useCart } from '../../context/CartContext'; 
+import { useCart } from '../../context/CartContext';
+import { ServerURL } from '../../server/serverUrl';
 
 const drawerWidth = 380;
 
@@ -53,9 +58,12 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
 
 export default function AppCart({ CartDrawerOpen, handleAuthDrawerToggle }) {
   const theme = useTheme();
-  const { cartItems } = useCart();
+  const { cartItems, setCartItems } = useCart();
   const [ModalOpen, setModalOpen] = React.useState(false);
+  const [ClearCartOpen, setClearCartOpen] = React.useState(false);
   const [selectedAddress, setSelectedAddress] = React.useState(null);
+  const [WalletAmount, setWalletAmount] = React.useState(75);
+  const [useWallet, setUseWallet] = React.useState(false);
 
   const handleChangeAddressOpen = () => setModalOpen(true);
   const handleChangeAddressClose = () => setModalOpen(false);
@@ -66,8 +74,45 @@ export default function AppCart({ CartDrawerOpen, handleAuthDrawerToggle }) {
     setModalOpen(false);
   };
 
+  //Clear cart items
+  const handleClearCartItemsOpen = () => {
+    setClearCartOpen(true);
+  };
+
+  const handleClearCartItemsClose = () => {
+    setClearCartOpen(false);
+  };
+
+  const handleClearCartItems = () => {
+    localStorage.removeItem('cartItems');
+    setCartItems([]);
+    setClearCartOpen(false);
+  };
+
+  // Handle wallet checkbox change
+  const handleWalletCheckboxChange = (event) => {
+    setUseWallet(event.target.checked);
+  };
+
   return (
     <>
+      <Dialog
+        open={ClearCartOpen}
+        onClose={handleClearCartItemsClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Are you sure you want to clear cart items?"}
+        </DialogTitle>
+        <DialogActions sx={{ gap: '20px' }}>
+          <Button variant='contained' size='small' sx={{ background: '#7575751a', color: '#000', boxShadow: 'none', '&:hover': { background: '#7575751a', color: '#000', boxShadow: 'none' } }} onClick={handleClearCartItemsClose} autoFocus>Cancel</Button>
+          <Button variant='contained' size='small' sx={{ background: '#ef4372', color: '#FFF', boxShadow: 'none', '&:hover': { background: '#ef4372', color: '#FFF', boxShadow: 'none' } }} onClick={handleClearCartItems}>
+            Clear all
+          </Button>
+        </DialogActions>
+      </Dialog>
+
       <AddressChangeModal ModalOpen={ModalOpen} handleChangeAddressClose={handleChangeAddressClose} handleAddressSelect={handleAddressSelect} />
       <Drawer
         sx={{
@@ -90,7 +135,7 @@ export default function AppCart({ CartDrawerOpen, handleAuthDrawerToggle }) {
               {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
               <Typography component={"p"} fontSize={"16"} fontWeight={600} sx={{ textTransform: "capitalize" }}>Cart</Typography>
             </Button>
-            <Button sx={{ color: "red", textTransform: "capitalize" }}>
+            <Button onClick={handleClearCartItemsOpen} sx={{ color: "red", textTransform: "capitalize" }}>
               clear cart
             </Button>
           </Box>
@@ -127,79 +172,88 @@ export default function AppCart({ CartDrawerOpen, handleAuthDrawerToggle }) {
           {cartItems.length !== 0 && (
             <>
               <CouponModal />
-              <AccordionAmountDetails />              
+              <AccordionAmountDetails useWallet={useWallet} walletAmount={WalletAmount} />
             </>
           )}
         </Main>
         {cartItems.length !== 0 && (
-            <>              
-              <Box sx={{ width: '100%', display: 'block', position: 'sticky', bottom: '0', background: '#FFF', py: 3, px: 1.5, boxShadow: '0px 0px 1px #0000' }}>
-                <Box>
-                  <Grid container>
-                    <Grid item xs={9} sx={{ justifyContent: 'space-between' }}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
-                        <img src={addressHomeIcon} style={{ width: '30px', height: '30px' }} />
-                        <Typography variant="body1" ml={1}>
-                          {selectedAddress
-                            ? <Typography
-                              sx={{
-                                fontSize: '14px',
-                                fontWeight: '500',
-                                overflow: 'hidden',
-                                display: '-webkit-box',
-                                WebkitLineClamp: 4,
-                                WebkitBoxOrient: 'vertical',
-                                textOverflow: 'ellipsis',
-                                lineHeight: '20px',
-                                fontFamily: 'inherit',
-                                minHeight: '25px',
-                                width: '100%',
-                                marginRight: 0,
-                              }}
-                            >{selectedAddress.Address1}, {selectedAddress.City} - {selectedAddress.Pincode}</Typography>
-                            : <Typography component={'span'} color='error'>No address selected</Typography>}
-                        </Typography>
-                      </Box>
-                    </Grid>
-                    <Grid item xs={3} underline="always" sx={{ color: 'red', textAlign: 'center', fontSize: '16px' }}>
-                      <Button onClick={handleChangeAddressOpen} sx={{ color: 'red' }} >Change</Button>
-                    </Grid>
+          <>
+            <Box sx={{ width: '100%', display: 'block', position: 'sticky', bottom: '0', background: '#FFF', py: 3, px: 1.5, boxShadow: '0px 0px 1px #0000' }}>
+              <Box>
+                <Grid container>
+                  <Grid item xs={9} sx={{ justifyContent: 'space-between' }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
+                      <img src={addressHomeIcon} style={{ width: '30px', height: '30px' }} />
+                      <Typography variant="body1" ml={1}>
+                        {selectedAddress
+                          ? <Typography
+                            sx={{
+                              fontSize: '14px',
+                              fontWeight: '500',
+                              overflow: 'hidden',
+                              display: '-webkit-box',
+                              WebkitLineClamp: 4,
+                              WebkitBoxOrient: 'vertical',
+                              textOverflow: 'ellipsis',
+                              lineHeight: '20px',
+                              fontFamily: 'inherit',
+                              minHeight: '25px',
+                              width: '100%',
+                              marginRight: 0,
+                            }}
+                          >{selectedAddress.Address1}, {selectedAddress.City} - {selectedAddress.Pincode}</Typography>
+                          : <Typography component={'span'} color='error'>No address selected</Typography>}
+                      </Typography>
+                    </Box>
                   </Grid>
-                </Box>
-                <Box display="flex" alignItems="center" justifyContent="space-between" mt={1}>
-                  <FormGroup>
-                    <FormControlLabel sx={{ fontSize: '14px', p: 0 }} control={<Checkbox size='small' />} label="Pay ₹75 from Wallet" />
-                  </FormGroup>
-                </Box>
-                <Box display="flex" justifyContent="space-between" alignItems="center" mt={2}>
-                  <Button
-                    size='small'
-                    variant='contained'
-                    sx={{
-                      width: '100%',
-                      borderRadius: '5px',
-                      padding: '8px 20px',
-                      textTransform: 'none',
-                      fontWeight: 'bold',
-                      fontSize: '14px',
-                      background: '#3bb77e1c',
-                      border: '1px solid #3BB77E',
-                      color: '#3BB77E',
-                      boxShadow: 'none',
-                      '&:hover': {
-                        background: '#3BB77E',
-                        border: '1px solid #3BB77E',
-                        color: '#FFF',
-                        boxShadow: 'none',
-                      }
-                    }}
-                  >
-                    Proceed to Checkout
-                  </Button>
-                </Box>
+                  <Grid item xs={3} underline="always" sx={{ color: 'red', textAlign: 'center', fontSize: '16px' }}>
+                    <Button onClick={handleChangeAddressOpen} sx={{ color: 'red' }} >Change</Button>
+                  </Grid>
+                </Grid>
               </Box>
-            </>
-          )}
+              <Box display="flex" alignItems="center" justifyContent="space-between" mt={1}>
+                <FormGroup>
+                  <FormControlLabel
+                    sx={{ fontSize: '14px', p: 0 }}
+                    control={<Checkbox onChange={handleWalletCheckboxChange}  size='small' />}
+                    label={`Pay ${WalletAmount.toLocaleString('en-IN', {
+                      style: 'currency',
+                      currency: ServerURL.CURRENCY,
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2
+                    })} from Wallet`}
+                  />
+                </FormGroup>
+              </Box>
+              <Box display="flex" justifyContent="space-between" alignItems="center" mt={2}>
+                <Button
+                  size='small'
+                  variant='contained'
+                  sx={{
+                    width: '100%',
+                    borderRadius: '5px',
+                    padding: '8px 20px',
+                    textTransform: 'none',
+                    fontWeight: 'bold',
+                    fontSize: '14px',
+                    background: '#3bb77e1c',
+                    border: '1px solid #3BB77E',
+                    color: '#3BB77E',
+                    boxShadow: 'none',
+                    '&:hover': {
+                      background: '#3BB77E',
+                      border: '1px solid #3BB77E',
+                      color: '#FFF',
+                      boxShadow: 'none',
+                    }
+                  }}
+                >
+                  Proceed to Checkout
+                </Button>
+              </Box>
+            </Box>
+          </>
+        )}
       </Drawer>
     </>
   );

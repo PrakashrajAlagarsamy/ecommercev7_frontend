@@ -55,6 +55,7 @@ const TopCategory = (props) => {
       const decodedPcname = atob(pcname);
       setCategoryValue(decodedPcname);      
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.get_catgory_lists]);
 
   return (

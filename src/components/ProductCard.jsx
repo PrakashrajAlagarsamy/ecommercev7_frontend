@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Typography, Button, Card, CardContent, CardMedia, Skeleton } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -10,16 +10,33 @@ import { API_InsertMyFavoriteProducts } from '../services/userServices';
 import { useCart } from '../context/CartContext';
 
 const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => {
+  const navigate = useNavigate();
   const { cartItems, setCartItems } = useCart();
   const [quantity, setQuantity] = useState(0);
   const [totalPrice, setTotalPrice] = useState(product?.Price || 0);
   const [productId, setProductId] = useState(0);
-  const [productValue, setProductValue] = useState(0);
-  
-  let [isFavoriteProduct, setIsFavoriteProduct] = useState(0);
+  const [productValue, setProductValue] = useState(0);  
+  let [isFavoriteProduct, setIsFavoriteProduct] = useState(0);  
+  let [isProductAdd, setIsProductAdd] = useState(0);
 
-  const navigate = useNavigate();
+  useEffect(() => {
+    // Check if the current product is already in the cart and set the quantity accordingly
+    const existingProduct = cartItems.find(
+      (item) => item.id === product?.Productid || product?.Id
+    );
+    if (existingProduct) {
+      setQuantity(existingProduct.item);
+      setTotalPrice(existingProduct.totalPrice);
+    }
+    else{
+      setQuantity(product?.item || 0);
+      setTotalPrice(product?.Price || 0);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cartItems, product?.Productid, product?.Id]);
 
+
+  //View product description page
   const handleProductClick = (event) => {
     const pdId = event.currentTarget.id;
     const pdValue = event.currentTarget.getAttribute('name');
@@ -59,10 +76,20 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => 
   // };
 
 
+  // const handleDecrement = (event) => {
+  //   event.stopPropagation();
+  //   setQuantity((prevQuantity) => {
+  //     if (prevQuantity > 1) {
+  //       setTotalPrice((prevPrice) => prevPrice - product.Price);
+  //     }
+  //     return prevQuantity > 0 ? prevQuantity - 1 : 0;
+  //   });
+  // };
+
+
   const handleIncrement = (event) => {
     event.stopPropagation();
     let cartItemsStorage = JSON.parse(localStorage.getItem('cartItems'));
-
     setQuantity((prevQuantity) => {
       const newQuantity = prevQuantity + 1;
       setCartItems((prevCartItems) => {
@@ -94,9 +121,7 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => 
   };
 
   const handleDecrement = (event) => {
-    event.stopPropagation();
-  
-    // Update cartItems by checking if the product exists
+    event.stopPropagation();  
     setCartItems((prevCartItems) => {
       const existingProductIndex = prevCartItems.findIndex(
         (item) => item.Id === product?.Id
@@ -108,7 +133,6 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => 
         const updatedQuantity = prevCartItems[existingProductIndex].item - 1;
   
         if (updatedQuantity > 0) {
-          // If the product exists and quantity is greater than 0, decrement its quantity
           updatedCartItems = prevCartItems.map((item, index) =>
             index === existingProductIndex
               ? {
@@ -116,26 +140,21 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => 
                   item: updatedQuantity,
                   totalMRP: product.MRP * updatedQuantity,
                   totalPrice: product.Price * updatedQuantity,
-                } // Decrement item count
+                }
               : item
           );
         } else {
-          // If the quantity is 0, remove the item from the cart
           updatedCartItems = prevCartItems.filter(
             (item, index) => index !== existingProductIndex
           );
         }
       } else {
-        updatedCartItems = prevCartItems; // Return the cart as-is if the product wasn't found
-      }
-  
-      // Store the updated cart in localStorage
-      localStorage.setItem("cartItems", JSON.stringify(updatedCartItems));
-  
+        updatedCartItems = prevCartItems; 
+      }  
+      localStorage.setItem("cartItems", JSON.stringify(updatedCartItems));  
       return updatedCartItems;
     });
   
-    //Decrement quantity state only after checking cart items
       setQuantity((prevQuantity) => {
       if (prevQuantity > 1) {
         setTotalPrice((prevPrice) => prevPrice - product.Price);
@@ -143,18 +162,7 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => 
       return prevQuantity > 0 ? prevQuantity - 1 : 0;
     });
   };
-  
 
-
-  // const handleDecrement = (event) => {
-  //   event.stopPropagation();
-  //   setQuantity((prevQuantity) => {
-  //     if (prevQuantity > 1) {
-  //       setTotalPrice((prevPrice) => prevPrice - product.Price);
-  //     }
-  //     return prevQuantity > 0 ? prevQuantity - 1 : 0;
-  //   });
-  // };
 
   //Add fav product
   const handleAddFavProduct = async (ProductId, event, status) => {
@@ -173,6 +181,7 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => 
   }
 
   return (
+    <>    
     <Card
       id={product?.Productid ? product.Productid : product?.Id}
       name={product.Description}
@@ -405,6 +414,7 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => 
         )}
       </CardContent>
     </Card>
+    </>    
   );
 };
 

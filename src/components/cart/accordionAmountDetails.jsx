@@ -1,4 +1,5 @@
-import * as React from 'react';
+/* eslint-disable no-unused-vars */
+import React, {useEffect} from 'react';
 import { styled } from '@mui/material/styles';
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 import MuiAccordion from '@mui/material/Accordion';
@@ -8,6 +9,8 @@ import { Box, Typography, Grid } from '@mui/material';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import SmsIcon from '@mui/icons-material/Sms';
 import VolunteerActivismIcon from '@mui/icons-material/VolunteerActivism';
+import { useCart } from '../../context/CartContext';
+import { ServerURL } from '../../server/serverUrl';
 
 const Accordion = styled((props) => (
   <MuiAccordion disableGutters elevation={0} square {...props} />
@@ -42,12 +45,37 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
   borderTop: '0px solid #f0f4f9',
 }));
 
-export default function AccordionAmountDetails() {
+export default function AccordionAmountDetails({ useWallet, walletAmount }) {
+  const { cartItems } = useCart();
   const [expanded, setExpanded] = React.useState('panel1');
+  const [MRPAmount, setMRPAmount] = React.useState(0);
+  const [SavingsAmount, setSavingsAmount] = React.useState(0);
+  const [TotalPrice, setTotalPrice] = React.useState(0);
+  const [ExtraDiscount, setExtraDiscount] = React.useState(10);
+  const [HandlingCharge, setHandlingCharge] = React.useState(5);
+  const [DeliveryFee, setDeliveryFee] = React.useState(25.77);
 
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
   };
+
+  useEffect(() => {
+    if (cartItems.length > 0) {
+      const totalMRP = cartItems.reduce((acc, item) => acc + item.totalMRP, 0);
+      const totalPrice = cartItems.reduce((acc, item) => acc + item.totalPrice, 0);
+  
+      setMRPAmount(totalMRP);
+      setTotalPrice(totalPrice);
+      setSavingsAmount(totalMRP - totalPrice);
+
+      if (useWallet) {
+        setTotalPrice((prevPrice) => prevPrice - walletAmount);
+      } else {
+        setTotalPrice(totalPrice);
+      }
+    }
+  }, [cartItems, useWallet, walletAmount]);
+  
 
   return (
     <div>
@@ -88,7 +116,7 @@ export default function AccordionAmountDetails() {
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
-              gap: '50px'
+              gap: '20px'
             }}
           >
             {/* Left section: Icon and text */}
@@ -114,10 +142,10 @@ export default function AccordionAmountDetails() {
                     fontSize: '12px'
                   }}
                 >
-                  ₹3448.32
+                  {MRPAmount.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </Typography>
                 <Typography sx={{ fontWeight: 'bold', fontSize: '12px', color: '#253D4E' }}>
-                  ₹2527.81
+                  {TotalPrice.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </Typography>
               </Box>
               <Typography
@@ -132,7 +160,7 @@ export default function AccordionAmountDetails() {
                   fontSize: '10px',
                 }}
               >
-                SAVINGS ₹920.51
+                {'SAVINGS' + SavingsAmount.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </Typography>
             </Box>
           </Box>
@@ -145,15 +173,23 @@ export default function AccordionAmountDetails() {
               </Grid>
               <Grid item xs={4} sx={{mt: 0.5}}>
                 <Typography sx={{ fontSize: '14px' }} variant="body1" align="right">
-                  ₹2522.32
+                {MRPAmount.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </Typography>
               </Grid>
+              {/* <Grid item xs={8} sx={{mt: 0.5}}>
+                <Typography sx={{ fontSize: '14px' }} variant="body1">Savings</Typography>
+              </Grid>
+              <Grid item xs={4} sx={{mt: 0.5}}>
+                <Typography sx={{ fontSize: '14px' }} variant="body1" align="right" color="green">
+                {SavingsAmount.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                </Typography>
+              </Grid> */}
               <Grid item xs={8} sx={{mt: 0.5}}>
                 <Typography sx={{ fontSize: '14px' }} variant="body1">Extra discount</Typography>
               </Grid>
               <Grid item xs={4} sx={{mt: 0.5}}>
                 <Typography sx={{ fontSize: '14px' }} variant="body1" align="right" color="green">
-                  -₹107
+                {ExtraDiscount.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </Typography>
               </Grid>
               <Grid item xs={8} sx={{mt: 0.5}}>
@@ -161,7 +197,7 @@ export default function AccordionAmountDetails() {
               </Grid>
               <Grid item xs={4} sx={{mt: 0.5}}>
                 <Typography sx={{ fontSize: '14px' }} variant="body1" align="right">
-                  ₹5.49
+                {HandlingCharge.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </Typography>
               </Grid>
 
@@ -170,7 +206,7 @@ export default function AccordionAmountDetails() {
               </Grid>
               <Grid item xs={4} sx={{mt: 0.5}}>
                 <Typography sx={{ fontSize: '14px' }} variant="body1" align="right">
-                  ₹0
+                {DeliveryFee.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </Typography>
               </Grid>
 
@@ -179,7 +215,7 @@ export default function AccordionAmountDetails() {
               </Grid>
               <Grid item xs={4} sx={{mt: 0.5}}>                
                 <Typography sx={{ fontSize: '14px' }} variant="body1" align="right">
-                  ₹2629.32
+                  {(TotalPrice + DeliveryFee + HandlingCharge - ExtraDiscount).toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </Typography>
               </Grid>
             </Grid>

@@ -1,13 +1,28 @@
-import React from 'react';
-import { Box, Typography, Button } from '@mui/material';
-import LocalOfferIcon from '@mui/icons-material/LocalOffer'; // Icon for the tag
+import React, {useEffect} from 'react';
+import { Box, Typography } from '@mui/material';
+import LocalOfferIcon from '@mui/icons-material/LocalOffer'; 
+import { useCart } from '../../context/CartContext';
+import { ServerURL } from '../../server/serverUrl';
 
 const DeliveryBanner = () => {
+  const { cartItems } = useCart();
+  const [SavingsAmount, setSavingsAmount] = React.useState(0);
+  const [DeliveryFee, setDeliveryFee] = React.useState(0);
+
+  useEffect(() => {
+    if (cartItems.length > 0) {
+      const totalMRP = cartItems.reduce((acc, item) => acc + item.totalMRP, 0);
+      const totalPrice = cartItems.reduce((acc, item) => acc + item.totalPrice, 0);
+  
+      setSavingsAmount(totalMRP - totalPrice);
+      setDeliveryFee(25.77);
+    }
+  }, [cartItems]);
   return (
     <Box
       sx={{
         background: 'linear-gradient(90deg, #3bb77e1c 0%, #3bb77e1c 100%)',
-        padding: '3px 20px',
+        padding: '7px 20px',
         color: '#fff',
         display: 'flex',
         alignItems: 'center',
@@ -18,23 +33,11 @@ const DeliveryBanner = () => {
       <Box sx={{ display: 'flex', alignItems: 'center', color: '#3BB77E' }}>
         <LocalOfferIcon size="small" sx={{ marginRight: 1, fontSize: '14px' }} />
         <Typography variant="span" sx={{ fontWeight: 'bold', marginRight: 1, fontSize: '12px' }}>
-          ₹62.51 saved!
+        {SavingsAmount.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })} saved!
         </Typography>
         <Typography variant="span" sx={{ marginRight: 1, color: '#000', fontSize: '12px' }}>
-          You've saved <Typography variant="span" sx={{ fontWeight: 'bold', color: '#3BB77E'}}>₹0</Typography> on
-        </Typography>
-        <Button
-          variant="text"
-          sx={{
-            padding: 0,
-            minWidth: 'unset',
-            color: '#3BB77E',
-            textTransform: 'none',
-            fontSize: '12px'
-          }}
-        >
-          Delivery fee
-        </Button>
+          Your delivery fee on<Typography variant="span" sx={{ fontWeight: 'bold', color: '#3BB77E'}}> {DeliveryFee.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Typography>
+        </Typography>        
       </Box>
     </Box>
   );

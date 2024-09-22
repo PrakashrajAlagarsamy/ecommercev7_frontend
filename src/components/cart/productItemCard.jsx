@@ -5,6 +5,7 @@ import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { ImagePathRoutes } from '../../routes/ImagePathRoutes';
 import { useCart } from '../../context/CartContext';
+import { ServerURL } from '../../server/serverUrl';
 
 const ProductItemCard = ({ product }) => {
   const { cartItems, setCartItems } = useCart();
@@ -206,13 +207,13 @@ const ProductItemCard = ({ product }) => {
         </Button>
       <Box sx={{ textAlign: 'right' }}>
         <Typography variant="p" sx={{ fontWeight: 500, fontSize: '14px' }}>
-          ₹{product.totalPrice}
+        {product.totalPrice.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY })}
         </Typography>
         <Typography
           variant="body2"
           sx={{ textDecoration: 'line-through', color: '#9e9e9e', fontSize: '12px' }}
         >
-          ₹{product.MRP}
+          {product.MRP.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY })}
         </Typography>
       </Box>
     </Box>
