@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable jsx-a11y/alt-text */
-import * as React from 'react';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { styled, useTheme } from '@mui/material/styles';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -58,20 +59,22 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
 
 export default function AppCart({ CartDrawerOpen, handleAuthDrawerToggle }) {
   const theme = useTheme();
+  const navigate = useNavigate();
   const { cartItems, setCartItems } = useCart();
   const [ModalOpen, setModalOpen] = React.useState(false);
   const [ClearCartOpen, setClearCartOpen] = React.useState(false);
-  const [selectedAddress, setSelectedAddress] = React.useState(null);
+  const [selectedAddress, setSelectedAddress] = React.useState('No address selected');
   const [WalletAmount, setWalletAmount] = React.useState(75);
   const [useWallet, setUseWallet] = React.useState(false);
 
-  const handleChangeAddressOpen = () => setModalOpen(true);
+  const handleChangeAddressOpen = () => setModalOpen(true); 
   const handleChangeAddressClose = () => setModalOpen(false);
 
   // update the selected address
   const handleAddressSelect = (address) => {
     setSelectedAddress(address);
     setModalOpen(false);
+    sessionStorage.setItem('selectedAddress', JSON.stringify(address));
   };
 
   //Clear cart items
@@ -91,8 +94,33 @@ export default function AppCart({ CartDrawerOpen, handleAuthDrawerToggle }) {
 
   // Handle wallet checkbox change
   const handleWalletCheckboxChange = (event) => {
-    setUseWallet(event.target.checked);
+    if(event.target.checked === true){
+      setUseWallet(event.target.checked);
+      localStorage.setItem('UseWallet', true);
+    }
+    else{
+      setUseWallet(event.target.checked);
+      localStorage.setItem('UseWallet', false);
+    }
   };
+
+  //Handle proceed
+  const handleProceedItems = () => {
+    if(selectedAddress !== 'No address selected'){
+      if(useWallet === true){
+        handleAuthDrawerToggle(false);
+        navigate(`/product-checkout?Wallet=${btoa(WalletAmount)}`);
+      }
+      else{
+        handleAuthDrawerToggle(false);
+        navigate(`/product-checkout`);
+      }
+    }
+    else{
+      setModalOpen(true);
+    }
+  };
+
 
   return (
     <>
@@ -185,7 +213,7 @@ export default function AppCart({ CartDrawerOpen, handleAuthDrawerToggle }) {
                     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
                       <img src={addressHomeIcon} style={{ width: '30px', height: '30px' }} />
                       <Typography variant="body1" ml={1}>
-                        {selectedAddress
+                        {selectedAddress !== 'No address selected'
                           ? <Typography
                             sx={{
                               fontSize: '14px',
@@ -211,7 +239,8 @@ export default function AppCart({ CartDrawerOpen, handleAuthDrawerToggle }) {
                   </Grid>
                 </Grid>
               </Box>
-              <Box display="flex" alignItems="center" justifyContent="space-between" mt={1}>
+              {WalletAmount > 0 && (
+                <Box display="flex" alignItems="center" justifyContent="space-between" mt={1}>
                 <FormGroup>
                   <FormControlLabel
                     sx={{ fontSize: '14px', p: 0 }}
@@ -225,10 +254,12 @@ export default function AppCart({ CartDrawerOpen, handleAuthDrawerToggle }) {
                   />
                 </FormGroup>
               </Box>
+              )}              
               <Box display="flex" justifyContent="space-between" alignItems="center" mt={2}>
                 <Button
                   size='small'
                   variant='contained'
+                  onClick={handleProceedItems}
                   sx={{
                     width: '100%',
                     borderRadius: '5px',
@@ -248,7 +279,7 @@ export default function AppCart({ CartDrawerOpen, handleAuthDrawerToggle }) {
                     }
                   }}
                 >
-                  Proceed to Checkout
+                 Continue to Payment
                 </Button>
               </Box>
             </Box>

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Slider from "react-slick";
@@ -15,7 +16,6 @@ import BreadCrumbs from '../components/BreadCrumbs';
 
 const ProductDetails = () => {
     const [productId, setProductId] = useState(0);
-    const [activeIndex, setActiveIndex] = useState(0);
     const [quantity, setQuantity] = useState(0);
     const [totalPrice, setTotalPrice] = useState(0);
     const [productDetails, setProductDetails] = useState({});

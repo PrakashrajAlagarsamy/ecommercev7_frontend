@@ -3,6 +3,7 @@ import ServerURL from "../server/serverUrl";
 export const APIRoutes = {
     //Settings API
     GET_SETTINGS_DETAILS: `${ServerURL.PRODUCTION_HOST_URL}/api/WebMobileApp//SelectSettingsNew1`,
+    GET_DELIVERY_TIMES: `${ServerURL.PRODUCTION_HOST_URL}/api/DeliveryChargesApp/SelectDeliveryTime`,
 
     //Authentication API's
     APP_CHECK_EXISTING_USER: `${ServerURL.PRODUCTION_HOST_URL}api/WebMobileApp/AppEmailMobileCheck`,
@@ -35,6 +36,9 @@ export const APIRoutes = {
     INSERT_FAVORITE_PRODUCT: `${ServerURL.PRODUCTION_HOST_URL}api/WhishlistApp/InsertWishlist`,
     GET_PRODUCT_BY_FAVORITE_LISTS: `${ServerURL.PRODUCTION_HOST_URL}api/WhishlistApp/SelectProductByWishlist`,
     DELETE_FAVORITE_PRODUCT: `${ServerURL.PRODUCTION_HOST_URL}api/WhishlistApp/DeleteWishlist`,
+
+    //Sale order 
+    INSERT_SALE_ORDER_SAVE: `${ServerURL.PRODUCTION_HOST_URL}api/WebMobileApp/InsertSaleOrderSave`,
 };
 
 export default APIRoutes;

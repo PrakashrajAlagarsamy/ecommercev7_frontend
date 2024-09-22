@@ -169,7 +169,7 @@ export default function AccordionAmountDetails({ useWallet, walletAmount }) {
           <Box sx={{ width: '100%' }}>
             <Grid container>
               <Grid item xs={8} sx={{mt: 0.5}}>
-                <Typography sx={{ fontSize: '14px' }} variant="body1">Item subtotal</Typography>
+                <Typography sx={{ fontSize: '14px', borderBottom: 'dashed 1px lightgray', display: 'inline' }} variant="body1">Item subtotal</Typography>
               </Grid>
               <Grid item xs={4} sx={{mt: 0.5}}>
                 <Typography sx={{ fontSize: '14px' }} variant="body1" align="right">
@@ -185,7 +185,7 @@ export default function AccordionAmountDetails({ useWallet, walletAmount }) {
                 </Typography>
               </Grid> */}
               <Grid item xs={8} sx={{mt: 0.5}}>
-                <Typography sx={{ fontSize: '14px' }} variant="body1">Extra discount</Typography>
+                <Typography sx={{ fontSize: '14px', borderBottom: 'dashed 1px lightgray', display: 'inline' }} variant="body1">Extra discount</Typography>
               </Grid>
               <Grid item xs={4} sx={{mt: 0.5}}>
                 <Typography sx={{ fontSize: '14px' }} variant="body1" align="right" color="green">
@@ -193,7 +193,7 @@ export default function AccordionAmountDetails({ useWallet, walletAmount }) {
                 </Typography>
               </Grid>
               <Grid item xs={8} sx={{mt: 0.5}}>
-                <Typography sx={{ fontSize: '14px' }} variant="body1">Handling charge</Typography>
+                <Typography sx={{ fontSize: '14px', borderBottom: 'dashed 1px lightgray', display: 'inline' }} variant="body1">Handling charge</Typography>
               </Grid>
               <Grid item xs={4} sx={{mt: 0.5}}>
                 <Typography sx={{ fontSize: '14px' }} variant="body1" align="right">
@@ -202,7 +202,7 @@ export default function AccordionAmountDetails({ useWallet, walletAmount }) {
               </Grid>
 
               <Grid item xs={8} sx={{mt: 0.5}}>
-                <Typography sx={{ fontSize: '14px' }} variant="body1">Delivery fee:</Typography>
+                <Typography sx={{ fontSize: '14px', borderBottom: 'dashed 1px lightgray', display: 'inline' }} variant="body1">Delivery fee:</Typography>
               </Grid>
               <Grid item xs={4} sx={{mt: 0.5}}>
                 <Typography sx={{ fontSize: '14px' }} variant="body1" align="right">
@@ -211,7 +211,7 @@ export default function AccordionAmountDetails({ useWallet, walletAmount }) {
               </Grid>
 
               <Grid item xs={8} sx={{mt: 0.5}}>
-                <Typography sx={{ fontSize: '14px' }} variant="body1">Item total & GST</Typography>
+                <Typography sx={{ fontSize: '14px', borderBottom: 'dashed 1px lightgray', display: 'inline' }} variant="body1">Item total & GST</Typography>
               </Grid>
               <Grid item xs={4} sx={{mt: 0.5}}>                
                 <Typography sx={{ fontSize: '14px' }} variant="body1" align="right">

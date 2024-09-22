@@ -9,6 +9,7 @@ import Categories from '../pages/categories';
 import ProductList from '../pages/product-list';
 import ProductDetails from '../pages/product-details';
 import MyAccount from '../pages/myaccount';
+import ProductCheckout from '../pages/product-checkout';
 
 function AppRouter() {
     const theme = useTheme();
@@ -25,6 +26,7 @@ function AppRouter() {
                                 <Route path="/product-list" element={<ProductList />} />
                                 <Route path="/product-details" element={<ProductDetails />} />
                                 <Route path="/myaccount" element={<MyAccount />} />
+                                <Route path="/product-checkout" element={<ProductCheckout />} />
                                 {/* Catch-all Route for 404 */}
                                 <Route path="*" element={<Navigate to="/" replace />} />
                             </Routes>
