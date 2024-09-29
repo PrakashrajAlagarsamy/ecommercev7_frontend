@@ -2,10 +2,12 @@ import React from 'react';
 import { Card, CardContent, Typography, Button, Box, Divider } from '@mui/material';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import LinkIcon from '@mui/icons-material/Link';
+import { useTheme } from '@mui/material/styles';
 
 const Referrals = () => {
+  const theme = useTheme();
   return (
-    <Box align="left" sx={{ background: '#FFF', maxHeight: '700px', overflowY: 'scroll', p: 2, borderRadius: 2 }}>
+    <Box align="left" sx={{ background: theme.palette.whitecolorCode.main || '#FFF', maxHeight: '700px', overflowY: 'scroll', p: 2, borderRadius: 2 }}>
       <Card sx={{ padding: 2 }}>
         <CardContent>
           <Box textAlign="center" mb={2}>
@@ -13,7 +15,7 @@ const Referrals = () => {
               25% off for you, Pass for them @ ₹1!
             </Typography>
           </Box>
-          <Divider sx={{ backgroundColor: 'white', my: 2 }} />
+          <Divider sx={{ backgroundColor: theme.palette.whitecolorCode.main || '#FFF', my: 2 }} />
           <Box textAlign="left" mb={2}>
             <Typography variant="subtitle1" fontWeight="bold">
               How it works
@@ -33,8 +35,8 @@ const Referrals = () => {
               variant="outlined"
               startIcon={<WhatsAppIcon />}
               sx={{
-                borderColor: 'black',
-                color: 'black',
+                borderColor: theme.palette.lightblackcolorCode.main || 'black',
+                color: theme.palette.lightblackcolorCode.main || 'black',
                 width: '90%',
                 marginBottom: 2,
               }}
@@ -45,8 +47,8 @@ const Referrals = () => {
               variant="outlined"
               startIcon={<LinkIcon />}
               sx={{
-                borderColor: 'black',
-                color: 'black',
+                borderColor: theme.palette.lightblackcolorCode.main || 'black',
+                color: theme.palette.lightblackcolorCode.main || 'black',
                 width: '90%',
               }}
             >

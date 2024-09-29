@@ -1,10 +1,11 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '@mui/material';
+import { Button, Typography } from '@mui/material';
 import { ArrowForward } from '@mui/icons-material';
+import { useTheme } from '@mui/material/styles';
 
 function CategoryHeader({ CategoryHeading, categoryId, categoryValue }) {
-
+  const theme = useTheme();
   const navigate = useNavigate();
 
   function handleViewBtnClick (event){
@@ -13,14 +14,16 @@ function CategoryHeader({ CategoryHeading, categoryId, categoryValue }) {
 
   return (
     <div className="flex justify-between items-center mb-4">
-      <h2 
+      <Typography 
+        component={'h2'}
         className="font-bold"
-        style={{ 
-          fontSize: 'clamp(1rem, 4vw, 1.5rem)' 
+        sx={{ 
+          fontSize: { xs: '14px', sm: '16px', md: '18px', lg: '20px', xl: '22px' }, 
+          fontWeight: 600,
         }}
       >
         {CategoryHeading}
-      </h2>
+      </Typography>
       <Button
         id={categoryId}
         name={CategoryHeading}
@@ -30,14 +33,14 @@ function CategoryHeader({ CategoryHeading, categoryId, categoryValue }) {
         endIcon={<ArrowForward />}
         sx={{
           mt: { xs: 2, sm: 0 }, 
-          fontSize: { xs: '0.75rem', sm: '0.875rem', md: '12px' }, 
+          fontSize: { xs: '12px', sm: '12px', md: '12px', lg: '14px', xl: '16px' }, 
           padding: { xs: '2px 5px', sm: '4px 7px', md: '5px 10px' }, 
           background: 'none',
-          borderColor: '#253D4E',
-          color: '#253D4E',
+          borderColor: theme.palette.lightblackcolorCode.main || '#253D4E',
+          color: theme.palette.lightblackcolorCode.main || '#253D4E',
           '&:hover': {
-            background: '#253D4E',
-            color: '#FFF',
+            background: theme.palette.lightblackcolorCode.main || '#253D4E',
+            color: theme.palette.whitecolorCode.main || '#FFF',
           }
         }}
       >

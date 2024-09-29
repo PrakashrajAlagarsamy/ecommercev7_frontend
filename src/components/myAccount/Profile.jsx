@@ -1,10 +1,11 @@
 import React from 'react';
 import { Box, Typography, TextField, Button } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 
 const Profile = ({customerDetails}) => {
-  
+  const theme = useTheme();
   return (
-    <Box align="left" sx={{ background: '#FFF', maxHeight: '700px', overflowY: 'scroll', p: 2, borderRadius: 2 }}>
+    <Box align="left" sx={{ background: theme.palette.whitecolorCode.main || '#FFF', maxHeight: '700px', overflowY: 'scroll', p: 2, borderRadius: 2 }}>
               {/* Form Section */}
               <Box component="form" noValidate autoComplete="off">
                 <Typography sx={{ width: '100%', display: 'block' }} variant="p" gutterBottom>

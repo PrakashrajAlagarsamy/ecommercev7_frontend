@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Modal, Container, TextField, Button, Typography, Grid, Box, RadioGroup, FormControlLabel, Radio, Divider } from '@mui/material';
+import { Link, Modal, Container, TextField, Button, Typography, Grid, Box, RadioGroup, FormControlLabel, Radio, Divider } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { useCart } from '../context/CartContext';
 import { ServerURL } from '../server/serverUrl';
@@ -9,6 +9,7 @@ import { ImagePathRoutes } from '../routes/ImagePathRoutes';
 import Calendar from '../components/datePicker';
 import { API_FetchDeliveryTimes } from '../services/settings';
 import { API_InsertSaleOrderSave } from '../services/checkoutServices';
+import { useTheme } from '@mui/material/styles';
 
 const style = {
     position: 'absolute',
@@ -23,6 +24,7 @@ const style = {
 
 export default function ProductCheckout() {
     const { cartItems, setCartItems } = useCart();
+    const theme = useTheme();
     const location = useLocation();
     const navigate = useNavigate();
     const [MRPAmount, setMRPAmount] = React.useState(0);
@@ -159,6 +161,7 @@ export default function ProductCheckout() {
                     schargeamount: 0,
                     TodaySaving: SavingsAmount,
                     ReferalBalance: 0,
+                    WalletAmount: walletAmount,
                     WalletStatus: walletAmount > 0 ? 1 : 0,
                     WalletPayment: walletAmount,
                     coinage: 0,
@@ -198,9 +201,9 @@ export default function ProductCheckout() {
             setCartItems([]);
             setInfoStatus('Your order has been placed');
             handleAlertOpen(true);
-            const timer = setTimeout(() => {
-                navigate('/');  
-            }, 5000);
+            // const timer = setTimeout(() => {
+            //     navigate('/');  
+            // }, 5000);
         } catch (error) {
             console.error("Error inserting order details:", error);
             setLoading(false);
@@ -224,7 +227,7 @@ export default function ProductCheckout() {
                         {InfoStatus}
                     </Typography>
                     <Box sx={{ float: 'right' }}>
-                        <Button onClick={handleAlertClose} variant='contained' size='small'>Okay</Button>
+                        <Button component={Link} href={'/'} onClick={handleAlertClose} variant='contained' size='small'>Okay</Button>
                     </Box>
                 </Box>
             </Modal>
@@ -236,7 +239,8 @@ export default function ProductCheckout() {
                             <Typography variant="h6" style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
                                 <CheckCircleIcon color="success" style={{ marginRight: '10px' }} />
                                 Delivery Address
-                                <Button variant="outlined" size="small" sx={{
+                                <Button variant="outlined" size="small" 
+                                sx={{
                                     marginLeft: 'auto',
                                     width: 'auto',
                                     borderRadius: '3px',
@@ -244,14 +248,16 @@ export default function ProductCheckout() {
                                     textTransform: 'none',
                                     fontWeight: 'bold',
                                     fontSize: '14px',
-                                    background: '#3bb77e1c',
-                                    border: '1px solid #3BB77E',
-                                    color: '#3BB77E',
+                                    background: theme.palette.shadowcolorCode.main,
+                                    border: '1px solid',
+                                    borderColor: theme.palette.basecolorCode.main,
+                                    color: theme.palette.basecolorCode.main,
                                     boxShadow: 'none',
                                     '&:hover': {
-                                        background: '#3BB77E',
-                                        border: '1px solid #3BB77E',
-                                        color: '#FFF',
+                                        border: '1px solid',
+                                        background: theme.palette.basecolorCode.main,
+                                        borderColor: theme.palette.basecolorCode.main,
+                                        color: theme.palette.whitecolorCode.main,
                                         boxShadow: 'none',
                                     }
                                 }}>Change address</Button>
@@ -317,15 +323,16 @@ export default function ProductCheckout() {
                                         textTransform: 'none',
                                         fontWeight: 'bold',
                                         fontSize: '14px',
-                                        background: '#3BB77E',
-                                        border: '1px solid #3BB77E',
-                                        color: '#FFF',
+                                        border: '1px solid',
+                                        borderColor: theme.palette.basecolorCode.main,
+                                        color: theme.palette.whitecolorCode.main,
                                         boxShadow: 'none',
 
                                         '&:hover': {
-                                            background: '#3bb77e1c',
-                                            border: '1px solid #3BB77E',
-                                            color: '#3BB77E',
+                                            background: theme.palette.shadowcolorCode.main,
+                                            border: '1px solid',
+                                            borderColor: theme.palette.basecolorCode.main,
+                                            color: theme.palette.whitecolorCode.main,
                                             boxShadow: 'none',
                                         }
                                     }}

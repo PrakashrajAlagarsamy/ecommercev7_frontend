@@ -66,7 +66,7 @@ const OfferFastMovingProduct = () => {
   }
 
   return (
-    <Container maxWidth="xl" sx={{ pt: 5, pb: 3 }}>
+    <Container maxWidth="xl" sx={{ pt: 1, pb: 1, p: { xs: 0, sm: 0, lg: 3 } }}>
       <Box sx={{ margin: 'auto' }}>
         {loading ? (
           <Skeleton variant="text" height={40} width="30%" />

@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable jsx-a11y/alt-text */
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
@@ -23,6 +21,7 @@ import { API_FetchOfferFastMovingProduct, API_FetchProductIdMoreItems, API_Fetch
 import { API_FetchCategorySubCategory } from '../services/categoryServices';
 import { ImagePathRoutes } from '../routes/ImagePathRoutes';
 import { styled } from '@mui/system';
+import { useTheme } from '@mui/material/styles';
 
 const drawerWidth = 240;
 
@@ -45,6 +44,7 @@ const IconLabel = styled(Typography)({
 });
 
 const ProductList = () => {
+  const theme = useTheme();
   const [activeCategory, setActiveCategory] = useState('All Products');
   const [subcategories, setSubcategories] = useState([]);
   const [productLists, setProductLists] = useState([]);
@@ -216,7 +216,6 @@ const ProductList = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [productLists, loading, PageCount]);
 
-  const [selectedIndex, setSelectedIndex] = React.useState(1);
 
   return (
     <Container maxWidth="xl" sx={{px: { xs: 0, md: 3 }}}>
@@ -370,7 +369,7 @@ const ProductList = () => {
                 !backdropOpen && (
                   <Typography
                     variant="h6"
-                    sx={{ mt: 3, width: '100%', textAlign: 'center', color: 'grey.600' }}
+                    sx={{ mt: 3, width: '100%', textAlign: 'center', color: theme.palette.basecolorCode.main || 'grey.600' }}
                   >
                     No products available.
                   </Typography>

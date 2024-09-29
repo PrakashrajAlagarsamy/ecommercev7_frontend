@@ -17,6 +17,9 @@ export const APIRoutes = {
     GET_CUSTOMER_ADDRESS: `${ServerURL.PRODUCTION_HOST_URL}api/WebMobileApp/SelectCustomerAddress`,
     INSERT_CUSTOMER_DETAILS: `${ServerURL.PRODUCTION_HOST_URL}api/CustomerApp/InsertCustomer`,
 
+    //Sale order 
+    INSERT_SALE_ORDER_SAVE: `${ServerURL.PRODUCTION_HOST_URL}api/WebMobileApp/InsertSaleOrderSave`,
+
     //Category and Subcategory API's
     GET_TOP_CATEGORIES: `${ServerURL.PRODUCTION_HOST_URL}api/CategoryApp/SelectCategory`,
     GET_CATEGORY_SUBCATEGORY: `${ServerURL.PRODUCTION_HOST_URL}api/ItemmasterApp/SelectSubCategorId`,
@@ -35,10 +38,7 @@ export const APIRoutes = {
     //Wishlist product (favorite)
     INSERT_FAVORITE_PRODUCT: `${ServerURL.PRODUCTION_HOST_URL}api/WhishlistApp/InsertWishlist`,
     GET_PRODUCT_BY_FAVORITE_LISTS: `${ServerURL.PRODUCTION_HOST_URL}api/WhishlistApp/SelectProductByWishlist`,
-    DELETE_FAVORITE_PRODUCT: `${ServerURL.PRODUCTION_HOST_URL}api/WhishlistApp/DeleteWishlist`,
-
-    //Sale order 
-    INSERT_SALE_ORDER_SAVE: `${ServerURL.PRODUCTION_HOST_URL}api/WebMobileApp/InsertSaleOrderSave`,
+    DELETE_FAVORITE_PRODUCT: `${ServerURL.PRODUCTION_HOST_URL}api/WhishlistApp/DeleteWishlist`,    
 };
 
 export default APIRoutes;

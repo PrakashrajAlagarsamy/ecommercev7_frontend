@@ -1,11 +1,10 @@
 import React from 'react';
 import { Button, Avatar, Box, Typography, List, ListItem, ListItemText, ListItemIcon } from '@mui/material';
 import { ExitToApp } from '@mui/icons-material';
+import { useTheme } from '@mui/material/styles';
 
 const Sidebar = ({ CustomerDetails, setActiveComponent }) => {
-  // Log CustomerDetails to verify structure and data
-
-  // Handle case where CustomerDetails might be undefined or empty
+  const theme = useTheme();
   const customerName = CustomerDetails && CustomerDetails[0] ? CustomerDetails[0].CustomerName : '';
   const mobileNo = CustomerDetails && CustomerDetails[0] ? CustomerDetails[0].MobileNo : '';
 
@@ -15,13 +14,13 @@ const Sidebar = ({ CustomerDetails, setActiveComponent }) => {
         <Box>
           <Box display="flex" alignItems="center" mb={2}
             sx={{
-              background: '#3bb77e1c',
+              background: theme.palette.basecolorCode.secondary || '#3bb77e1c',
               padding: '1rem',
               borderTopLeftRadius: '.75rem',
               borderTopRightRadius: '.75rem'
             }}
           >
-            <Avatar sx={{ bgcolor: '#3BB77E' }}></Avatar>
+            <Avatar sx={{ bgcolor: theme.palette.basecolorCode.main || '#3BB77E' }}></Avatar>
             <Box ml={2}>
               <Typography variant="h6">{customerName}</Typography>
               <Typography variant="body2" color="textSecondary" sx={{ textAlign: 'left' }}>

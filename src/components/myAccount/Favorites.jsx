@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Box, Typography } from '@mui/material';
 import FavProductCard from '../FavProductCard';
 import { API_FetchMyFavoriteProducts, API_DeleteMyFavoriteProducts } from '../../services/userServices';
+import { useTheme } from '@mui/material/styles';
 
 const Favorites = ({ setActiveComponent }) => {
+    const theme = useTheme();
     const [favProductLists, setFavProductLists] = useState([]);
 
     const FetchMyFavoriteProducts = async (userId) => {
@@ -47,7 +49,7 @@ const Favorites = ({ setActiveComponent }) => {
                 :
                 <Typography
                     variant="h6"
-                    sx={{ mt: 3, width: '100%', textAlign: 'center', color: 'grey.600' }}
+                    sx={{ mt: 3, width: '100%', textAlign: 'center', color: theme.palette.lightblackcolorCode.main || 'grey.600' }}
                   >
                     No favorite products available.
                   </Typography>

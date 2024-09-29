@@ -11,6 +11,7 @@ import Skeleton from '@mui/material/Skeleton';
 import { Container } from '@mui/material';
 import { ImagePathRoutes } from '../../routes/ImagePathRoutes';
 import { API_FetchCategory } from '../../services/categoryServices';
+import { useTheme } from '@mui/material/styles';
 
 const TopCategory = (props) => {
   const [categoryValue, setCategoryValue] = useState(null);
@@ -18,6 +19,7 @@ const TopCategory = (props) => {
   const [isLoading, setIsLoading] = useState(true); 
   const navigate = useNavigate();
   const location = useLocation();
+  const theme = useTheme();
 
   const handleCategoryClickChange = (event, newValue) => {
     const selectedCategoryId = event.currentTarget.id; 
@@ -62,9 +64,8 @@ const TopCategory = (props) => {
     <Box sx={{ maxWidth: "100%", bgcolor: 'background.paper' }}>
       <Container
         maxWidth={{ xs: false, sm: 'xl' }}
-        disableGutters={{ xs: true, sm: false }}
-        sx={{ pb: 2 }}
-      >
+        sx={{ pt: 2, pb: 2, p: { xs: 0, sm: 0 } }}
+        >
         <Tabs
           value={categoryValue}
           onChange={handleCategoryClickChange}
@@ -73,7 +74,7 @@ const TopCategory = (props) => {
           aria-label="scrollable prevent tabs example"
           sx={{
             '.MuiTabs-indicator': {
-              backgroundColor: '#3BB77E', // Set the indicator color for the active tab
+              backgroundColor: theme.palette.basecolorCode.main || '#3BB77E', // Set the indicator color for the active tab
             },
           }}
         >
@@ -97,9 +98,9 @@ const TopCategory = (props) => {
                 sx={{
                   cursor: "pointer",
                   '&.Mui-selected': {
-                    color: '#3BB77E', // Set the text color for the active tab
-                    backgroundColor: '#3bb77e1c',
-                    borderColor: '#3BB77E'
+                    color: theme.palette.basecolorCode.main || '#3BB77E', // Set the text color for the active tab
+                    backgroundColor: theme.palette.basecolorCode.secondary || '#3bb77e1c',
+                    borderColor: theme.palette.basecolorCode.main || '#3BB77E'
                   },
                 }}
                 key={index}
@@ -109,7 +110,7 @@ const TopCategory = (props) => {
                   <Box id={item.Id} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <Avatar
                       src={ImagePathRoutes.CategoryImagePath + item.ImagePath}
-                      sx={{ width: 55, height: 55, mb: 0.5, boxShadow: '0px 0px 40px 20px #3bb77e1c' }}
+                      sx={{ width: 55, height: 55, mb: 0.5, boxShadow: `0px 0px 40px 20px ${theme.palette.shadowcolorCode.main || '#3bb77e1c'}` }}
                       alt={item.Category}
                     />
                     <Typography
@@ -119,7 +120,7 @@ const TopCategory = (props) => {
                         textTransform: 'capitalize',
                         fontWeight: 600,
                         fontSize: '14px', 
-                        color: "#253D4E"
+                        color: theme.palette.colorCode.main || "#253D4E"
                       }}
                     >
                       {item.Category}

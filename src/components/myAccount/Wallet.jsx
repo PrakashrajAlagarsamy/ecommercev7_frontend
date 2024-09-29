@@ -6,8 +6,10 @@ import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { ServerURL } from '../../server/serverUrl';
 import { API_FetchMyWalletIn } from '../../services/userServices';
+import { useTheme } from '@mui/material/styles';
 
 const Wallet = ({customerDetails}) => {
+  const theme = useTheme();
   const [walletLists, setWalletLists] = useState({});
   const [isLoading, setIsLoading] = useState(true);
 
@@ -32,9 +34,9 @@ useEffect(() => {
 }, []);
 
   return (
-    <Box align="left" sx={{ background: '#FFF', maxHeight: '700px', overflowY: 'scroll', p: 2, borderRadius: 2 }}>
+    <Box align="left" sx={{ background: theme.palette.whitecolorCode.main || '#FFF', maxHeight: '700px', overflowY: 'scroll', p: 2, borderRadius: 2 }}>
               {/* Balance Card */}
-              <Card sx={{ background: 'linear-gradient(135deg, #3BB77E 0%, #3BB77E 100%)', color: '#fff' }}>
+              <Card sx={{ background: `linear-gradient(135deg, ${theme.palette.whitecolorCode.main || '#3BB77E'} 0%, ${theme.palette.whitecolorCode.main || '#3BB77E'} 100%)`, color: theme.palette.whitecolorCode.main || '#fff' }}>
                 <CardContent>
                   <Grid container sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
                     <Grid item xs={8} align="left">
@@ -44,7 +46,7 @@ useEffect(() => {
                       <Typography variant="body2">
                         Your Balance
                       </Typography>
-                      <Button variant="text" sx={{ color: '#fff', marginTop: 2 }} startIcon={<RedeemIcon />}>
+                      <Button variant="text" sx={{ color: theme.palette.whitecolorCode.main || '#fff', marginTop: 2 }} startIcon={<RedeemIcon />}>
                         Topup wallet
                       </Button>
                     </Grid>

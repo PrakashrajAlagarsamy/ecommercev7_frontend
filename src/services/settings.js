@@ -19,7 +19,7 @@ export const API_FetchSettings = async () => {
             throw new Error('Network response was not ok.');
         }
         const data = await response.json();
-        if (!data || !Array.isArray(data)) {
+        if (!data.data || !Array.isArray(data.data)) {
             throw new Error('No data found.');
         }
         return data;

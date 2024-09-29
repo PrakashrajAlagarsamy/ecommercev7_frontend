@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Grid, Typography, Box } from '@mui/material';
 import { API_FetchCategory } from '../../services/categoryServices';
 import { ImagePathRoutes } from '../../routes/ImagePathRoutes';
+import { useTheme } from '@mui/material/styles';
 
 const CategoryCard = () => {
+    const theme = useTheme();
     const [categoryLists, setCategoryLists] = useState([]);
 
     const ShopByCategoryLists = async () => {
@@ -39,7 +41,7 @@ const CategoryCard = () => {
                             />
                             <Typography
                                 variant="body1"
-                                sx={{ mt: 1 }}
+                                sx={{ mt: 1, color: theme.palette.lightblackcolorCode.main }}
                                 className="w-full text-center text-sm sm:text-md lg:text-lg font-medium"
                             >
                                 {item.Category}

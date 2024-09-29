@@ -25,7 +25,7 @@ export default function BannerSlider() {
   }, []);
 
   const settings = {
-    dots: true,
+    dots: false,
     infinite: true,
     speed: 2500,
     slidesToShow: 1,
@@ -36,7 +36,7 @@ export default function BannerSlider() {
   };
 
   return (
-    <Container maxWidth="xl">
+    <Container maxWidth="xl" sx={{ pt: 2, pb: 2, p: { xs: 0, sm: 0 } }}>
       <Slider {...settings}>
         {isLoading ? (
           // Show Skeleton loader while data is being fetched

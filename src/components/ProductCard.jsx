@@ -1,41 +1,102 @@
-/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Typography, Button, Card, CardContent, CardMedia, Skeleton } from '@mui/material';
+import { Box, Typography, Button, Card, CardContent, CardMedia, Skeleton, MenuItem, FormControl, Select } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { ImagePathRoutes } from '../routes/ImagePathRoutes';
 import { ServerURL } from '../server/serverUrl';
 import { API_InsertMyFavoriteProducts } from '../services/userServices';
 import { useCart } from '../context/CartContext';
+import { useTheme } from '@mui/material/styles';
 
 const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => {
   const navigate = useNavigate();
+  const theme = useTheme();
   const { cartItems, setCartItems } = useCart();
   const [quantity, setQuantity] = useState(0);
   const [totalPrice, setTotalPrice] = useState(product?.Price || 0);
   const [productId, setProductId] = useState(0);
-  const [productValue, setProductValue] = useState(0);  
-  let [isFavoriteProduct, setIsFavoriteProduct] = useState(0);  
-  let [isProductAdd, setIsProductAdd] = useState(0);
+  const [productValue, setProductValue] = useState(0);
+  let [isFavoriteProduct, setIsFavoriteProduct] = useState(0);
+  const [age, setAge] = React.useState('');
+
+  const handleChange = (event) => {
+    event.stopPropagation();
+    setAge(event.target.value);
+  };
 
   useEffect(() => {
-    // Check if the current product is already in the cart and set the quantity accordingly
-    const existingProduct = cartItems.find(
-      (item) => item.id === product?.Productid || product?.Id
-    );
+    const existingProduct = cartItems.find(item => item.Id === product?.Id);
     if (existingProduct) {
       setQuantity(existingProduct.item);
       setTotalPrice(existingProduct.totalPrice);
-    }
-    else{
-      setQuantity(product?.item || 0);
+    } else {
+      setQuantity(0);
       setTotalPrice(product?.Price || 0);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cartItems, product?.Productid, product?.Id]);
-
-
+  }, [cartItems, product]);
+  
+  // Update cartItems function
+  const updateCartItems = (newQuantity, newTotalPrice, MRP) => {
+    setCartItems(prevCartItems => {
+      const existingProductIndex = prevCartItems.findIndex(item => item.Id === product?.Id);
+      let updatedCartItems = [...prevCartItems];
+  
+      if (existingProductIndex >= 0) {
+        if (newQuantity > 0) {
+          updatedCartItems[existingProductIndex] = {
+            ...updatedCartItems[existingProductIndex],
+            item: newQuantity,
+            totalPrice: newTotalPrice,
+            totalMRP: MRP  
+          };
+        } else {
+          updatedCartItems = updatedCartItems.filter(item => item.Id !== product?.Id);
+        }
+      } else if (newQuantity > 0) {
+        updatedCartItems.push({ 
+          ...product, 
+          item: newQuantity, 
+          totalPrice: newTotalPrice,
+          totalMRP: MRP  
+        });
+      }
+  
+      localStorage.setItem('cartItems', JSON.stringify(updatedCartItems));
+      return updatedCartItems;
+    });
+  };
+  
+  // Quantity increment function
+  const handleIncrement = (event) => {
+    event.stopPropagation();
+    const newQuantity = quantity + 1;
+    const newTotalPrice = newQuantity * product.Price;
+    const MRP = newQuantity * product.MRP;
+  
+    setQuantity(newQuantity);
+    setTotalPrice(newTotalPrice);
+    updateCartItems(newQuantity, newTotalPrice, MRP);
+  };
+  
+  // Quantity decrement function
+  const handleDecrement = (event) => {
+    event.stopPropagation();
+    const newQuantity = quantity - 1;
+    const newTotalPrice = newQuantity * product.Price;
+    const MRP = newQuantity * product.MRP;
+  
+    if (newQuantity === 0) {
+      setQuantity(0);
+      setTotalPrice(product.Price);
+      updateCartItems(0, product.Price, MRP); 
+    } else if (quantity > 0) {
+      setQuantity(newQuantity);
+      setTotalPrice(newTotalPrice);
+      updateCartItems(newQuantity, newTotalPrice, MRP);
+    }
+  };
+  
   //View product description page
   const handleProductClick = (event) => {
     const pdId = event.currentTarget.id;
@@ -44,125 +105,6 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => 
     setProductValue(pdValue);
     navigate(`/product-details?pdid=${encodeURIComponent(btoa(pdId))}&pdname=${encodeURIComponent(btoa(pdId))}`);
   };
-
-
-  // const handleIncrement = (event) => {
-  //   event.stopPropagation();
-  //   setQuantity((prevQuantity) => {
-  //     const newQuantity = prevQuantity + 1;
-  //     if (newQuantity > 1) {
-  //       setTotalPrice((prevPrice) => prevPrice + product.Price);
-  //     }
-  //     return newQuantity;
-  //   });
-
-
-  //   const existingProduct = cartItems.find((item) => item.id === product?.Productid ? product.Productid : product?.Id);
-
-  //   if (existingProduct) {
-  //     // If the product exists, update the item count
-  //     setCartItems((prevItems) =>
-  //       prevItems.map((item) =>
-  //         item.id === product.id
-  //           ? { ...item, item: item.item + 1 } // Increment the 'item' count
-  //           : item
-  //       )
-  //     );
-  //   } else {
-  //     // If it doesn't exist, add it to the cart with an initial 'item' count of 1
-  //     setCartItems([...cartItems, { ...product, item: 1 }]);
-  //   }
-
-  // };
-
-
-  // const handleDecrement = (event) => {
-  //   event.stopPropagation();
-  //   setQuantity((prevQuantity) => {
-  //     if (prevQuantity > 1) {
-  //       setTotalPrice((prevPrice) => prevPrice - product.Price);
-  //     }
-  //     return prevQuantity > 0 ? prevQuantity - 1 : 0;
-  //   });
-  // };
-
-
-  const handleIncrement = (event) => {
-    event.stopPropagation();
-    let cartItemsStorage = JSON.parse(localStorage.getItem('cartItems'));
-    setQuantity((prevQuantity) => {
-      const newQuantity = prevQuantity + 1;
-      setCartItems((prevCartItems) => {
-        const existingProductIndex = prevCartItems.findIndex(
-          (item) => item.Id === product?.Id
-        );
-
-        let updatedCartItems;
-
-        if (existingProductIndex >= 0) {
-          updatedCartItems = prevCartItems.map((item, index) =>
-            index === existingProductIndex
-              ? { ...item, item: item.item + 1, totalMRP: product.MRP * (item.item + 1), totalPrice: product.Price * (item.item + 1) }
-              : item
-          );
-        } else {
-          updatedCartItems = [...prevCartItems, { ...product, item: 1, totalMRP: product.MRP, totalPrice: product.Price }];
-        }
-
-        if (newQuantity > 1) {
-          setTotalPrice((prevPrice) => prevPrice + product.Price);
-        }
-        
-        localStorage.setItem("cartItems", JSON.stringify(updatedCartItems));
-        return updatedCartItems;
-      });
-      return newQuantity;
-    });
-  };
-
-  const handleDecrement = (event) => {
-    event.stopPropagation();  
-    setCartItems((prevCartItems) => {
-      const existingProductIndex = prevCartItems.findIndex(
-        (item) => item.Id === product?.Id
-      );
-  
-      let updatedCartItems = [];
-  
-      if (existingProductIndex >= 0) {
-        const updatedQuantity = prevCartItems[existingProductIndex].item - 1;
-  
-        if (updatedQuantity > 0) {
-          updatedCartItems = prevCartItems.map((item, index) =>
-            index === existingProductIndex
-              ? {
-                  ...item,
-                  item: updatedQuantity,
-                  totalMRP: product.MRP * updatedQuantity,
-                  totalPrice: product.Price * updatedQuantity,
-                }
-              : item
-          );
-        } else {
-          updatedCartItems = prevCartItems.filter(
-            (item, index) => index !== existingProductIndex
-          );
-        }
-      } else {
-        updatedCartItems = prevCartItems; 
-      }  
-      localStorage.setItem("cartItems", JSON.stringify(updatedCartItems));  
-      return updatedCartItems;
-    });
-  
-      setQuantity((prevQuantity) => {
-      if (prevQuantity > 1) {
-        setTotalPrice((prevPrice) => prevPrice - product.Price);
-      }
-      return prevQuantity > 0 ? prevQuantity - 1 : 0;
-    });
-  };
-
 
   //Add fav product
   const handleAddFavProduct = async (ProductId, event, status) => {
@@ -178,17 +120,16 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => 
     } catch (error) {
       console.error("Error removing favorite product lists:", error);
     }
-  }
+  };
 
   return (
-    <>    
     <Card
       id={product?.Productid ? product.Productid : product?.Id}
       name={product.Description}
       value={product?.Productid ? product.Productid : product?.Id}
       onClick={handleProductClick}
       sx={{
-        width: { xs: offerProducts === null && relatedProducts === null ? 155 : 190, sm: 220, md: 260, lg: 280 },
+        width: { xs: offerProducts === null && relatedProducts === null ? 155 : 175, sm: 220, md: 260, lg: 280 },
         height: { xs: 320, sm: 380, md: 400, lg: 420 },
         margin: '0 auto',
         textAlign: 'left',
@@ -207,7 +148,16 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => 
       }}
     >
       {isLoading ? (
-        <Skeleton variant="rectangular" width="100%" height="60%" />
+        // Render skeleton placeholders for products
+        Array.from(new Array(5)).map((_, index) => (
+          <Box key={index} sx={{ padding: 2 }}>
+            <Skeleton variant="rectangular" width={250} height={250} />
+            <Skeleton variant="text" height={20} width="80%" sx={{ mt: 2 }} />
+            <Skeleton variant="text" height={20} width="60%" sx={{ mt: 1 }} />
+            <Skeleton variant="text" height={30} width="40%" sx={{ mt: 1 }} />
+            <Skeleton variant="rectangular" height={40} width="100%" sx={{ mt: 2 }} />
+          </Box>
+        ))
       ) : (
         <Box sx={{ position: 'relative', height: { xs: '50%', sm: '55%', md: '60%' } }}>
           <CardMedia
@@ -248,7 +198,7 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => 
               position: 'absolute',
               top: '8px',
               right: '8px',
-              color: product.isFavorite !== 0 ? '#3BB77E' : '#FFF',
+              color: product.isFavorite !== 0 ? theme.palette.basecolorCode.main : theme.palette.whitecolorCode.main,
             }}
             id={product.isFavorite !== null ? product.isFavorite : isFavoriteProduct}
           >
@@ -256,7 +206,6 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => 
           </Box>
         </Box>
       )}
-
       <CardContent sx={{ height: { xs: '50%', sm: '45%', md: '40%' }, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
         {isLoading ? (
           <>
@@ -272,7 +221,7 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => 
                 component={"p"}
                 name={product.Description}
                 sx={{
-                  fontSize: '14px',
+                  fontSize: { xs: '12px', sm: '12px', md: '12px', lg: '14px', xl: '14px' }, 
                   fontWeight: 'bold',
                   overflow: 'hidden',
                   display: '-webkit-box',
@@ -281,7 +230,8 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => 
                   textOverflow: 'ellipsis',
                   lineHeight: '15px',
                   fontFamily: 'inherit',
-                  minHeight: '32px',
+                  minHeight: { xs: '23px', sm: '25px', md: '28px', lg: '32px', xl: '32px' }, 
+                  color: theme.palette.lightblackcolorCode.main
                 }}
               >
                 {product.Description}
@@ -293,15 +243,32 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => 
             <Box sx={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}>
               <Typography
                 variant="body2"
-                sx={{ color: '#253D4E', fontSize: '14px', lineHeight: '24px', fontFamily: 'inherit' }}
+                sx={{ color: theme.palette.lightblackcolorCode.main, fontSize: '14px', lineHeight: '24px', fontFamily: 'inherit' }}
               >
-                {product.MultiplePriceEnable === 0 ? product.UnitType : <>Multiple price</>}
+                {product.MultiplePriceEnable === 0 ? product.UnitType :
+                  <Box sx={{ minWidth: 75, p: 0 }}>
+                    <FormControl fullWidth sx={{ p: 0, border: 'none', }}>
+                      <Select
+                        sx={{ height: '30px', border: '1px dotted #999', '&:hover': { border: '1px dotted #999' } }}
+                        size='small'
+                        labelId="demo-simple-select-label-multi"
+                        id="demo-simple-select-multi"
+                        value={age}
+                        onChange={(e) => { handleChange(e); }}
+                      >
+                        <MenuItem sx={{ px: 1, py: 0 }} value={10}>1kg</MenuItem>
+                        <MenuItem sx={{ px: 1, py: 0 }} value={20}>500GM</MenuItem>
+                        <MenuItem sx={{ px: 1, py: 0 }} value={30}>250GM</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Box>
+                }
               </Typography>
             </Box>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '10px' }}>
               <Typography
                 variant="body2"
-                sx={{ color: '#253D4E', fontSize: '14px', lineHeight: '24px', fontFamily: 'inherit' }}
+                sx={{ color: theme.palette.lightblackcolorCode.main, fontSize: '14px', lineHeight: '24px', fontFamily: 'inherit' }}
               >
                 {totalPrice.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </Typography>
@@ -322,13 +289,15 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => 
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 marginTop: '10px',
-                border: '1px solid #3BB77E',
+                border: '1px solid',
+                borderColor: theme.palette.basecolorCode.main,
                 fontFamily: 'inherit',
                 padding: { xs: '6px 0px', sm: '7px 0px', md: '7.2px 0px' },
                 '&:hover': {
                   background: 'none',
-                  border: '1px solid #3BB77E',
-                  color: '#3BB77E'
+                  border: '1px solid',
+                  borderColor: theme.palette.basecolorCode.main,
+                  color: theme.palette.basecolorCode.main
                 }
               }}
             >
@@ -338,7 +307,7 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => 
                 disabled={quantity === 0}
                 sx={{
                   width: '25%',
-                  color: '#3BB77E',
+                  color: theme.palette.basecolorCode.main,
                   fontFamily: 'inherit',
                 }}
               >
@@ -348,7 +317,7 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => 
                 variant="body2"
                 sx={{
                   width: '50%',
-                  color: '#3BB77E',
+                  color: theme.palette.basecolorCode.main,
                   fontFamily: 'inherit',
                 }}
               >
@@ -362,7 +331,7 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => 
                 onClick={(e) => { handleIncrement(e); }}
                 sx={{
                   width: '25%',
-                  color: '#3BB77E',
+                  color: theme.palette.basecolorCode.main,
                   fontFamily: 'inherit',
                 }}
               >
@@ -379,13 +348,15 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => 
                   textTransform: 'none',
                   fontFamily: 'inherit',
                   fontWeight: 600,
-                  border: '1px solid #3BB77E',
-                  backgroundColor: '#3bb77e1c',
-                  color: '#3BB77E',
+                  border: '1px solid',
+                  borderColor: theme.palette.basecolorCode.main,
+                  backgroundColor: theme.palette.basecolorCode.secondary,
+                  color: theme.palette.basecolorCode.main,
                   '&:hover': {
                     background: 'none',
-                    border: '1px solid #3BB77E',
-                    color: '#3BB77E'
+                    border: '1px solid',
+                    borderColor: theme.palette.basecolorCode.main,
+                    color: theme.palette.basecolorCode.main,
                   }
                 }}
                 id={product.Id}
@@ -403,7 +374,7 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => 
                   fontFamily: 'inherit',
                   border: '1px solid #dc3545',
                   backgroundColor: '#dc3545',
-                  color: '#FFF',
+                  color: theme.palette.whitecolorCode.main,
                 }}
                 id={product.Id}
               >
@@ -414,7 +385,6 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => 
         )}
       </CardContent>
     </Card>
-    </>    
   );
 };
 

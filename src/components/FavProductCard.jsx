@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { Box, Button, Card, CardMedia, Typography } from '@mui/material';
 import { ServerURL } from '../server/serverUrl';
 import { ImagePathRoutes } from '../routes/ImagePathRoutes';
+import { useTheme } from '@mui/material/styles';
 
 const FavProductCard = ({ FavProductLists, handleRemoveFavProduct }) => {
-    // State to track quantities for each product by their ID
+    const theme = useTheme();
     const [quantities, setQuantities] = useState({});
 
     const handleIncrement = (event, list) => {
@@ -67,7 +68,7 @@ const FavProductCard = ({ FavProductLists, handleRemoveFavProduct }) => {
                             <Box sx={{ py: 1, display: 'flex', justifyContent: 'flex-start', alignItems: 'center', gap: '30px' }}>
                                 <Typography
                                     variant="body2"
-                                    sx={{ color: '#253D4E', fontSize: '16px', lineHeight: '30px', fontFamily: 'inherit', textAlign: 'left' }}
+                                    sx={{ color: theme.palette.colorCode.main, fontSize: '16px', lineHeight: '30px', fontFamily: 'inherit', textAlign: 'left' }}
                                 >
                                     {list.Price.toLocaleString('en-IN', {
                                         style: 'currency',
@@ -92,7 +93,7 @@ const FavProductCard = ({ FavProductLists, handleRemoveFavProduct }) => {
                             </Box>
 
                             {/* Weight */}
-                            <Typography align="left" variant="body2" sx={{ fontSize: 14, color: '#253D4E' }}>
+                            <Typography align="left" variant="body2" sx={{ fontSize: 14, color: theme.palette.colorCode.main }}>
                                 {list.UnitType}
                             </Typography>
 
@@ -104,16 +105,16 @@ const FavProductCard = ({ FavProductLists, handleRemoveFavProduct }) => {
                                     display: quantity !== 0 ? 'flex' : 'none',
                                     alignItems: 'center',
                                     justifyContent: 'space-between',
-                                    marginTop: '10px',
-                                    border: '1px solid #3BB77E',
+                                    marginTop: '10px',                                    
                                     fontFamily: 'inherit',
-                                    background: '#3BB77E',
-                                    color: '#FFF',
+                                    border: `1px solid ${theme.palette.basecolorCode.main}`,
+                                    background: theme.palette.basecolorCode.main,
+                                    color: theme.palette.whitecolorCode.main,
                                     padding: { xs: '6px 0px', sm: '7px 0px', md: '7.2px 0px' },
                                     '&:hover': {
-                                        background: '#3BB77E',
-                                        border: '1px solid #3BB77E',
-                                        color: '#FFF'
+                                        border: `1px solid ${theme.palette.basecolorCode.main}`,
+                                        background: theme.palette.basecolorCode.main,
+                                        color: theme.palette.whitecolorCode.main
                                     }
                                 }}
                             >
@@ -122,8 +123,8 @@ const FavProductCard = ({ FavProductLists, handleRemoveFavProduct }) => {
                                     onClick={(e) => { handleDecrement(e, list); }}
                                     sx={{
                                         width: '25%',
-                                        color: '#FFF',
-                                        background: '#3BB77E',
+                                        background: theme.palette.basecolorCode.main,
+                                        color: theme.palette.whitecolorCode.main,
                                         fontFamily: 'inherit'
                                     }}
                                 >
@@ -133,8 +134,8 @@ const FavProductCard = ({ FavProductLists, handleRemoveFavProduct }) => {
                                     variant="body2"
                                     sx={{
                                         width: '50%',
-                                        color: '#FFF',
-                                        background: '#3BB77E',
+                                        background: theme.palette.basecolorCode.main,
+                                        color: theme.palette.whitecolorCode.main,
                                         fontFamily: 'inherit'
                                     }}
                                 >
@@ -145,8 +146,8 @@ const FavProductCard = ({ FavProductLists, handleRemoveFavProduct }) => {
                                     onClick={(e) => { handleIncrement(e, list); }}
                                     sx={{
                                         width: '25%',
-                                        color: '#FFF',
-                                        background: '#3BB77E',
+                                        background: theme.palette.basecolorCode.main,
+                                        color: theme.palette.whitecolorCode.main,
                                         fontFamily: 'inherit'
                                     }}
                                 >
@@ -164,13 +165,13 @@ const FavProductCard = ({ FavProductLists, handleRemoveFavProduct }) => {
                                         textTransform: 'none',
                                         fontFamily: 'inherit',
                                         fontWeight: 600,
-                                        border: '1px solid #3BB77E',
-                                        backgroundColor: '#3BB77E',
-                                        color: '#FFF',
+                                        border: `1px solid ${theme.palette.basecolorCode.main}`,
+                                        background: theme.palette.basecolorCode.main,
+                                        color: theme.palette.whitecolorCode.main,
                                         '&:hover': {
-                                            background: '#3BB77E',
-                                            border: '1px solid #3BB77E',
-                                            color: '#FFF'
+                                            border: `1px solid ${theme.palette.basecolorCode.main}`,
+                                            background: theme.palette.basecolorCode.main,
+                                            color: theme.palette.whitecolorCode.main
                                         }
                                     }}
                                     onClick={(e) => { handleIncrement(e, list); }}
@@ -187,11 +188,11 @@ const FavProductCard = ({ FavProductLists, handleRemoveFavProduct }) => {
                                         fontFamily: 'inherit',
                                         border: '1px solid #dc3545',
                                         backgroundColor: '#dc3545',
-                                        color: '#fff',
+                                        color: theme.palette.whitecolorCode.main,
                                         '&:hover': {
                                             background: '#dc3545',
                                             border: '1px solid #dc3545',
-                                            color: '#fff'
+                                            color: theme.palette.whitecolorCode.main
                                         }
                                     }}
                                     disabled

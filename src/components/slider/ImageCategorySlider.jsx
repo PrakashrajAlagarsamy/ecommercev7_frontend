@@ -45,7 +45,7 @@ export default function ImageCategorySlider({ CategoryImageLists = [] }) {
   return (
     <Container 
       maxWidth="xl" 
-      disableGutters
+      sx={{px: { xs: 0, sm: 0 }, pt: 2, pb: 1 }}
     >
       {images.length > 2 ? (
         <Slider {...settings}>
@@ -66,7 +66,7 @@ export default function ImageCategorySlider({ CategoryImageLists = [] }) {
                   width: "100%",
                   display: 'block',
                   margin: '0 auto',
-                  padding: "0px 10px",
+                  padding: { xs: "0px 0px", sm: "0px 0px", md: "0px 5px", lg: "0px 10px", xl: "0px 10px" },
                   borderRadius: '0px'
                 }}
                 src={ImagePathRoutes.CategoryImagePath + img}

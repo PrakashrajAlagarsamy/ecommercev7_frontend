@@ -6,8 +6,10 @@ import { Edit, Delete } from '@mui/icons-material';
 import AddAddressModal from '../modalPopup/addAddressModal';
 import ConfirmationPopup from '../modalPopup/confirmationPopup';
 import { API_FetchCustomerAddress } from '../../services/userServices';
+import { useTheme } from '@mui/material/styles';
 
 const Address = () => {
+  const theme = useTheme();
   const [activeComponent, setActiveComponent] = useState('Addresses');
   const [customerDetails, setcustomerDetails] = useState([]);
   let [objlist, setObjlist] = useState({});
@@ -98,13 +100,13 @@ const Address = () => {
         handleConfirmationClick={handleConfirmationAction}
       />
 
-      <Box sx={{ background: '#FFF', maxHeight: '700px', overflowY: 'scroll', p: 2, borderRadius: 2 }}>
+      <Box sx={{ background: theme.palette.whitecolorCode.main || '#FFF', maxHeight: '700px', overflowY: 'scroll', p: 2, borderRadius: 2 }}>
         <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-          <Typography variant="h6" fontWeight="bold" sx={{ color: '#253D4E' }}>All Saved Addresses</Typography>
+          <Typography variant="h6" fontWeight="bold" sx={{ color: theme.palette.colorCode.main || '#253D4E' }}>All Saved Addresses</Typography>
           <Button
             variant="contained"
             onClick={() => handleModalOpen('New', objlist, 0)}
-            sx={{ backgroundColor: '#3BB77E', color: '#FFF' }}
+            sx={{ backgroundColor: theme.palette.basecolorCode.main || '#3BB77E', color: theme.palette.whitecolorCode.main || '#FFF' }}
           >
             Add New Address
           </Button>
@@ -122,7 +124,7 @@ const Address = () => {
               </Grid>
               <Grid item xs={8.5}>
                 <Box>
-                  <Typography align="left" variant="h6" fontWeight={600} fontSize={16} sx={{ color: '#253D4E' }}>
+                  <Typography align="left" variant="h6" fontWeight={600} fontSize={16} sx={{ color: theme.palette.colorCode.main || '#253D4E' }}>
                     {address.AddressType ? address.AddressType : 'Home'}
                   </Typography>
                   <Typography align="left" variant="body1" fontSize={16} sx={{ color: '#7E7E7E' }}>

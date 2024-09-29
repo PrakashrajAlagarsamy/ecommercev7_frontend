@@ -4,9 +4,10 @@ import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-
+import { useTheme } from '@mui/material/styles';
 
 const CustomerSupport = () => {
+  const theme = useTheme();
   const [expanded, setExpanded] = useState(false);
 
   const handleChange = (panel) => (event, isExpanded) => {
@@ -17,7 +18,7 @@ const CustomerSupport = () => {
     <>
       <Box sx={{ background: '#FFF', maxHeight: '700px', overflowY: 'scroll', p: 2, borderRadius: 2 }}>
         <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-          <Typography variant="h6" fontWeight="bold" sx={{ color: '#253D4E' }}>FAQ</Typography>
+          <Typography variant="h6" fontWeight="bold" sx={{ color: theme.palette.lightblackcolorCode.main || '#253D4E' }}>FAQ</Typography>
         </Box>
         <Box>
           <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')} sx={{boxShadow: 'none', padding: '7px 0px'}}>

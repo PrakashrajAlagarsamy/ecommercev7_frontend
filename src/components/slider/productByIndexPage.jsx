@@ -29,15 +29,14 @@ const ProductByIndexPage = () => {
 
   const GetProductsByCategory = async (categories) => {
     try {
-      const products = await API_FetchProductByIndexPage();
-      const productsByCategory = categories.reduce((acc, category) => {
+        const products = await API_FetchProductByIndexPage();
+        const productsByCategory = categories.reduce((acc, category) => {
         const filteredProducts = products.data1.filter(product => product.CId === category.Id);
         if (filteredProducts.length > 0) {
           acc[category.Id] = filteredProducts;
         }
         return acc;
-      }, {});
-      
+      }, {});      
 
       const categoryImages = categories.reduce((acc, category) => {
         const filteredImage = products.data.filter(image => image.Id === category.Id);
@@ -45,8 +44,7 @@ const ProductByIndexPage = () => {
           acc[category.Id] = filteredImage;
         }
         return acc;
-      }, {});
-      
+      }, {});      
 
       setProductsByCategory(productsByCategory);
       setCategoryImageLists(categoryImages);
@@ -100,7 +98,7 @@ const ProductByIndexPage = () => {
   };
 
   return (
-    <Container maxWidth="xl" sx={{ pt: 5, pb: 3 }}>
+    <Container maxWidth="xl" sx={{ pt: 1, pb: 1, px: { xs: 0, sm: 0, lg: 3 } }}>
       {loading ? (
         <Skeleton variant="text" height={40} width="30%" />
       ) : (
@@ -119,7 +117,7 @@ const ProductByIndexPage = () => {
               />
               <Slider {...settings}>
                 {products.map((product) => (
-                  <Box key={product.id} sx={{ padding: 2 }}>
+                  <Box key={product.id} sx={{ padding: 0 }}>
                     <ProductCard product={product} />
                   </Box>
                 ))}
@@ -127,7 +125,7 @@ const ProductByIndexPage = () => {
 
               {/* Render ImageCategorySlider if category images exist */}
               {categoryLists && categoryLists.length > 0 && categoryImages.length !== 0 && (
-                <Box sx={{ py: 3 }}>
+                <Box sx={{ py: 1 }}>
                     <ImageCategorySlider CategoryImageLists={categoryImages} />
                 </Box>                
               )}
