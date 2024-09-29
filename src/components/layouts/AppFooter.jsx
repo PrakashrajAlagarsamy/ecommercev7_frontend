@@ -1,70 +1,102 @@
 import React from 'react';
-import { Container, Grid, Box, IconButton, Link } from '@mui/material';
-import FacebookIcon from '@mui/icons-material/Facebook';
-import TwitterIcon from '@mui/icons-material/Twitter';
-import InstagramIcon from '@mui/icons-material/Instagram';
-import YouTubeIcon from '@mui/icons-material/YouTube';
+import { Link } from 'react-router-dom';
+import { Container, Grid, Box, Typography, Button, List, ListItem, ListItemText } from '@mui/material';
+import { Instagram, Twitter, Facebook, LinkedIn } from '@mui/icons-material';
 import AppLogo from '../logo/AppLogo';
+import PlayStrore from '../../assets/play-store.svg';
+import AppStrore from '../../assets/app-store.svg';
+import { useTheme } from '@mui/material/styles';
 
-const AppFooter = () => {
+const AppFooter = ({ CompanyDetails }) => {
+    const theme = useTheme();
     return (
-        <>        
-        <Box component="footer" sx={{ background: "#222", py: 4 }}>
-            <Container maxWidth="xl">
-                <Grid container spacing={4}>
-                    {/* Logo and Address Section */}
-                    <Grid item xs={12} sm={4}>
-                        <AppLogo />
-                        <p className="text-gray-400 text-sm sm:text-base lg:text-lg">
-                            No.1/181,1st Floor Elumalai Salai<br />
-                            Nanmangalam, Chennai – 600 129<br />
-                            Landmark: Near Nanmangalam Panchayat<br />
-                        </p>
-                    </Grid>
-
-                    {/* Links Section */}
-                    <Grid item xs={12} sm={4}>
-                        <p className="text-white text-base sm:text-lg lg:text-xl font-semibold">
-                            Quick Links
-                        </p>
-                        <Grid container spacing={1}>
-                            {['FAQ', 'News room', 'Blog', "Didn't find your product?", 'Terms and Conditions', 'Privacy Policy', 'Refund Policy', 'Sellers', 'Contact Us'].map((link, index) => (
-                                <Grid item xs={6} key={index}>
-                                    <Link href="#" className="text-gray-400 text-sm sm:text-base lg:text-lg hover:text-white">
-                                        {link}
+        <>
+            <Box sx={{ background: "#222", padding: '50px 20px' }}>
+                <Container maxWidth="xl" sx={{ px: { xs: 0, md: 3 } }}>
+                    <Grid container justifyContent="space-between" alignItems="flex-start">
+                        {/* Left section */}
+                        <Grid item xs={12} sm={12} md={3}>
+                            <Box display="flex" flexDirection="column" alignItems="flex-start">
+                                <Box sx={{ background: theme.palette.whitecolorCode.main, borderRadius: 1 }}>
+                                    <AppLogo />
+                                </Box>
+                                <Box display="flex" gap={2} sx={{ py: 3 }}>
+                                    <Link href="#" sx={{ color: theme.palette.footertextcolorCode.main }}>
+                                        <Instagram />
                                     </Link>
+                                    <Link href="#" sx={{ color: theme.palette.footertextcolorCode.main }}>
+                                        <Twitter />
+                                    </Link>
+                                    <Link href="#" sx={{ color: theme.palette.footertextcolorCode.main }}>
+                                        <Facebook />
+                                    </Link>
+                                    <Link href="#" sx={{ color: theme.palette.footertextcolorCode.main }}>
+                                        <LinkedIn />
+                                    </Link>
+                                </Box>
+                                <Typography variant="caption" sx={{ mt: 1, color: theme.palette.footertextcolorCode.main }}>
+                                    © Kassapos software solutions Pvt Ltd
+                                </Typography>
+                            </Box>
+                        </Grid>
+
+                        {/* Middle section */}
+                        <Grid item xs={12} sm={12} md={3}>
+                            <Grid container >
+                                <Grid item xs={12}>
+                                    <Typography sx={{ color: theme.palette.footertextcolorCode.main, borderBottom: `2px solid ${theme.palette.basecolorCode.main}`, display: 'inline' }} fontWeight={600} variant={'h5'}>Links</Typography>
+                                    <Box sx={{ width: '100%', display: 'inline-block', }}>
+                                        <List sx={{p: 0, m: 0}}>
+                                            <ListItem sx={{p: 0.3, m: 0}} button component={Link} to="/">
+                                                <ListItemText sx={{ color: theme.palette.footertextcolorCode.main }} primary="Home" />
+                                            </ListItem>
+                                            <ListItem sx={{p: 0.3, m: 0}} button component={Link} to="/about-us">
+                                                <ListItemText sx={{ color: theme.palette.footertextcolorCode.main }} primary="About Us" />
+                                            </ListItem>
+                                            <ListItem sx={{p: 0.3, m: 0}} button component={Link} to="/privacy-policy">
+                                                <ListItemText sx={{ color: theme.palette.footertextcolorCode.main }} primary="Privacy Policy" />
+                                            </ListItem>
+                                            <ListItem sx={{p: 0.3, m: 0}} button component={Link} to="/terms-and-conditions">
+                                                <ListItemText sx={{ color: theme.palette.footertextcolorCode.main }} primary="Terms & Conditions" />
+                                            </ListItem>
+                                            <ListItem sx={{p: 0.3, m: 0}} button component={Link} to="/refund-and-cancellation">
+                                                <ListItemText sx={{ color: theme.palette.footertextcolorCode.main }} primary="Refund & Cancellation" />
+                                            </ListItem>
+                                        </List>
+                                    </Box>
                                 </Grid>
-                            ))}
+                            </Grid>
+                        </Grid>
+
+                        <Grid item xs={12} sm={12} md={2}>
+                            <Typography sx={{ color: theme.palette.footertextcolorCode.main, borderBottom: `2px solid ${theme.palette.basecolorCode.main}`, display: 'inline' }} fontWeight={600} variant={'h5'}>Official info:</Typography>
+                            <Box display="flex" gap={2}>
+                                <Typography component={'p'} sx={{ mt: 1, color: theme.palette.footertextcolorCode.main }} className="text-sm sm:text-base lg:text-lg">
+                                    No.1/181,1st Floor Elumalai Salai<br />
+                                    Nanmangalam, Chennai – 600 129<br />
+                                    Landmark: Near Nanmangalam Panchayat<br />
+                                </Typography>
+                            </Box>
+                            <Box>
+                                <Typography component={'p'} sx={{ mt: 1, color: theme.palette.footertextcolorCode.main }}>info@healthysteps.in</Typography>
+                            </Box>
+                        </Grid>
+
+                        {/* Right section */}
+                        <Grid item xs={12} sm={12} md={2}>
+                            <Typography sx={{ color: theme.palette.footertextcolorCode.main, borderBottom: `2px solid ${theme.palette.basecolorCode.main}`, display: 'inline' }} fontWeight={600} variant={'h5'}>Download App</Typography>
+                            <Box sx={{ mt: 2 }}>
+                                <Button component={Link} target='_blank' href='https://play.google.com/store/apps/details?id=com.webpos.healthysteps' variant="outlined" sx={{ mb: 1, border: `1px solid ${theme.palette.basecolorCode.main}`, color: theme.palette.footertextcolorCode.main }} startIcon={<img src={PlayStrore} alt="Play Store" width="20" />}>
+                                    Get it on play store
+                                </Button>
+                                <Button component={Link} target='_blank' href='https://play.google.com/store/apps/details?id=com.webpos.healthysteps' variant="outlined" sx={{ mt: 2, border: `1px solid ${theme.palette.basecolorCode.main}`, color: theme.palette.footertextcolorCode.main }} startIcon={<img src={AppStrore} alt="App Store" width="20" />}>
+                                    Get it on app store
+                                </Button>
+                            </Box>
                         </Grid>
                     </Grid>
-
-                    {/* Contact Information Section */}
-                    <Grid item xs={12} sm={4}>
-                        <p className="text-white text-base sm:text-lg lg:text-xl font-semibold">
-                            Contact Us
-                        </p>
-                        <p className="text-primary text-sm sm:text-base lg:text-lg">
-                            1111-33-4444 <br />
-                            customercare@healthystpes.com
-                        </p>
-                        <Box sx={{ mt: 2 }}>
-                            <IconButton href="#" className="text-primary">
-                                <FacebookIcon />
-                            </IconButton>
-                            <IconButton href="#" className="text-primary">
-                                <TwitterIcon />
-                            </IconButton>
-                            <IconButton href="#" className="text-primary">
-                                <InstagramIcon />
-                            </IconButton>
-                            <IconButton href="#" className="text-primary">
-                                <YouTubeIcon />
-                            </IconButton>
-                        </Box>
-                    </Grid>
-                </Grid>
-            </Container>
-        </Box>
+                </Container>
+            </Box>
         </>
     );
 };

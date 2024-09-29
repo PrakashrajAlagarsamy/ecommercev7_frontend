@@ -118,14 +118,14 @@ const ProductDetails = () => {
             </Box>
             <Container maxWidth="xl" sx={{ my: 3 }}>
                 <Grid container>
-                    <Grid item xs={6}>
+                    <Grid item xs={12} sm={6}>
                         <Slider {...settings1}>
                             {imageLists.map((image, index) => (
                                 <img src={ImagePathRoutes.ProductDetailsImagePath + image} alt={productDetails.Description || "Product name is not available" + index + 1} />
                             ))}
                         </Slider>
                     </Grid>
-                    <Grid item xs={6}>
+                    <Grid item xs={12} sm={6}>
                         <Box>
                             <Box sx={{ pb: 1 }}><BreadCrumbs CategoryId={productDetails.CId} SubCateoryId={productDetails.SId} SubCategoryName={productDetails.SubCategoryName} ProductName={productDetails.Description} /></Box>
                             <Typography component={"h4"} sx={{ fontSize: 20, fontWeight: 600, fontFamily: "inherit", textAlign: "left", pb: 1.5 }}>

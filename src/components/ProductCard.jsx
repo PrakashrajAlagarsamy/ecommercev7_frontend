@@ -18,12 +18,28 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => 
   const [productId, setProductId] = useState(0);
   const [productValue, setProductValue] = useState(0);
   let [isFavoriteProduct, setIsFavoriteProduct] = useState(0);
-  const [age, setAge] = React.useState('');
 
-  const handleChange = (event) => {
+  const [productWeight, setProductWeight] = useState(''); // Holds the selected weight
+  const [selectedPrice, setSelectedPrice] = useState(0); // Holds the price for the selected weight
+  const [selectedMRP, setSelectedMRP] = useState(0); // Holds the MRP for the selected weight
+
+
+  const handleProductWeightChange = (event, ProductWeightLists) => {
     event.stopPropagation();
-    setAge(event.target.value);
+    
+    const selectedWeightId = event.target.value; // Get the selected weight Id or value
+    const selectedWeight = ProductWeightLists.find(item => item.WeightType === selectedWeightId); // Find the corresponding weight object
+    if (selectedWeight) {
+      setProductWeight(selectedWeight.WeightType); // Set the selected weight
+      setTotalPrice(selectedWeight.SaleRate); // Update the price for the selected weight
+      setSelectedMRP(selectedWeight.MRP); // Update the MRP for the selected weight
+      
+      // Update total price based on selected weight price and quantity
+      const newTotalPrice = quantity * selectedWeight.SaleRate;
+      updateCartItems(quantity, newTotalPrice, selectedWeight.MRP);
+    }
   };
+  
 
   useEffect(() => {
     const existingProduct = cartItems.find(item => item.Id === product?.Id);
@@ -109,25 +125,34 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => 
   //Add fav product
   const handleAddFavProduct = async (ProductId, event, status) => {
     event.stopPropagation();
+    
+    // Optimistically toggle favorite status first
+    setIsFavoriteProduct(status === 'Add' ? 1 : 0);
+    
     let userId = localStorage.getItem("userId");
     userId = Number(atob(userId));
     try {
       const response = await API_InsertMyFavoriteProducts(ProductId, userId);
-      if (response.ok) {
-        setIsFavoriteProduct(status === 'Add' ? isFavoriteProduct = 1 : isFavoriteProduct = 0);
-        console.log("Product added successfully:", response);
+      if (!response.ok) {
+        // Revert the optimistic UI update if the API call fails
+        setIsFavoriteProduct(status === 'Add' ? 0 : 1);
+        console.error("Error updating favorite status:", response);
+      } else {
+        console.log("Favorite status updated successfully:", response);
       }
     } catch (error) {
-      console.error("Error removing favorite product lists:", error);
+      // Revert the optimistic UI update on error
+      setIsFavoriteProduct(status === 'Add' ? 0 : 1);
+      console.error("Error handling favorite product:", error);
     }
   };
+  
 
   return (
     <Card
       id={product?.Productid ? product.Productid : product?.Id}
       name={product.Description}
-      value={product?.Productid ? product.Productid : product?.Id}
-      onClick={handleProductClick}
+      value={product?.Productid ? product.Productid : product?.Id}      
       sx={{
         width: { xs: offerProducts === null && relatedProducts === null ? 155 : 175, sm: 220, md: 260, lg: 280 },
         height: { xs: 320, sm: 380, md: 400, lg: 420 },
@@ -162,6 +187,7 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => 
         <Box sx={{ position: 'relative', height: { xs: '50%', sm: '55%', md: '60%' } }}>
           <CardMedia
             component="img"
+            onClick={handleProductClick}
             image={ImagePathRoutes.ProductImagePath + product.Img0}
             alt={product.Description}
             className="card-media"
@@ -219,6 +245,7 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => 
               <Typography
                 variant="body2"
                 component={"p"}
+                onClick={handleProductClick}
                 name={product.Description}
                 sx={{
                   fontSize: { xs: '12px', sm: '12px', md: '12px', lg: '14px', xl: '14px' }, 
@@ -249,16 +276,30 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => 
                   <Box sx={{ minWidth: 75, p: 0 }}>
                     <FormControl fullWidth sx={{ p: 0, border: 'none', }}>
                       <Select
-                        sx={{ height: '30px', border: '1px dotted #999', '&:hover': { border: '1px dotted #999' } }}
+                        sx={{
+                          height: '30px',
+                          border: '1px dotted #999',
+                          '& .MuiOutlinedInput-notchedOutline': {
+                            border: 'none', 
+                          },
+                          '&:hover .MuiOutlinedInput-notchedOutline': {
+                            border: 'none', 
+                          },
+                          '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                            border: 'none',
+                          },
+                        }}
                         size='small'
                         labelId="demo-simple-select-label-multi"
                         id="demo-simple-select-multi"
-                        value={age}
-                        onChange={(e) => { handleChange(e); }}
+                        value={productWeight}
+                        onChange={(e) => { handleProductWeightChange(e, product.ProductWeightType); }}
                       >
-                        <MenuItem sx={{ px: 1, py: 0 }} value={10}>1kg</MenuItem>
-                        <MenuItem sx={{ px: 1, py: 0 }} value={20}>500GM</MenuItem>
-                        <MenuItem sx={{ px: 1, py: 0 }} value={30}>250GM</MenuItem>
+                        {product.ProductWeightType.map((weight, index) => (
+                          <MenuItem sx={{ px: 1, py: 0 }} key={index} name={weight.Id} value={weight.WeightType}>
+                            {weight.WeightType}
+                          </MenuItem>
+                        ))}
                       </Select>
                     </FormControl>
                   </Box>

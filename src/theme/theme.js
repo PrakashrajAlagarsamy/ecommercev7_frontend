@@ -23,6 +23,9 @@ export const ThemeSettings = (themeLists = {}) => {
       whitecolorCode: {
         main: themeLists.whitecolorCode,
       },
+      footertextcolorCode: {
+        main: '#9ca3af'
+      }
     },
     palette: {
       basecolorCode: {
@@ -42,6 +45,9 @@ export const ThemeSettings = (themeLists = {}) => {
       whitecolorCode: {
         main: themeLists.whitecolorCode || '#FFF',
       },
+      footertextcolorCode: {
+        main: '#FFF'
+      }
     },
   });
 };

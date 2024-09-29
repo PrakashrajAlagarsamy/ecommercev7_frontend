@@ -11,8 +11,7 @@ import * as actionType from '../../redux1/actionType';
 import { connect } from 'react-redux';
 
 const AppLayout = (props) => {
-  const { children, get_catgory_lists, SetGlobalSettings, SetGlobalCategories } = props;
-  // eslint-disable-next-line no-unused-vars
+  const { children, get_catgory_lists, SetGlobalSettings, SetGlobalCategories, CompanyDetails } = props;
   const [settingsLists, setSettingsLists] = React.useState([]);
 
   const FetchSettingsLists = async () => {
@@ -41,14 +40,13 @@ const AppLayout = (props) => {
     try {
       const categoryList = await API_FetchCategory(); 
       SetGlobalCategories(categoryList); 
-      console.log('get_category_global-', get_catgory_lists);
     } catch (error) {
       console.error('Error fetching categories:', error);
     }
   };
 
   useEffect(() => {
-    FetchSettingsLists();
+    //FetchSettingsLists();
     //FetchTopCategoryLists();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -65,7 +63,7 @@ const AppLayout = (props) => {
           <FooterCategories />
         </Container>
       </Box>
-      <AppFooter />
+      <AppFooter CompanyDetails={CompanyDetails} />
     </>
   );
 };

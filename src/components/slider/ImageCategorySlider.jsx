@@ -45,14 +45,14 @@ export default function ImageCategorySlider({ CategoryImageLists = [] }) {
   return (
     <Container 
       maxWidth="xl" 
-      sx={{px: { xs: 0, sm: 0 }, pt: 2, pb: 1 }}
+      sx={{px: { xs: 0, sm: 0, md: 0, lg: 0 } }}
     >
       {images.length > 2 ? (
         <Slider {...settings}>
           {images.map((img, imgIndex) => (
             <Box
               key={imgIndex}
-              sx={{ textAlign: 'center' }}
+              sx={{ textAlign: 'center', pt: 3 }}
             >
               <Box
                 component="img"

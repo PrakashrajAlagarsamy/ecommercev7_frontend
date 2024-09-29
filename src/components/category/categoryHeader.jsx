@@ -13,7 +13,7 @@ function CategoryHeader({ CategoryHeading, categoryId, categoryValue }) {
   };
 
   return (
-    <div className="flex justify-between items-center mb-4">
+    <div className="flex justify-between items-center mb-5">
       <Typography 
         component={'h2'}
         className="font-bold"
@@ -32,9 +32,10 @@ function CategoryHeader({ CategoryHeading, categoryId, categoryValue }) {
         onClick={handleViewBtnClick}
         endIcon={<ArrowForward />}
         sx={{
+          textTransform: 'capitalize',
           mt: { xs: 2, sm: 0 }, 
-          fontSize: { xs: '12px', sm: '12px', md: '12px', lg: '14px', xl: '16px' }, 
-          padding: { xs: '2px 5px', sm: '4px 7px', md: '5px 10px' }, 
+          fontSize: { xs: '12px', sm: '12px', md: '12px', lg: '14px', xl: '14px' }, 
+          padding: { xs: '1px 5px', sm: '2px 7px', md: '3px 8px' }, 
           background: 'none',
           borderColor: theme.palette.lightblackcolorCode.main || '#253D4E',
           color: theme.palette.lightblackcolorCode.main || '#253D4E',
@@ -44,7 +45,7 @@ function CategoryHeader({ CategoryHeading, categoryId, categoryValue }) {
           }
         }}
       >
-        See All
+        View All
       </Button>
     </div>
   );

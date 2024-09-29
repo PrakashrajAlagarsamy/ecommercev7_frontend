@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useMediaQuery, useTheme } from '@mui/material';
@@ -11,6 +12,10 @@ import ProductList from '../pages/product-list';
 import ProductDetails from '../pages/product-details';
 import MyAccount from '../pages/myaccount';
 import ProductCheckout from '../pages/product-checkout';
+import AboutUs from '../pages/about-us';
+import PrivacyPolicy from '../pages/privacy-policy';
+import TermsAndConditions from '../pages/terms-and-conditions';
+import RefundAndCancellation from '../pages/refund-and-cancellation';
 import { API_FetchSettings } from '../services/settings';
 import { ThemeProvider } from '@mui/material/styles';
 import { CssBaseline } from '@mui/material';
@@ -47,7 +52,7 @@ function AppRouter() {
             <Router>
                 <AuthProvider>
                     <CartProvider>
-                        <AppLayout>
+                        <AppLayout CompanyDetails={themeLists}>
                             <div className="App">
                                 <Routes>
                                     <Route path="/" element={<HomePage />} />
@@ -56,6 +61,10 @@ function AppRouter() {
                                     <Route path="/product-details" element={<ProductDetails />} />
                                     <Route path="/myaccount" element={<MyAccount />} />
                                     <Route path="/product-checkout" element={<ProductCheckout />} />
+                                    <Route path="/about-us" element={<AboutUs />} />
+                                    <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                                    <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+                                    <Route path="/refund-and-cancellation" element={<RefundAndCancellation />} />
                                     {/* Catch-all Route for 404 */}
                                     <Route path="*" element={<Navigate to="/" replace />} />
                                 </Routes>

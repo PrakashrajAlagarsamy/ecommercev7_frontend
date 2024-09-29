@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
-import {Link} from 'react-router-dom';
-import { AppBar, Toolbar, Grid, IconButton, InputAdornment, TextField, Button, Typography, Drawer, List, ListItem, ListItemText } from '@mui/material';
+import { Link } from 'react-router-dom';
+import { Badge, AppBar, Toolbar, Grid, IconButton, InputAdornment, TextField, Button, Typography, Drawer, List, ListItem, ListItemText } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import PersonIcon from '@mui/icons-material/Person';
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
@@ -12,36 +12,37 @@ import AppLogin from '../authentication/AppLogin';
 import AppCart from '../cart/AppCart';
 import AppForgetPassword from '../authentication/AppForgetPassword';
 import { useAuth } from '../../context/authContext';
+import { useCart } from '../../context/CartContext';
 
 const drawerContent = (
   <List>
-    <ListItem button>
+    <ListItem button component={Link} to="/">
       <AppLogo />
     </ListItem>
-    <ListItem button>
-      <ListItemText primary="About us" />
+    <ListItem button component={Link} to="/about">
+      <ListItemText primary="About Us" />
     </ListItem>
-    <ListItem button>
-      <ListItemText primary="Privacy policy" />
+    <ListItem button component={Link} to="/privacy-policy">
+      <ListItemText primary="Privacy Policy" />
     </ListItem>
-    <ListItem button>
-      <ListItemText primary="Terms & conditions" />
+    <ListItem button component={Link} to="/terms-and-conditions">
+      <ListItemText primary="Terms & Conditions" />
     </ListItem>
-    <ListItem button>
-      <ListItemText primary="Refund & cancellation" />
+    <ListItem button component={Link} to="/refund-cancellation">
+      <ListItemText primary="Refund & Cancellation" />
     </ListItem>
   </List>
 );
 
 export default function AppHeader() {
-  // eslint-disable-next-line no-unused-vars
   const { isAuthenticated, setIsAuthenticated } = useAuth();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [registerDrawerOpen, setRegisterDrawerOpen] = useState(false);
   const [loginDrawerOpen, setLoginDrawerOpen] = useState(false);
   const [cartDrawerOpen, setCartDrawerOpen] = useState(false);
   const [forgetPasswordDrawerOpen, setForgetPasswordDrawerOpen] = useState(false);
-  
+  const [cartItemsCount, setCartItemsCount] = useState(0);
+  const {cartItems} = useCart();
   const [isScrolled, setIsScrolled] = useState(false);
 
   const toggleDrawer = (open) => () => {
@@ -50,51 +51,54 @@ export default function AppHeader() {
 
   // Authentication right sidebar
   const handleAuthDrawerToggle = (event) => {
-    if(event === false){
-      if(registerDrawerOpen === true){
+    if (event === false) {
+      if (registerDrawerOpen === true) {
         setRegisterDrawerOpen((prev) => !prev);
       }
-      else if(loginDrawerOpen === true){
+      else if (loginDrawerOpen === true) {
         setLoginDrawerOpen((prev) => !prev);
       }
-      else{
+      else {
         setCartDrawerOpen((prev) => !prev);
       }
     }
-    else{
+    else {
       const id = event.currentTarget.id;
-      if(id === "register_btn"){
+      if (id === "register_btn") {
         setRegisterDrawerOpen((prev) => !prev);
       }
-      else if(id === "login_btn"){
+      else if (id === "login_btn") {
         setLoginDrawerOpen((prev) => !prev);
       }
-      else{
+      else {
         setCartDrawerOpen((prev) => !prev);
-      }    
+      }
     }
   };
 
   // Handle scroll event to animate header
-  useEffect(() => {
+  useEffect(() => {   
+
+    setCartItemsCount(cartItems.length ? cartItems.length : 0);
+    
     const handleScroll = () => {
-      if (window.scrollY > 150) { 
+      if (window.scrollY > 150) {
         setIsScrolled(true);
       } else {
         setIsScrolled(false);
       }
     };
-    
+
     window.addEventListener('scroll', handleScroll);
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, []);
+  }, [cartItems]);
 
   return (
-    <>      
+    <>
       <AppBar
-        position={isScrolled ? 'sticky' : 'relative'} 
+        position={isScrolled ? 'sticky' : 'relative'}
         color="transparent"
         elevation={isScrolled ? 7 : 0}
         sx={{
@@ -102,9 +106,9 @@ export default function AppHeader() {
           backgroundColor: isScrolled ? '#FFF' : '#FFF',
           transition: 'all 1.5s ease',
           zIndex: 9,
-          top: 0, 
+          top: 0,
           '@media (max-width: 600px)': {
-            position: 'relative', 
+            position: 'relative',
             width: '100%',
           },
         }}
@@ -114,7 +118,7 @@ export default function AppHeader() {
 
             {/* Logo Section */}
             <Grid item xs={6} sm={3} md={2}>
-             <Link to={"/"}> <AppLogo /></Link>
+              <Link to={"/"}> <AppLogo /></Link>
             </Grid>
 
             {/* Hamburger Menu for Mobile */}
@@ -159,7 +163,7 @@ export default function AppHeader() {
             {/* Navigation and User Action Section */}
             <Grid item xs={6} sm={3} md={5} sx={{ display: { xs: 'none', sm: 'flex' }, justifyContent: 'flex-end', alignItems: 'center', gap: '30px' }}>
               <Button sx={{ color: '#333', textTransform: 'none', display: { xs: 'none', md: 'block' } }}>
-                <Typography component={"p"} sx={{fontFamily: 'inherit', fontWeight: 600}}>WhatsApp Only<br/>
+                <Typography component={"p"} sx={{ fontFamily: 'inherit', fontWeight: 600 }}>WhatsApp Only<br />
                 </Typography>
               </Button>
               <Button sx={{ color: '#333', fontWeight: 600, fontFamily: 'inherit', textTransform: 'none', display: { xs: 'none', md: 'block' } }}><Link to={"/categories"}>Home</Link></Button>
@@ -170,7 +174,7 @@ export default function AppHeader() {
                     sx={{ color: '#333', textTransform: 'none' }}
                     onClick={handleAuthDrawerToggle}
                   >
-                    <Typography sx={{fontFamily: 'inherit', fontWeight: 600}}>Register</Typography>
+                    <Typography sx={{ fontFamily: 'inherit', fontWeight: 600 }}>Register</Typography>
                   </Button>
 
                   <Button
@@ -178,7 +182,7 @@ export default function AppHeader() {
                     sx={{ color: '#333', textTransform: 'none' }}
                     onClick={handleAuthDrawerToggle}
                   >
-                    <Typography sx={{fontFamily: 'inherit', fontWeight: 600}}>Sign In</Typography>
+                    <Typography sx={{ fontFamily: 'inherit', fontWeight: 600 }}>Sign In</Typography>
                     <PersonIcon sx={{ ml: 1 }} />
                   </Button>
                 </>
@@ -190,12 +194,14 @@ export default function AppHeader() {
                   sx={{ color: '#333', textTransform: 'none' }}
                 >
                   <PersonIcon sx={{ ml: 1 }} />
-                  <Typography sx={{fontFamily: 'inherit', fontWeight: 600}}><Link to={"/myaccount"}>Profile</Link></Typography>
+                  <Typography sx={{ fontFamily: 'inherit', fontWeight: 600 }}><Link to={"/myaccount"}>Profile</Link></Typography>
                 </Button>
               )}
 
               <IconButton color="inherit" onClick={handleAuthDrawerToggle}>
-                <ShoppingBagIcon />
+                <Badge badgeContent={cartItemsCount} color="primary">
+                  <ShoppingBagIcon color="action" />
+                </Badge>
               </IconButton>
             </Grid>
           </Grid>
