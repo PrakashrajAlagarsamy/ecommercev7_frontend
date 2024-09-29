@@ -10,6 +10,7 @@ import Calendar from '../components/datePicker';
 import { API_FetchDeliveryTimes } from '../services/settings';
 import { API_InsertSaleOrderSave } from '../services/checkoutServices';
 import { useTheme } from '@mui/material/styles';
+import CircularLoader from '../components/circular-loader';
 
 const style = {
     position: 'absolute',
@@ -42,10 +43,17 @@ export default function ProductCheckout() {
     const [selectedAddress, setSelectedAddress] = React.useState('');
     const [InfoStatus, setInfoStatus] = React.useState('');
     const [loading, setLoading] = React.useState(false);
+    const [showLoader, setShowLoader] = React.useState(false);
 
     const [AlertOpen, setAlertOpen] = React.useState(false);
     const handleAlertOpen = () => setAlertOpen(true);
-    const handleAlertClose = () => setAlertOpen(false);
+
+    const handleAlertClose = () => {
+        if(InfoStatus === 'Your order has been placed'){
+            navigate('/');
+        }
+        setAlertOpen(false);
+    };
 
     //Load delivery time lists
     const FetchDeliveryTimes = async () => {
@@ -121,6 +129,7 @@ export default function ProductCheckout() {
         }
         else {
             setAlertOpen(false);
+            setShowLoader(true);
             const OrderDetails = [];
             if (cartItems.length > 0 && cartItems != null) {
                 for (let i = 0; i < cartItems.length; i++) {
@@ -195,24 +204,33 @@ export default function ProductCheckout() {
     const InsertSaleOrderSave = async (master) => {
         try {
             const response = await API_InsertSaleOrderSave(master);
-            console.log("OrderSavedData", response);
-            setLoading(false);
-            localStorage.removeItem('cartItems');
-            setCartItems([]);
-            setInfoStatus('Your order has been placed');
-            handleAlertOpen(true);
-            // const timer = setTimeout(() => {
-            //     navigate('/');  
-            // }, 5000);
+            if(response.length !== 0){
+                setLoading(false);
+                localStorage.removeItem('cartItems');
+                setCartItems([]);
+                setInfoStatus('Your order has been placed');
+                setShowLoader(false);
+                handleAlertOpen(true);
+            }
+            else{
+                setLoading(false);                
+                setInfoStatus('Your order has been rejected.');
+                setShowLoader(false);
+                handleAlertOpen(true);
+            }
         } catch (error) {
             console.error("Error inserting order details:", error);
-            setLoading(false);
+            setLoading(false);                
+            setInfoStatus('Your order has been rejected.');
+            setShowLoader(false);
+            handleAlertOpen(true);
         }
     };
 
 
     return (
         <>
+            <CircularLoader showLoader={showLoader} />
             <Modal
                 open={AlertOpen}
                 onClose={handleAlertClose}
@@ -227,7 +245,7 @@ export default function ProductCheckout() {
                         {InfoStatus}
                     </Typography>
                     <Box sx={{ float: 'right' }}>
-                        <Button component={Link} href={'/'} onClick={handleAlertClose} variant='contained' size='small'>Okay</Button>
+                        <Button onClick={handleAlertClose} variant='contained' size='small'>Okay</Button>
                     </Box>
                 </Box>
             </Modal>
