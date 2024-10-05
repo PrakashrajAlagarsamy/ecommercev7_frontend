@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { Box, Container, Grid, Typography, Button } from '@mui/material';
+import { Box, Container, Grid, Typography, Button, CircularProgress, Backdrop } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { ServerURL } from '../server/serverUrl';
@@ -12,9 +12,11 @@ import { ImagePathRoutes } from '../routes/ImagePathRoutes';
 import { API_FetchProductById } from '../services/productListServices';
 import RelatedProducts from '../components/slider/relatedProducts';
 import BreadCrumbs from '../components/BreadCrumbs';
-
+import { useCart } from '../context/CartContext';
+import { useTheme } from '@mui/material/styles';
 
 const ProductDetails = () => {
+    const theme = useTheme();
     const location = useLocation();
     const navigate = useNavigate();
     const [productId, setProductId] = useState(0);
@@ -24,27 +26,105 @@ const ProductDetails = () => {
     const [imageLists, setImageLists] = useState([]);
     const [loading, setLoading] = useState(false);
     const [backdropOpen, setBackdropOpen] = useState(false);    
+    const { cartItems, setCartItems } = useCart();
+    const [productValue, setProductValue] = useState(0);
+    let [isFavoriteProduct, setIsFavoriteProduct] = useState(0);
+  
+    const [productWeight, setProductWeight] = useState(''); 
+    const [selectedPrice, setSelectedPrice] = useState(0); 
+    const [selectedMRP, setSelectedMRP] = useState(0);
+  
+    
+  
 
-    const handleIncrement = (event) => {
-        event.stopPropagation();
-        setQuantity((prevQuantity) => {
-            const newQuantity = prevQuantity + 1;
-            if (newQuantity > 1) {
-                setTotalPrice((prevPrice) => prevPrice + productDetails.Price);
-            }
-            return newQuantity;
-        });
-    };
+  const handleProductWeightChange = (event, ProductWeightLists) => {
+    event.stopPropagation();
+    
+    const selectedWeightId = event.target.value; // Get the selected weight Id or value
+    const selectedWeight = ProductWeightLists.find(item => item.WeightType === selectedWeightId); // Find the corresponding weight object
+    if (selectedWeight) {
+      setProductWeight(selectedWeight.WeightType); // Set the selected weight
+      setTotalPrice(selectedWeight.SaleRate); // Update the price for the selected weight
+      setSelectedMRP(selectedWeight.MRP); // Update the MRP for the selected weight
+      
+      // Update total price based on selected weight price and quantity
+      const newTotalPrice = quantity * selectedWeight.SaleRate;
+      updateCartItems(quantity, newTotalPrice, selectedWeight.MRP);
+    }
+  };
+  
 
-    const handleDecrement = (event) => {
-        event.stopPropagation();
-        setQuantity((prevQuantity) => {
-            if (prevQuantity > 1) {
-                setTotalPrice((prevPrice) => prevPrice - productDetails.Price);
-            }
-            return prevQuantity > 0 ? prevQuantity - 1 : 0;
+  useEffect(() => {    
+    const existingProduct = cartItems.find(item => item.Id === productDetails?.Id);
+    if (existingProduct) {
+      setQuantity(existingProduct.item);
+      setTotalPrice(existingProduct.totalPrice);
+    } else {
+      setQuantity(0);
+      setTotalPrice(productDetails?.Price || 0);
+    }
+  }, [cartItems, productDetails]);
+  
+  // Update cartItems function
+  const updateCartItems = (newQuantity, newTotalPrice, MRP) => {
+    setCartItems(prevCartItems => {
+      const existingProductIndex = prevCartItems.findIndex(item => item.Id === productDetails?.Id);
+      let updatedCartItems = [...prevCartItems];
+  
+      if (existingProductIndex >= 0) {
+        if (newQuantity > 0) {
+          updatedCartItems[existingProductIndex] = {
+            ...updatedCartItems[existingProductIndex],
+            item: newQuantity,
+            totalPrice: newTotalPrice,
+            totalMRP: MRP  
+          };
+        } else {
+          updatedCartItems = updatedCartItems.filter(item => item.Id !== productDetails?.Id);
+        }
+      } else if (newQuantity > 0) {
+        updatedCartItems.push({ 
+          ...productDetails, 
+          item: newQuantity, 
+          totalPrice: newTotalPrice,
+          totalMRP: MRP  
         });
-    };
+      }
+  
+      localStorage.setItem('cartItems', JSON.stringify(updatedCartItems));
+      return updatedCartItems;
+    });
+  };
+  
+  // Quantity increment function
+  const handleIncrement = (event) => {
+    event.stopPropagation();
+    const newQuantity = quantity + 1;
+    const newTotalPrice = newQuantity * productDetails.Price;
+    const MRP = newQuantity * productDetails.MRP;
+  
+    setQuantity(newQuantity);
+    setTotalPrice(newTotalPrice);
+    updateCartItems(newQuantity, newTotalPrice, MRP);
+  };
+  
+  // Quantity decrement function
+  const handleDecrement = (event) => {
+    event.stopPropagation();
+    const newQuantity = quantity - 1;
+    const newTotalPrice = newQuantity * productDetails.Price;
+    const MRP = newQuantity * productDetails.MRP;
+  
+    if (newQuantity === 0) {
+      setQuantity(0);
+      setTotalPrice(productDetails.Price);
+      updateCartItems(0, productDetails.Price, MRP); 
+    } else if (quantity > 0) {
+      setQuantity(newQuantity);
+      setTotalPrice(newTotalPrice);
+      updateCartItems(newQuantity, newTotalPrice, MRP);
+    }
+  };
 
 
     const GetProductDetails = async (productId) => {
@@ -62,7 +142,6 @@ const ProductDetails = () => {
                     .filter(img => img && img !== "Undefined.jpg" && img !== "Undefined.png");
                 setImageLists(images);
             } else {
-                // Handle the case when no product details are fetched
                 setProductDetails({});
                 setImageLists([]);
             }
@@ -105,6 +184,9 @@ const ProductDetails = () => {
 
     return (
         <>
+        <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={backdropOpen}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
             <Box className="card-wrapper" sx={{ maxWidth: '100%', mx: 'auto', p: 2 }}>
                 <Box sx={{ display: 'block', justifyContent: 'space-between' }}>
                     {/* Card Left - Image Slider */}

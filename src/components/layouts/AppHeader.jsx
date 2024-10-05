@@ -166,7 +166,7 @@ export default function AppHeader() {
                 <Typography component={"p"} sx={{ fontFamily: 'inherit', fontWeight: 600 }}>WhatsApp Only<br />
                 </Typography>
               </Button>
-              <Button sx={{ color: '#333', fontWeight: 600, fontFamily: 'inherit', textTransform: 'none', display: { xs: 'none', md: 'block' } }}><Link to={"/categories"}>Home</Link></Button>
+              <Button sx={{ color: '#333', fontWeight: 600, fontFamily: 'inherit', textTransform: 'none', display: { xs: 'none', md: 'block' } }}><Link to={"/"}>Home</Link></Button>
               {!isAuthenticated && (
                 <>
                   <Button

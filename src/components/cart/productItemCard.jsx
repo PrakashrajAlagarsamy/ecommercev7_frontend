@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { Box, Typography, Button, IconButton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -28,17 +28,23 @@ const ProductItemCard = ({ product }) => {
         if (existingProductIndex >= 0) {
           updatedCartItems = prevCartItems.map((item, index) =>
             index === existingProductIndex
-              ? { ...item, item: item.item + 1, totalMRP: product.MRP * (item.item + 1), totalPrice: product.Price * (item.item + 1) }
+              ? { ...item, item: item.item + 1, totalMRP: product.MRP * (item.item + 1), totalPrice: (product.selectedPrice > 0 ? product.selectedPrice : product.Price) * (item.item + 1),
+                selectedPrice: product.selectedPrice,
+                selectedMRP: product.selectedMRP
+               }
               : item
           );
         } else {
-          updatedCartItems = [...prevCartItems, { ...product, item: 1, totalMRP: product.MRP, totalPrice: product.Price }];
+          updatedCartItems = [...prevCartItems, { ...product, item: 1, totalMRP: product.MRP, totalPrice: (product.selectedPrice > 0 ? product.selectedPrice : product.Price),
+            selectedPrice: product.selectedPrice,
+            selectedMRP: product.selectedMRP
+           }];
         }
 
         if (newQuantity > 1) {
-          setTotalPrice((prevPrice) => prevPrice + product.Price);
+          setTotalPrice((prevPrice) => prevPrice + (product.selectedPrice > 0 ? product.selectedPrice : product.Price));
         }
-        
+
         localStorage.setItem("cartItems", JSON.stringify(updatedCartItems));
         return updatedCartItems;
       });
@@ -48,28 +54,29 @@ const ProductItemCard = ({ product }) => {
 
   const handleDecrement = (event) => {
     event.stopPropagation();
-  
-    // Update cartItems by checking if the product exists
+
     setCartItems((prevCartItems) => {
       const existingProductIndex = prevCartItems.findIndex(
         (item) => item.Id === product?.Id
       );
-  
+
       let updatedCartItems = [];
-  
+
       if (existingProductIndex >= 0) {
         const updatedQuantity = prevCartItems[existingProductIndex].item - 1;
-  
+
         if (updatedQuantity > 0) {
           // If the product exists and quantity is greater than 0, decrement its quantity
           updatedCartItems = prevCartItems.map((item, index) =>
             index === existingProductIndex
               ? {
-                  ...item,
-                  item: updatedQuantity,
-                  totalMRP: product.MRP * updatedQuantity,
-                  totalPrice: product.Price * updatedQuantity,
-                } // Decrement item count
+                ...item,
+                item: updatedQuantity,
+                totalMRP: product.MRP * updatedQuantity,
+                totalPrice: (product.selectedPrice > 0 ? product.selectedPrice : product.Price) * updatedQuantity,
+                selectedPrice: product.selectedPrice,
+                selectedMRP: product.selectedMRP
+              }
               : item
           );
         } else {
@@ -79,25 +86,23 @@ const ProductItemCard = ({ product }) => {
           );
         }
       } else {
-        updatedCartItems = prevCartItems; // Return the cart as-is if the product wasn't found
+        updatedCartItems = prevCartItems;
       }
-  
-      // Store the updated cart in localStorage
+
       localStorage.setItem("cartItems", JSON.stringify(updatedCartItems));
-  
       return updatedCartItems;
     });
-  
+
     // Decrement quantity state only after checking cart items
     setQuantity((prevQuantity) => {
       if (prevQuantity > 1) {
-        setTotalPrice((prevPrice) => prevPrice - product.Price);
+        setTotalPrice((prevPrice) => prevPrice - (product.selectedPrice > 0 ? product.selectedPrice : product.Price));
       }
       return prevQuantity > 0 ? prevQuantity - 1 : 0;
     });
   };
 
-  
+
   return (
     <Box
       sx={{
@@ -122,8 +127,8 @@ const ProductItemCard = ({ product }) => {
         alt={product.Description}
       />
       <Box>
-        <Typography variant="p" 
-        sx={{
+        <Typography variant="p"
+          sx={{
             fontSize: '12px',
             fontWeight: 'bold',
             overflow: 'hidden',
@@ -133,7 +138,7 @@ const ProductItemCard = ({ product }) => {
             textOverflow: 'ellipsis',
             lineHeight: '12px',
             fontFamily: 'inherit',
-            minHeight: '20px', 
+            minHeight: '20px',
             width: '150px',
             marginRight: 0,
           }}
@@ -141,79 +146,79 @@ const ProductItemCard = ({ product }) => {
           {product.Description}
         </Typography>
         <Typography variant="p" color="textSecondary"
-        sx={{
-            fontSize: '10px',            
+          sx={{
+            fontSize: '10px',
           }}
         >
           {product.UnitType}
         </Typography>
       </Box>
-      <Button 
+      <Button
         variant="outlined"
-          sx={{ 
-            width: "20%",
-            display: 'flex', 
-            alignItems: 'center', 
-            justifyContent: 'space-between',
+        sx={{
+          width: "20%",
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          background: '#3bb77e1c',
+          border: '1px solid #3BB77E',
+          color: '#3BB77E',
+          fontFamily: 'inherit',
+          marginRight: 0,
+          padding: { xs: '4px 0px', sm: '5px 0px', md: '5px 0px' },
+          '&:hover': {
             background: '#3bb77e1c',
             border: '1px solid #3BB77E',
+            color: '#3BB77E'
+          }
+        }}
+      >
+        <Typography
+          variant="body2"
+          onClick={(e) => { handleDecrement(e); }}
+          disabled={quantity === 0}
+          sx={{
+            width: '25%',
             color: '#3BB77E',
             fontFamily: 'inherit',
-            marginRight: 0,
-            padding: { xs: '4px 0px', sm: '5px 0px', md: '5px 0px' },
-            '&:hover':{
-              background: '#3bb77e1c',
-              border: '1px solid #3BB77E',
-              color: '#3BB77E'
-            } 
           }}
         >
-          <Typography 
-            variant="body2" 
-            onClick={(e) => { handleDecrement(e); }}
-            disabled={quantity === 0}
-            sx={{    
-              width: '25%',          
-              color: '#3BB77E', 
-              fontFamily: 'inherit',
-            }}
-          >
-            -
-          </Typography>
-          <Typography 
-            variant="body2"
-            sx={{ 
-              width: '50%',     
-              color: '#3BB77E',
-              fontFamily: 'inherit',
-            }}
-          >
-            {product.item}
-          </Typography>
-          <Typography 
-            variant="body2" 
-            id={product?.Productid ? product.Productid : product?.Id}
-            name={product.Description}
-            value={product?.Productid ? product.Productid : product?.Id}
-            onClick={(e) => { handleIncrement(e); }}
-            sx={{ 
-              width: '25%',     
-              color: '#3BB77E',
-              fontFamily: 'inherit',
-            }}
-          >
-            +
-          </Typography>
-        </Button>
+          -
+        </Typography>
+        <Typography
+          variant="body2"
+          sx={{
+            width: '50%',
+            color: '#3BB77E',
+            fontFamily: 'inherit',
+          }}
+        >
+          {product.item}
+        </Typography>
+        <Typography
+          variant="body2"
+          id={product?.Productid ? product.Productid : product?.Id}
+          name={product.Description}
+          value={product?.Productid ? product.Productid : product?.Id}
+          onClick={(e) => { handleIncrement(e); }}
+          sx={{
+            width: '25%',
+            color: '#3BB77E',
+            fontFamily: 'inherit',
+          }}
+        >
+          +
+        </Typography>
+      </Button>
       <Box sx={{ textAlign: 'right' }}>
         <Typography variant="p" sx={{ fontWeight: 500, fontSize: '14px' }}>
-        {product.totalPrice.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY })}
+          {product.totalPrice.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY })}
         </Typography>
         <Typography
           variant="body2"
           sx={{ textDecoration: 'line-through', color: '#9e9e9e', fontSize: '12px' }}
         >
-          {product.MRP.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY })}
+          {(product.selectedMRP > 0 ? product.selectedMRP : product.MRP).toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY })}
         </Typography>
       </Box>
     </Box>

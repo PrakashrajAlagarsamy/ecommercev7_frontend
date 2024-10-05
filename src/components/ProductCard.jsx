@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Typography, Button, Card, CardContent, CardMedia, Skeleton, MenuItem, FormControl, Select } from '@mui/material';
@@ -19,33 +20,44 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => 
   const [productValue, setProductValue] = useState(0);
   let [isFavoriteProduct, setIsFavoriteProduct] = useState(0);
 
-  const [productWeight, setProductWeight] = useState(''); // Holds the selected weight
-  const [selectedPrice, setSelectedPrice] = useState(0); // Holds the price for the selected weight
-  const [selectedMRP, setSelectedMRP] = useState(0); // Holds the MRP for the selected weight
+  const [productWeight, setProductWeight] = useState('');
+  const [selectedPrice, setSelectedPrice] = useState(0);  
+  const [selectedMRP, setselectedMRP] = useState(0);
+  const [currentPrice, setCurrentPrice] = useState(0);
 
 
   const handleProductWeightChange = (event, ProductWeightLists) => {
     event.stopPropagation();
     
-    const selectedWeightId = event.target.value; // Get the selected weight Id or value
-    const selectedWeight = ProductWeightLists.find(item => item.WeightType === selectedWeightId); // Find the corresponding weight object
+    const selectedWeightId = event.target.value;
+    const selectedWeight = ProductWeightLists.find(item => item.WeightType === selectedWeightId);
     if (selectedWeight) {
-      setProductWeight(selectedWeight.WeightType); // Set the selected weight
-      setTotalPrice(selectedWeight.SaleRate); // Update the price for the selected weight
-      setSelectedMRP(selectedWeight.MRP); // Update the MRP for the selected weight
-      
-      // Update total price based on selected weight price and quantity
-      const newTotalPrice = quantity * selectedWeight.SaleRate;
+      setProductWeight(selectedWeight.WeightType);
+      setTotalPrice(selectedWeight.SaleRate);
+      setSelectedPrice(selectedWeight.SaleRate);
+      setCurrentPrice(selectedWeight.SaleRate);
+      setselectedMRP(selectedWeight.MRP);      
+      //(selectedPrice > 0 ? selectedPrice : product.Price)
+      const newTotalPrice = quantity * (selectedWeight.SaleRate);
       updateCartItems(quantity, newTotalPrice, selectedWeight.MRP);
     }
   };
-  
 
+  useEffect(() => {
+    if (product && product.ProductWeightType && product.ProductWeightType.length > 0) {
+      const firstWeight = product.ProductWeightType[0];
+      if (firstWeight && firstWeight.WeightType) {
+        setProductWeight(firstWeight.WeightType);
+      }
+    }
+  }, [product]);
+  
   useEffect(() => {
     const existingProduct = cartItems.find(item => item.Id === product?.Id);
     if (existingProduct) {
       setQuantity(existingProduct.item);
       setTotalPrice(existingProduct.totalPrice);
+      setCurrentPrice(existingProduct.totalPrice);
     } else {
       setQuantity(0);
       setTotalPrice(product?.Price || 0);
@@ -64,7 +76,9 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => 
             ...updatedCartItems[existingProductIndex],
             item: newQuantity,
             totalPrice: newTotalPrice,
-            totalMRP: MRP  
+            totalMRP: MRP,
+            selectedPrice: selectedPrice,
+            selectedMRP: selectedMRP  
           };
         } else {
           updatedCartItems = updatedCartItems.filter(item => item.Id !== product?.Id);
@@ -74,10 +88,11 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => 
           ...product, 
           item: newQuantity, 
           totalPrice: newTotalPrice,
-          totalMRP: MRP  
+          totalMRP: MRP, 
+          selectedPrice: selectedPrice,
+          selectedMRP: selectedMRP
         });
-      }
-  
+      }      
       localStorage.setItem('cartItems', JSON.stringify(updatedCartItems));
       return updatedCartItems;
     });
@@ -87,11 +102,12 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => 
   const handleIncrement = (event) => {
     event.stopPropagation();
     const newQuantity = quantity + 1;
-    const newTotalPrice = newQuantity * product.Price;
+    const newTotalPrice = newQuantity * (selectedPrice > 0 ? selectedPrice : product.Price);
     const MRP = newQuantity * product.MRP;
   
     setQuantity(newQuantity);
     setTotalPrice(newTotalPrice);
+    setCurrentPrice(newTotalPrice);
     updateCartItems(newQuantity, newTotalPrice, MRP);
   };
   
@@ -99,16 +115,17 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => 
   const handleDecrement = (event) => {
     event.stopPropagation();
     const newQuantity = quantity - 1;
-    const newTotalPrice = newQuantity * product.Price;
+    const newTotalPrice = newQuantity * (selectedPrice > 0 ? selectedPrice : product.Price);
     const MRP = newQuantity * product.MRP;
   
     if (newQuantity === 0) {
       setQuantity(0);
-      setTotalPrice(product.Price);
-      updateCartItems(0, product.Price, MRP); 
+      setTotalPrice(selectedPrice > 0 ? selectedPrice : product.Price);
+      updateCartItems(0, selectedPrice > 0 ? selectedPrice : product.Price, MRP); 
     } else if (quantity > 0) {
       setQuantity(newQuantity);
       setTotalPrice(newTotalPrice);
+      setCurrentPrice(newTotalPrice);
       updateCartItems(newQuantity, newTotalPrice, MRP);
     }
   };
@@ -120,6 +137,7 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => 
     setProductId(pdId);
     setProductValue(pdValue);
     navigate(`/product-details?pdid=${encodeURIComponent(btoa(pdId))}&pdname=${encodeURIComponent(btoa(pdId))}`);
+    window.scrollTo(0, 0);
   };
 
   //Add fav product
@@ -186,6 +204,9 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => 
       ) : (
         <Box sx={{ position: 'relative', height: { xs: '50%', sm: '55%', md: '60%' } }}>
           <CardMedia
+            id={product?.Productid ? product.Productid : product?.Id}
+            name={product.Description}
+            value={product?.Productid ? product.Productid : product?.Id}    
             component="img"
             onClick={handleProductClick}
             image={ImagePathRoutes.ProductImagePath + product.Img0}
@@ -274,26 +295,26 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => 
               >
                 {product.MultiplePriceEnable === 0 ? product.UnitType :
                   <Box sx={{ minWidth: 75, p: 0 }}>
-                    <FormControl fullWidth sx={{ p: 0, border: 'none', }}>
+                    <FormControl fullWidth sx={{ p: 0, border: 'none' }}>
                       <Select
                         sx={{
                           height: '30px',
                           border: '1px dotted #999',
                           '& .MuiOutlinedInput-notchedOutline': {
-                            border: 'none', 
+                            border: 'none',
                           },
                           '&:hover .MuiOutlinedInput-notchedOutline': {
-                            border: 'none', 
+                            border: 'none',
                           },
                           '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
                             border: 'none',
                           },
                         }}
-                        size='small'
+                        size="small"
                         labelId="demo-simple-select-label-multi"
                         id="demo-simple-select-multi"
                         value={productWeight}
-                        onChange={(e) => { handleProductWeightChange(e, product.ProductWeightType); }}
+                        onChange={(e) => handleProductWeightChange(e, product.ProductWeightType)}
                       >
                         {product.ProductWeightType.map((weight, index) => (
                           <MenuItem sx={{ px: 1, py: 0 }} key={index} name={weight.Id} value={weight.WeightType}>
@@ -311,14 +332,14 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => 
                 variant="body2"
                 sx={{ color: theme.palette.lightblackcolorCode.main, fontSize: '14px', lineHeight: '24px', fontFamily: 'inherit' }}
               >
-                {totalPrice.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                {(currentPrice > 0 ? currentPrice : totalPrice).toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </Typography>
               {product.MRP && (
                 <Typography
                   variant="body2"
                   sx={{ textDecoration: 'line-through', fontSize: '12px', fontWeight: 200, color: '#a3a4ae', fontFamily: 'inherit' }}
                 >
-                  {'MRP:' + product.MRP.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  {'MRP:' + ((selectedMRP > 0 ? selectedMRP : product.MRP)).toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </Typography>
               )}
             </Box>
