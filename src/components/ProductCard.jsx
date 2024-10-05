@@ -37,9 +37,10 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => 
       setSelectedPrice(selectedWeight.SaleRate);
       setCurrentPrice(selectedWeight.SaleRate);
       setselectedMRP(selectedWeight.MRP);      
-      //(selectedPrice > 0 ? selectedPrice : product.Price)
+
       const newTotalPrice = quantity * (selectedWeight.SaleRate);
-      updateCartItems(quantity, newTotalPrice, selectedWeight.MRP);
+      const newMRP = quantity * (selectedWeight.MRP);
+      updateCartItems(quantity, newTotalPrice, newMRP, selectedWeight.SaleRate);
     }
   };
 
@@ -61,11 +62,12 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => 
     } else {
       setQuantity(0);
       setTotalPrice(product?.Price || 0);
+      setCurrentPrice(selectedPrice > 0 ? selectedPrice : product.Price || 0);
     }
-  }, [cartItems, product]);
+  }, [cartItems, product, selectedPrice]);
   
   // Update cartItems function
-  const updateCartItems = (newQuantity, newTotalPrice, MRP) => {
+  const updateCartItems = (newQuantity, newTotalPrice, MRP, selected_price) => {
     setCartItems(prevCartItems => {
       const existingProductIndex = prevCartItems.findIndex(item => item.Id === product?.Id);
       let updatedCartItems = [...prevCartItems];
@@ -77,8 +79,8 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => 
             item: newQuantity,
             totalPrice: newTotalPrice,
             totalMRP: MRP,
-            selectedPrice: selectedPrice,
-            selectedMRP: selectedMRP  
+            selectedPrice: selected_price,
+            selectedMRP: MRP  
           };
         } else {
           updatedCartItems = updatedCartItems.filter(item => item.Id !== product?.Id);
@@ -89,8 +91,8 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => 
           item: newQuantity, 
           totalPrice: newTotalPrice,
           totalMRP: MRP, 
-          selectedPrice: selectedPrice,
-          selectedMRP: selectedMRP
+          selectedPrice: selected_price,
+          selectedMRP: MRP
         });
       }      
       localStorage.setItem('cartItems', JSON.stringify(updatedCartItems));
@@ -437,6 +439,11 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => 
                   border: '1px solid #dc3545',
                   backgroundColor: '#dc3545',
                   color: theme.palette.whitecolorCode.main,
+                  '&:hover': {
+                    border: '1px solid #dc3545',
+                    backgroundColor: '#dc3545',
+                    color: theme.palette.whitecolorCode.main,
+                  }
                 }}
                 id={product.Id}
               >

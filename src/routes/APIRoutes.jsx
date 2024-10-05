@@ -16,6 +16,7 @@ export const APIRoutes = {
     GET_MY_WALLET_IN: `${ServerURL.PRODUCTION_HOST_URL}api/WebMobileApp/SelectWalletIN`,
     GET_CUSTOMER_ADDRESS: `${ServerURL.PRODUCTION_HOST_URL}api/WebMobileApp/SelectCustomerAddress`,
     INSERT_CUSTOMER_DETAILS: `${ServerURL.PRODUCTION_HOST_URL}api/CustomerApp/InsertCustomer`,
+    GET_MINIMUM_ORDER_AMOUNT: `${ServerURL.PRODUCTION_HOST_URL}api/WebMobileApp/SelectMinimumOrderAmount`,
 
     //Sale order 
     INSERT_SALE_ORDER_SAVE: `${ServerURL.PRODUCTION_HOST_URL}api/WebMobileApp/InsertSaleOrderSave`,

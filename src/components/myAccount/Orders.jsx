@@ -1,6 +1,6 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable jsx-a11y/alt-text */
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Box, Typography, Paper, Button } from '@mui/material';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import { ServerURL } from '../../server/serverUrl';

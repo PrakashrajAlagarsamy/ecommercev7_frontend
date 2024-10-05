@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Link, Modal, Container, TextField, Button, Typography, Grid, Box, RadioGroup, FormControlLabel, Radio, Divider } from '@mui/material';
+import { Link, Modal, Container, TextField, Button, CircularProgress, Typography, Grid, Box, RadioGroup, FormControlLabel, Radio, Divider } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { useCart } from '../context/CartContext';
 import { ServerURL } from '../server/serverUrl';
@@ -11,15 +11,17 @@ import { API_FetchDeliveryTimes } from '../services/settings';
 import { API_InsertSaleOrderSave } from '../services/checkoutServices';
 import { useTheme } from '@mui/material/styles';
 import CircularLoader from '../components/circular-loader';
+import OrderSuccess from '../assets/success.gif';
+import OrderInfo from '../assets/information.gif';
 
 const style = {
     position: 'absolute',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 400,
+    width: 300,
     bgcolor: 'background.paper',
-    p: 2,
+    py: 2,
     borderRadius: 1
 };
 
@@ -49,7 +51,7 @@ export default function ProductCheckout() {
     const handleAlertOpen = () => setAlertOpen(true);
 
     const handleAlertClose = () => {
-        if(InfoStatus === 'Your order has been placed'){
+        if (InfoStatus === 'Your order has been placed') {
             navigate('/');
         }
         setAlertOpen(false);
@@ -61,6 +63,7 @@ export default function ProductCheckout() {
             const list = await API_FetchDeliveryTimes();
             setDeliveryTimeList(list);
         } catch (error) {
+            setDeliveryTimeList([]);
             console.error('Error fetching categories:', error);
         }
     };
@@ -114,13 +117,13 @@ export default function ProductCheckout() {
     };
 
     //Place order function
-    const handlePlaceOrder = () => {
-        if (DateValue === null) {
-            setInfoStatus('Please select date');
+    const handlePlaceOrder = () => {        
+        if (Deliverytime === '') {
+            setInfoStatus('Please choose delivery time');
             handleAlertOpen(true);
         }
-        else if (Deliverytime === '') {
-            setInfoStatus('Please choose delivery time');
+        else if (DateValue === null) {
+            setInfoStatus('Please select date');
             handleAlertOpen(true);
         }
         else if (PaymentType === '') {
@@ -128,75 +131,81 @@ export default function ProductCheckout() {
             handleAlertOpen(true);
         }
         else {
-            setAlertOpen(false);
-            setShowLoader(true);
-            const OrderDetails = [];
-            if (cartItems.length > 0 && cartItems != null) {
-                for (let i = 0; i < cartItems.length; i++) {
-                    let detailslist = {};
-                    detailslist.ProductId = cartItems[i].Id;
-                    detailslist.ProductName = cartItems[i].Description;
-                    detailslist.MRP = cartItems[i].MRP;
-                    detailslist.ItemQty = cartItems[i].item;
-                    detailslist.DiscountAmt = (Number(cartItems[i].MRP) * 0) / 100;
-                    detailslist.Salerate = cartItems[i].Price;
-                    detailslist.WeightType = cartItems[i].UnitType;
-                    detailslist.CPrice = cartItems[i].totalPrice;
-                    OrderDetails[i] = detailslist;
-                }
-            };
-
-            const master = [
-                {
-                    Id: 0,
-                    CustomerRefId: selectedAddress.Id,
-                    CompanyRefid: selectedAddress.CompanyRefId,
-                    SaleDate: DateValue,
-                    DeliveryDate: DateValue,
-                    PaymentMode: PaymentType,
-                    AreaMasterId: null,
-                    deliveryStoreName: null,
-                    DeliveryMode: "PICKUP",
-                    DeliveryStatus: 0,
-                    DeliveryCharge: DeliveryFee,
-                    NewCustomerStatus: 0,
-                    CouponDiscount: 0.0,
-                    CouponRefId: 0,
-                    OrderCount: 1,
-                    ReferalAmount: 0.0,
-                    Grossamt: Number(TotalPrice),
-                    disper: 0,
-                    discamount: 0,
-                    schargeamount: 0,
-                    TodaySaving: SavingsAmount,
-                    ReferalBalance: 0,
-                    WalletAmount: walletAmount,
-                    WalletStatus: walletAmount > 0 ? 1 : 0,
-                    WalletPayment: walletAmount,
-                    coinage: 0,
-                    NetAmount: Number(TotalPrice), //Final Total Amount
-                    Remarks: "",
-                    DeliveryTime: Deliverytime,
-                    CutomerName: selectedAddress.CustomerName,
-                    MobileNo: selectedAddress.MobileNo,
-                    CompanyMobile: "",
-                    CompanyEmail: "",
-                    Email: selectedAddress.Email,
-                    Address1: selectedAddress.Address1,
-                    Address2: selectedAddress.Address2,
-                    City: selectedAddress.City,
-                    LandMark: selectedAddress.LandMark,
-                    Pincode: selectedAddress.Pincode,
-                    lattitude: selectedAddress.Latitude,
-                    longitude: selectedAddress.Langitude,
-                    SaleOrderDetails: OrderDetails,
-                    //PaymentMode: $('#payment-method-wrapper').find('[name="paymentmethod"]:checked').val(),
-                    // CompanyName: CompanyName != "" ? CompanyName : "",
-                    // DeleteReason: "",
-                    // PaymentId: PaymentId
-                },
-            ];
-            InsertSaleOrderSave(master);
+            if(PaymentType === 'COD'){
+                setAlertOpen(false);
+                setShowLoader(true);
+                const OrderDetails = [];
+                if (cartItems.length > 0 && cartItems != null) {
+                    for (let i = 0; i < cartItems.length; i++) {
+                        let detailslist = {};
+                        detailslist.ProductId = cartItems[i].Id;
+                        detailslist.ProductName = cartItems[i].Description;
+                        detailslist.MRP = cartItems[i].MRP;
+                        detailslist.ItemQty = cartItems[i].item;
+                        detailslist.DiscountAmt = (Number(cartItems[i].MRP) * 0) / 100;
+                        detailslist.Salerate = cartItems[i].Price;
+                        detailslist.WeightType = cartItems[i].UnitType;
+                        detailslist.CPrice = cartItems[i].totalPrice;
+                        OrderDetails[i] = detailslist;
+                    }
+                };
+    
+                const master = [
+                    {
+                        Id: 0,
+                        CustomerRefId: selectedAddress.Id,
+                        CompanyRefid: selectedAddress.CompanyRefId,
+                        SaleDate: DateValue,
+                        DeliveryDate: DateValue,
+                        PaymentMode: PaymentType,
+                        AreaMasterId: null,
+                        deliveryStoreName: null,
+                        DeliveryMode: "PICKUP",
+                        DeliveryStatus: 0,
+                        DeliveryCharge: DeliveryFee,
+                        NewCustomerStatus: 0,
+                        CouponDiscount: 0.0,
+                        CouponRefId: 0,
+                        OrderCount: 1,
+                        ReferalAmount: 0.0,
+                        Grossamt: Number(TotalPrice),
+                        disper: 0,
+                        discamount: 0,
+                        schargeamount: 0,
+                        TodaySaving: SavingsAmount,
+                        ReferalBalance: 0,
+                        WalletAmount: walletAmount,
+                        WalletStatus: walletAmount > 0 ? 1 : 0,
+                        WalletPayment: walletAmount,
+                        coinage: 0,
+                        NetAmount: Number(TotalPrice), //Final Total Amount
+                        Remarks: "",
+                        DeliveryTime: Deliverytime,
+                        CutomerName: selectedAddress.CustomerName,
+                        MobileNo: selectedAddress.MobileNo,
+                        CompanyMobile: "",
+                        CompanyEmail: "",
+                        Email: selectedAddress.Email,
+                        Address1: selectedAddress.Address1,
+                        Address2: selectedAddress.Address2,
+                        City: selectedAddress.City,
+                        LandMark: selectedAddress.LandMark,
+                        Pincode: selectedAddress.Pincode,
+                        lattitude: selectedAddress.Latitude,
+                        longitude: selectedAddress.Langitude,
+                        SaleOrderDetails: OrderDetails,
+                        //PaymentMode: $('#payment-method-wrapper').find('[name="paymentmethod"]:checked').val(),
+                        // CompanyName: CompanyName != "" ? CompanyName : "",
+                        // DeleteReason: "",
+                        // PaymentId: PaymentId
+                    },
+                ];
+                InsertSaleOrderSave(master);
+            }
+            else{
+                setInfoStatus('Only COD payment available.');
+                handleAlertOpen(true);
+            }            
         }
     };
 
@@ -204,7 +213,7 @@ export default function ProductCheckout() {
     const InsertSaleOrderSave = async (master) => {
         try {
             const response = await API_InsertSaleOrderSave(master);
-            if(response.length !== 0){
+            if (response.length !== 0) {
                 setLoading(false);
                 localStorage.removeItem('cartItems');
                 setCartItems([]);
@@ -212,15 +221,15 @@ export default function ProductCheckout() {
                 setShowLoader(false);
                 handleAlertOpen(true);
             }
-            else{
-                setLoading(false);                
+            else {
+                setLoading(false);
                 setInfoStatus('Your order has been rejected.');
                 setShowLoader(false);
                 handleAlertOpen(true);
             }
         } catch (error) {
             console.error("Error inserting order details:", error);
-            setLoading(false);                
+            setLoading(false);
             setInfoStatus('Your order has been rejected.');
             setShowLoader(false);
             handleAlertOpen(true);
@@ -237,15 +246,35 @@ export default function ProductCheckout() {
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
-                <Box sx={style}>
-                    <Typography id="modal-modal-title" variant="h6" component="h2">
-                        Information
-                    </Typography>
-                    <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                <Box sx={style} align='center'>
+                    <Box>
+                        <img src={InfoStatus === 'Your order has been placed' ? OrderSuccess : OrderInfo} style={{ width: '80px', height: '80px' }} alt='gif' />
+                    </Box>
+                    <Typography id="modal-modal-description">
                         {InfoStatus}
                     </Typography>
-                    <Box sx={{ float: 'right' }}>
-                        <Button onClick={handleAlertClose} variant='contained' size='small'>Okay</Button>
+                    <Box sx={{ mt: 2 }}>
+                        <Button sx={{
+                            marginLeft: 'auto',
+                            width: 'auto',
+                            borderRadius: '3px',
+                            padding: '2px 15px',
+                            textTransform: 'none',
+                            fontWeight: 'bold',
+                            fontSize: '14px',
+                            background: theme.palette.shadowcolorCode.main,
+                            border: '1px solid',
+                            borderColor: theme.palette.basecolorCode.main,
+                            color: theme.palette.basecolorCode.main,
+                            boxShadow: 'none',
+                            '&:hover': {
+                                border: '1px solid',
+                                background: theme.palette.basecolorCode.main,
+                                borderColor: theme.palette.basecolorCode.main,
+                                color: theme.palette.whitecolorCode.main,
+                                boxShadow: 'none',
+                            }
+                        }} size='small' onClick={handleAlertClose} variant='contained'>Okay</Button>
                     </Box>
                 </Box>
             </Modal>
@@ -257,28 +286,28 @@ export default function ProductCheckout() {
                             <Typography variant="h6" style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
                                 <CheckCircleIcon color="success" style={{ marginRight: '10px' }} />
                                 Delivery Address
-                                <Button variant="outlined" size="small" 
-                                sx={{
-                                    marginLeft: 'auto',
-                                    width: 'auto',
-                                    borderRadius: '3px',
-                                    padding: '2px 15px',
-                                    textTransform: 'none',
-                                    fontWeight: 'bold',
-                                    fontSize: '14px',
-                                    background: theme.palette.shadowcolorCode.main,
-                                    border: '1px solid',
-                                    borderColor: theme.palette.basecolorCode.main,
-                                    color: theme.palette.basecolorCode.main,
-                                    boxShadow: 'none',
-                                    '&:hover': {
+                                <Button variant="outlined" size="small"
+                                    sx={{
+                                        marginLeft: 'auto',
+                                        width: 'auto',
+                                        borderRadius: '3px',
+                                        padding: '2px 15px',
+                                        textTransform: 'none',
+                                        fontWeight: 'bold',
+                                        fontSize: '14px',
+                                        background: theme.palette.shadowcolorCode.main,
                                         border: '1px solid',
-                                        background: theme.palette.basecolorCode.main,
                                         borderColor: theme.palette.basecolorCode.main,
-                                        color: theme.palette.whitecolorCode.main,
+                                        color: theme.palette.basecolorCode.main,
                                         boxShadow: 'none',
-                                    }
-                                }}>Change address</Button>
+                                        '&:hover': {
+                                            border: '1px solid',
+                                            background: theme.palette.basecolorCode.main,
+                                            borderColor: theme.palette.basecolorCode.main,
+                                            color: theme.palette.whitecolorCode.main,
+                                            boxShadow: 'none',
+                                        }
+                                    }}>Change address</Button>
                             </Typography>
 
                             {/* Address Form */}
@@ -330,9 +359,10 @@ export default function ProductCheckout() {
 
                             <Box sx={{ mt: 2, float: 'left' }}>
                                 <Button
-                                    size='small'
-                                    variant='contained'
+                                    size="small"
+                                    variant="contained"
                                     onClick={handlePlaceOrder}
+                                    disabled={loading} // Disable the button while loading
                                     sx={{
                                         marginLeft: 'auto',
                                         float: 'right',
@@ -343,18 +373,23 @@ export default function ProductCheckout() {
                                         fontSize: '14px',
                                         border: '1px solid',
                                         borderColor: theme.palette.basecolorCode.main,
+                                        background: theme.palette.basecolorCode.main,
                                         color: theme.palette.whitecolorCode.main,
                                         boxShadow: 'none',
-
                                         '&:hover': {
-                                            background: theme.palette.shadowcolorCode.main,
+                                            background: theme.palette.basecolorCode.main,
                                             border: '1px solid',
                                             borderColor: theme.palette.basecolorCode.main,
                                             color: theme.palette.whitecolorCode.main,
                                             boxShadow: 'none',
-                                        }
+                                        },
                                     }}
-                                >Place Order
+                                >
+                                    {loading ? (
+                                        <CircularProgress size={20} sx={{ color: theme.palette.whitecolorCode.main }} />
+                                    ) : (
+                                        'Place Order'
+                                    )}
                                 </Button>
                             </Box>
                         </Box>

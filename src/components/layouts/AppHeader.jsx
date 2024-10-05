@@ -78,7 +78,6 @@ export default function AppHeader() {
 
   // Handle scroll event to animate header
   useEffect(() => {   
-
     setCartItemsCount(cartItems.length ? cartItems.length : 0);
     
     const handleScroll = () => {

@@ -72,10 +72,10 @@ const ProductItemCard = ({ product }) => {
               ? {
                 ...item,
                 item: updatedQuantity,
-                totalMRP: product.MRP * updatedQuantity,
+                totalMRP: (product.selectedMRP > 0 ? product.selectedMRP : product.MRP) * updatedQuantity,
                 totalPrice: (product.selectedPrice > 0 ? product.selectedPrice : product.Price) * updatedQuantity,
                 selectedPrice: product.selectedPrice,
-                selectedMRP: product.selectedMRP
+                selectedMRP: product.selectedMRP,
               }
               : item
           );

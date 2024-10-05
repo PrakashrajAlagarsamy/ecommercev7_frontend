@@ -1,18 +1,30 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Grid, Typography, Box } from '@mui/material';
 import { API_FetchCategory } from '../../services/categoryServices';
 import { ImagePathRoutes } from '../../routes/ImagePathRoutes';
 import { useTheme } from '@mui/material/styles';
 
 const CategoryCard = () => {
+    const navigate = useNavigate();
     const theme = useTheme();
     const [categoryLists, setCategoryLists] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
 
+    const handleCategoryClickChange = (event, id, newValue) => {
+        const selectedCategoryId = event.currentTarget.id;
+        console.log("selectedCategoryId:", selectedCategoryId);
+        navigate(`/product-list?pcid=${btoa(selectedCategoryId)}&pcname=${btoa(newValue)}`);
+    };
+    
     const ShopByCategoryLists = async () => {
         try {
             const categoryList = await API_FetchCategory();
             setCategoryLists(categoryList);
+            setIsLoading(false);
         } catch (error) {
+            setIsLoading(false);
             console.error("Error fetching categories:", error);
         }
     };
@@ -28,11 +40,11 @@ const CategoryCard = () => {
                     <Grid
                         item
                         key={index}
-                        xs={6} sm={4} md={3} lg={3} // Adjust grid for responsiveness
+                        xs={6} sm={4} md={3} lg={3}
                         className=""
                     >
                         {/* Image container */}
-                        <Box>
+                        <Box key={index} id={item.Id} value={item.Category} onClick={(event) => handleCategoryClickChange(event, item.Id, item.Category)}>
                             <img
                                 src={ImagePathRoutes.CategoryImagePath + item.ImagePath}
                                 alt={item.Category}

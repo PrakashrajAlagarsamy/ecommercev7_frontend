@@ -25,6 +25,7 @@ import addressHomeIcon from '../../assets/address_home_icon.webp';
 import AddressChangeModal from './addressChangeModal';
 import { useCart } from '../../context/CartContext';
 import { ServerURL } from '../../server/serverUrl';
+import { API_FetchMinimumOrderAmount } from '../../services/checkoutServices';
 
 const drawerWidth = 380;
 
@@ -66,8 +67,11 @@ export default function AppCart({ CartDrawerOpen, handleAuthDrawerToggle }) {
   const [selectedAddress, setSelectedAddress] = React.useState('No address selected');
   const [WalletAmount, setWalletAmount] = React.useState(75);
   const [useWallet, setUseWallet] = React.useState(false);
+  const [MinimumOrderAmountList, setMinimumOrderAmountList] = React.useState([]);
+  const [MinimumOrderAmount, setMinimumOrderAmount] = React.useState(300);
+  const [minAmountCheck, setMinAmountCheck] = React.useState(false);
 
-  const handleChangeAddressOpen = () => setModalOpen(true); 
+  const handleChangeAddressOpen = () => setModalOpen(true);
   const handleChangeAddressClose = () => setModalOpen(false);
 
   // update the selected address
@@ -94,11 +98,11 @@ export default function AppCart({ CartDrawerOpen, handleAuthDrawerToggle }) {
 
   // Handle wallet checkbox change
   const handleWalletCheckboxChange = (event) => {
-    if(event.target.checked === true){
+    if (event.target.checked === true) {
       setUseWallet(event.target.checked);
       localStorage.setItem('UseWallet', true);
     }
-    else{
+    else {
       setUseWallet(event.target.checked);
       localStorage.setItem('UseWallet', false);
     }
@@ -106,21 +110,60 @@ export default function AppCart({ CartDrawerOpen, handleAuthDrawerToggle }) {
 
   //Handle proceed
   const handleProceedItems = () => {
-    if(selectedAddress !== 'No address selected'){
-      if(useWallet === true){
-        handleAuthDrawerToggle(false);
-        navigate(`/product-checkout?Wallet=${btoa(WalletAmount)}`);
-      }
-      else{
-        handleAuthDrawerToggle(false);
-        navigate(`/product-checkout`);
-      }
+    let userLogin = localStorage.getItem("userLogin");
+    let userId = Number(atob(localStorage.getItem("userId")));
+
+    if (userLogin === false && userId === 0) {
+      handleAuthDrawerToggle(true);
     }
-    else{
+    else if (selectedAddress !== 'No address selected') {
+      const CartTotalAmount = cartTotalAmountCheck();
+      FetchMinimumOrderAmount();
+
+      if (CartTotalAmount >= MinimumOrderAmount) {
+        if (useWallet === true) {
+          handleAuthDrawerToggle(false);
+          navigate(`/product-checkout?Wallet=${btoa(WalletAmount)}`);
+        }
+        else {
+          handleAuthDrawerToggle(false);
+          navigate(`/product-checkout`);
+        }
+      }
+      else {
+        setMinAmountCheck(true);
+      }      
+    }
+    else {
       setModalOpen(true);
     }
   };
 
+  //Load minimum order amount lists
+  const FetchMinimumOrderAmount = async () => {
+    try {
+      const list = await API_FetchMinimumOrderAmount();
+      if (list.length !== 0) {
+        setMinimumOrderAmountList(list);
+        setMinimumOrderAmount(0);
+      }
+      else {
+        setMinimumOrderAmountList([]);
+        setMinimumOrderAmount(300);
+      }
+    } catch (error) {
+      setMinimumOrderAmountList([]);
+      console.error('Error fetching amount lists:', error);
+    }
+  };
+
+  function cartTotalAmountCheck() {
+    if (cartItems.length > 0) {
+      const totalPrice = cartItems.reduce((acc, item) => acc + item.totalPrice, 0);
+      console.log("totalPrice:", totalPrice);
+      return totalPrice;
+    }
+  }
 
   return (
     <>
@@ -241,20 +284,23 @@ export default function AppCart({ CartDrawerOpen, handleAuthDrawerToggle }) {
               </Box>
               {WalletAmount > 0 && (
                 <Box display="flex" alignItems="center" justifyContent="space-between" mt={1}>
-                <FormGroup>
-                  <FormControlLabel
-                    sx={{ fontSize: '14px', p: 0 }}
-                    control={<Checkbox onChange={handleWalletCheckboxChange}  size='small' />}
-                    label={`Pay ${WalletAmount.toLocaleString('en-IN', {
-                      style: 'currency',
-                      currency: ServerURL.CURRENCY,
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2
-                    })} from Wallet`}
-                  />
-                </FormGroup>
-              </Box>
-              )}              
+                  <FormGroup>
+                    <FormControlLabel
+                      sx={{ fontSize: '14px', p: 0 }}
+                      control={<Checkbox onChange={handleWalletCheckboxChange} size='small' />}
+                      label={`Pay ${WalletAmount.toLocaleString('en-IN', {
+                        style: 'currency',
+                        currency: ServerURL.CURRENCY,
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                      })} from Wallet`}
+                    />
+                  </FormGroup>
+                </Box>
+              )}
+              {minAmountCheck &&(
+                <Box><Typography align='center' color='error'>Minimum on order above ₹300</Typography></Box>
+              )}
               <Box display="flex" justifyContent="space-between" alignItems="center" mt={2}>
                 <Button
                   size='small'
@@ -279,7 +325,7 @@ export default function AppCart({ CartDrawerOpen, handleAuthDrawerToggle }) {
                     }
                   }}
                 >
-                 Continue to Payment
+                  Continue to Payment
                 </Button>
               </Box>
             </Box>

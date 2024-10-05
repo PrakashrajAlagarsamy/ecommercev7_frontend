@@ -61,7 +61,7 @@ export default function AccordionAmountDetails({ useWallet, walletAmount }) {
 
   useEffect(() => {
     if (cartItems.length > 0) {
-      const totalMRP = cartItems.reduce((acc, item) => acc + (item.currentMRP > 0 ? item.currentMRP : item.MRP), 0);
+      const totalMRP = cartItems.reduce((acc, item) => acc + (item.totalMRP > 0 ? item.totalMRP : item.MRP), 0);
       const totalPrice = cartItems.reduce((acc, item) => acc + item.totalPrice, 0);
   
       setMRPAmount(totalMRP);

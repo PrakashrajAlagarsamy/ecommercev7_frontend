@@ -21,17 +21,17 @@ const AppFooter = ({ CompanyDetails }) => {
                                     <AppLogo />
                                 </Box>
                                 <Box display="flex" gap={2} sx={{ py: 3 }}>
-                                    <Link href="#" sx={{ color: theme.palette.footertextcolorCode.main }}>
-                                        <Instagram />
+                                    <Link href="#">
+                                        <Instagram sx={{ color: theme.palette.footertextcolorCode.main }}/>
                                     </Link>
-                                    <Link href="#" sx={{ color: theme.palette.footertextcolorCode.main }}>
-                                        <Twitter />
+                                    <Link href="#">
+                                        <Twitter sx={{ color: theme.palette.footertextcolorCode.main }}/>
                                     </Link>
-                                    <Link href="#" sx={{ color: theme.palette.footertextcolorCode.main }}>
-                                        <Facebook />
+                                    <Link href="#">
+                                        <Facebook sx={{ color: theme.palette.footertextcolorCode.main }} />
                                     </Link>
-                                    <Link href="#" sx={{ color: theme.palette.footertextcolorCode.main }}>
-                                        <LinkedIn />
+                                    <Link href="#">
+                                        <LinkedIn sx={{ color: theme.palette.footertextcolorCode.main }}/>
                                     </Link>
                                 </Box>
                                 <Typography variant="caption" sx={{ mt: 1, color: theme.palette.footertextcolorCode.main }}>

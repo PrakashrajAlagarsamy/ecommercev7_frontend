@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Box, Container, Grid } from '@mui/material';
@@ -23,7 +24,6 @@ const MyAccount = () => {
     const FetchCustomerAddress = async (userId) => {
         try {
             const address = await API_FetchCustomerAddress(userId);
-            console.log("Fetched address:", address); // Debugging log
             setCustomerDetails(address);
             setIsLoading(false);
         } catch (error) {
@@ -47,7 +47,7 @@ const MyAccount = () => {
         if (component) {
             setActiveComponent(component);
         }
-    }, []);
+    }, [location.search]);
 
     // Update URL whenever active component changes
     useEffect(() => {
@@ -78,8 +78,10 @@ const MyAccount = () => {
             case 'ManageReferrals':
                 return <Referrals />;
             case 'PasswordSettings':
-                return <PasswordSettings/>;
+                return <PasswordSettings customerDetails={customerDetails}/>;
             case 'Logout':
+                localStorage.removeItem('userLogin');
+                localStorage.removeItem('userId');
                 return '/';
             default:
                 return <Orders setActiveComponent={setActiveComponent} />;
@@ -90,13 +92,13 @@ const MyAccount = () => {
         <Container maxWidth="lg" sx={{ py: 3 }}>
             <Box>
                 <Grid container sx={{ border: '2px solid #ececec', borderRadius: 3, p: 0 }}>
-                    <Grid item xs={4}>
+                    <Grid item xs={3} sm={3} md={4}>
                         <MyAccountSidebar
                             CustomerDetails={customerDetails}
                             setActiveComponent={setActiveComponent}
                         />
                     </Grid>
-                    <Grid item xs={8}>
+                    <Grid item xs={9} sm={9} md={8}>
                         {renderActiveComponent()}
                     </Grid>
                 </Grid>
