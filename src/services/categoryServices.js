@@ -31,7 +31,6 @@ export const API_FetchCategory = async () => {
 
 
 export const API_FetchCategorySubCategory = async (CId) => {
-    let objData = "";
     let objlist = {
         Comid: ServerURL.COMPANY_REF_ID,
     };

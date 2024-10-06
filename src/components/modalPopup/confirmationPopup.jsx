@@ -14,7 +14,7 @@ export default function ConfirmationPopup({ConfirmationModalOpen, handleConfirma
         open={ConfirmationModalOpen}
         onClose={handleConfirmationModalClose}
       >
-        <DialogTitle style={{ fontSize: 18 }}>
+        <DialogTitle style={{ fontSize: {xs: 14, sm: 16, md: 18} }}>
           Do you want delete the details?
         </DialogTitle>
         {/* <DialogContent>

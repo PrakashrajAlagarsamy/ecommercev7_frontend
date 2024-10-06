@@ -12,6 +12,9 @@ import { Container } from '@mui/material';
 import { ImagePathRoutes } from '../../routes/ImagePathRoutes';
 import { API_FetchCategory } from '../../services/categoryServices';
 import { useTheme } from '@mui/material/styles';
+import AllCategories from '../../assets/All-categories.png';
+import TopOffers from '../../assets/top-offers.png';
+import NewProducts from '../../assets/new-products.png';
 
 const TopCategory = (props) => {
   const [categoryValue, setCategoryValue] = useState(null);
@@ -26,6 +29,16 @@ const TopCategory = (props) => {
     setCategoryValue(newValue); 
     navigate(`/product-list?pcid=${btoa(selectedCategoryId)}&pcname=${btoa(newValue)}`);
   };
+
+  function handleViewBtnClick (id, value){
+    if(id !== 'all_categories'){
+      navigate(`/product-list?pcid=${btoa(id)}&pcname=${btoa(value)}`);
+    }
+    else{
+      navigate(`/categories?cid=${btoa(id)}&cname=${btoa(value)}`);
+    }
+  };
+
 
   const FetchTopCategoryLists = async () => {
     try {
@@ -45,7 +58,8 @@ const TopCategory = (props) => {
 
   useEffect(() => {
     if (props.get_catgory_lists && props.get_catgory_lists.length > 0) {
-      //setCategoryLists(props.get_catgory_lists); // Set categories from Redux store
+      // Set categories from Redux store if available
+      // setCategoryLists(props.get_catgory_lists);
       setIsLoading(false); // Data is loaded, stop the loading state
     }
 
@@ -65,10 +79,10 @@ const TopCategory = (props) => {
       <Container
         maxWidth={{ xs: false, sm: 'xl' }}
         sx={{ pt: 2, pb: 2, p: { xs: 0, sm: 0 } }}
-        >
+      >
         <Tabs
-          value={categoryValue}
-          onChange={handleCategoryClickChange}
+          // value={categoryValue}
+          // onChange={handleCategoryClickChange}
           variant="scrollable"
           scrollButtons={false}
           aria-label="scrollable prevent tabs example"
@@ -78,7 +92,83 @@ const TopCategory = (props) => {
             },
           }}
         >
-          {/* Show Skeleton loaders */}
+          {/* Three static tabs */}
+          <Tab            
+            sx={{
+              cursor: "pointer",
+              '&.Mui-selected': {
+                color: theme.palette.basecolorCode.main || '#3BB77E', // Set the text color for the active tab
+                backgroundColor: theme.palette.basecolorCode.secondary || '#3bb77e1c',
+                borderColor: theme.palette.basecolorCode.main || '#3BB77E',
+              },
+            }}
+            value="all_categories"
+            id="all_categories"
+            onClick={() => handleViewBtnClick('all_categories', 'All Categories')}
+            label={
+              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <Avatar
+                  src={AllCategories}
+                  sx={{ width: 55, height: 55, mb: 0.5, boxShadow: `0px 0px 40px 20px ${theme.palette.shadowcolorCode.main || '#3bb77e1c'}` }}
+                />
+                <Typography variant="caption" sx={{ textAlign: 'center', textTransform: 'capitalize', fontWeight: 600, fontSize: '14px', color: theme.palette.colorCode.main || "#253D4E" }}>
+                  All Categories
+                </Typography>
+              </Box>
+            }
+          />
+
+          <Tab
+            sx={{
+              cursor: "pointer",
+              '&.Mui-selected': {
+                color: theme.palette.basecolorCode.main,
+                backgroundColor: theme.palette.basecolorCode.secondary,
+                borderColor: theme.palette.basecolorCode.main,
+              },
+            }}
+            value="offer_product"
+            id="offer_product"
+            onClick={() => handleViewBtnClick('offer_product', 'Offer Products')}
+            label={
+              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <Avatar
+                  src={TopOffers}
+                  sx={{ width: 55, height: 55, mb: 0.5, boxShadow: `0px 0px 40px 20px ${theme.palette.shadowcolorCode.main || '#3bb77e1c'}` }}
+                />
+                <Typography variant="caption" sx={{ textAlign: 'center', textTransform: 'capitalize', fontWeight: 600, fontSize: '14px', color: theme.palette.colorCode.main || "#253D4E" }}>
+                  Top Offers
+                </Typography>
+              </Box>
+            }
+          />
+
+          <Tab
+            sx={{
+              cursor: "pointer",
+              '&.Mui-selected': {
+                color: theme.palette.basecolorCode.main || '#3BB77E', // Set the text color for the active tab
+                backgroundColor: theme.palette.basecolorCode.secondary || '#3bb77e1c',
+                borderColor: theme.palette.basecolorCode.main || '#3BB77E',
+              },
+            }}
+            value="new_product"
+            id="new_product"
+            onClick={() => handleViewBtnClick('new_product', 'New Products')}
+            label={
+              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <Avatar
+                  src={NewProducts}
+                  sx={{ width: 55, height: 55, mb: 0.5, boxShadow: `0px 0px 40px 20px ${theme.palette.shadowcolorCode.main || '#3bb77e1c'}` }}
+                />
+                <Typography variant="caption" sx={{ textAlign: 'center', textTransform: 'capitalize', fontWeight: 600, fontSize: '14px', color: theme.palette.colorCode.main || "#253D4E" }}>
+                  New Arrivals
+                </Typography>
+              </Box>
+            }
+          />
+
+          {/* Dynamically loaded category list */}
           {isLoading ? (
             [...Array(18)].map((_, index) => (
               <Tab
@@ -92,7 +182,6 @@ const TopCategory = (props) => {
               />
             ))
           ) : (
-            // Category list from Redux store
             categoryLists.map((item, index) => (
               <Tab
                 sx={{
@@ -100,7 +189,7 @@ const TopCategory = (props) => {
                   '&.Mui-selected': {
                     color: theme.palette.basecolorCode.main || '#3BB77E', // Set the text color for the active tab
                     backgroundColor: theme.palette.basecolorCode.secondary || '#3bb77e1c',
-                    borderColor: theme.palette.basecolorCode.main || '#3BB77E'
+                    borderColor: theme.palette.basecolorCode.main || '#3BB77E',
                   },
                 }}
                 key={index}
@@ -113,16 +202,7 @@ const TopCategory = (props) => {
                       sx={{ width: 55, height: 55, mb: 0.5, boxShadow: `0px 0px 40px 20px ${theme.palette.shadowcolorCode.main || '#3bb77e1c'}` }}
                       alt={item.Category}
                     />
-                    <Typography
-                      variant="caption"
-                      sx={{
-                        textAlign: 'center',
-                        textTransform: 'capitalize',
-                        fontWeight: 600,
-                        fontSize: '14px', 
-                        color: theme.palette.colorCode.main || "#253D4E"
-                      }}
-                    >
+                    <Typography variant="caption" sx={{ textAlign: 'center', textTransform: 'capitalize', fontWeight: 600, fontSize: '14px', color: theme.palette.colorCode.main || "#253D4E" }}>
                       {item.Category}
                     </Typography>
                   </Box>

@@ -19,7 +19,7 @@ import {
   Backdrop
 } from '@mui/material';
 import ProductCard from '../components/ProductCard';
-import { API_FetchOfferFastMovingProduct, API_FetchProductIdMoreItems, API_FetchProductByCategory, API_FetchProductBySubCategory } from '../services/productListServices';
+import { API_FetchOfferFastMovingProduct, API_FetchNewProduct, API_FetchProductIdMoreItems, API_FetchProductByCategory, API_FetchProductBySubCategory } from '../services/productListServices';
 import { API_FetchCategorySubCategory } from '../services/categoryServices';
 import { ImagePathRoutes } from '../routes/ImagePathRoutes';
 import { styled } from '@mui/system';
@@ -32,8 +32,8 @@ const ListItemStyled = styled(ListItem)(({ theme, selected }) => ({
   flexDirection: 'column',
   alignItems: 'center',
   padding: '7px',
-  backgroundColor: selected ? '#F3E6FB' : '#fff', // Change color for selected item
-  color: selected ? '#A700D1' : '#000', // Change text color for selected item
+  backgroundColor: selected ? '#F3E6FB' : '#fff',
+  color: selected ? '#A700D1' : '#000',
   '&:hover': {
     backgroundColor: '#f0f0f0',
   },
@@ -58,6 +58,7 @@ const ProductList = () => {
   const [categoryId, setCategoryId] = useState(null);
   const [categoryName, setCategoryName] = useState(null);
   const [offerProducts, setOfferProducts] = useState(null);
+  const [newProducts, setNewProducts] = useState(null);
   const [relatedProducts, setRelatedProducts] = useState(null);
   const [subCategoryId, setSubCategoryId] = useState(null);
   const [subCategoryName, setSubCategoryName] = useState(null);
@@ -108,19 +109,29 @@ const ProductList = () => {
       let productLists = [];
       if (categoryId === "offer_product") {
         setRelatedProducts(null);
+        setNewProducts(null);
         setOfferProducts(categoryId);
         setActiveCategory("Offer products for you");
         productLists = await API_FetchOfferFastMovingProduct();
       }
+      else if (categoryId === "new_product") {
+        setOfferProducts(null);
+        setRelatedProducts(null);
+        setNewProducts(categoryId);
+        setActiveCategory("New products for you");
+        productLists = await API_FetchNewProduct();
+      }
       else if (categoryId === "related_product") {
         setOfferProducts(null);
+        setNewProducts(null);
         setRelatedProducts(atob(categoryName));
         setActiveCategory("You might also like products");
         productLists = await API_FetchProductIdMoreItems(atob(categoryName));
-      }
+      }      
       else {
         setOfferProducts(null);
         setRelatedProducts(null);
+        setNewProducts(null);
         productLists = await API_FetchProductByCategory(categoryId, Multipleitems, Startindex, PageCount);
       }
       setProductLists(productLists);
@@ -135,7 +146,6 @@ const ProductList = () => {
   };
 
   const GetProductListsBySubCategory = async (SubCategoryId, Multipleitems, Startindex, PageCount) => {
-    console.log("SubCategoryId:", SubCategoryId);
     try {
       if (SubCategoryId !== null) {
         setLoading(true);
@@ -227,7 +237,7 @@ const ProductList = () => {
       <Container maxWidth="xl" sx={{ px: { xs: 0, md: 3 } }}>
         <Grid container>
           {/* Left-side Drawer */}
-          {offerProducts === null && relatedProducts === null ?
+          {offerProducts === null && relatedProducts === null && newProducts === null ?
             <Grid item xs={2.5} md={2} sx={{ display: { xs: 'none', md: 'block' } }} style={{ position: 'sticky', top: 0, height: '100vh' }}>
               <Drawer
                 variant="permanent"
@@ -293,7 +303,7 @@ const ProductList = () => {
 
 
           {/* Mobile Drawer Toggle Button */}
-          {offerProducts === null && relatedProducts === null ?
+          {offerProducts === null && relatedProducts === null && newProducts === null ?
             <Grid item xs={2.5} sx={{ display: { xs: 'block', md: 'none' } }} style={{ position: 'sticky', top: 0, height: '100vh' }}>
               <Drawer
                 variant="permanent"
@@ -338,7 +348,7 @@ const ProductList = () => {
           }
 
           {/* Right-side Content Area */}
-          <Grid item xs={offerProducts === null && relatedProducts === null ? 9.5 : 12} md={offerProducts === null && relatedProducts === null ? 10 : 12}>
+          <Grid item xs={offerProducts === null && relatedProducts === null && newProducts === null ? 9.5 : 12} md={offerProducts === null && relatedProducts === null && newProducts === null ? 10 : 12}>
             <Grid container sx={{ px: { xs: 0, md: 0 }, justifyContent: "flex-start", gap: "0px 18px" }}>
               <Box sx={{ width: '100%', display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <Typography sx={{ py: { xs: 1, md: 3 }, fontSize: { xs: 20, md: 28 }, fontFamily: "inherit", fontWeight: 600, color: '#F44336' }} variant="h4">
@@ -364,11 +374,11 @@ const ProductList = () => {
               </Box>
 
               {/* Render filtered product list */}
-              <div className={offerProducts === null && relatedProducts === null ? "grid h-full w-full grid-cols-2 content-start gap-x-3 overflow-auto md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 pb-24 no-scrollbar" : "grid h-full w-full grid-cols-2 content-start gap-x-3 overflow-auto md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 pb-24 no-scrollbar"}>
+              <div className={offerProducts === null && relatedProducts === null && newProducts === null ? "grid h-full w-full grid-cols-2 content-start gap-x-3 overflow-auto md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 pb-24 no-scrollbar" : "grid h-full w-full grid-cols-2 content-start gap-x-3 overflow-auto md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 pb-24 no-scrollbar"}>
                 {productLists.length > 0 ? (
                   productLists.map((product) => (
                     <Box key={product.id} sx={{ mb: 3 }}>
-                      <ProductCard product={product} isLoading={loading} offerProducts={offerProducts} relatedProducts={relatedProducts} />
+                      <ProductCard product={product} isLoading={loading} offerProducts={offerProducts} relatedProducts={relatedProducts} newProducts={newProducts} />
                     </Box>
                   ))
                 ) : (

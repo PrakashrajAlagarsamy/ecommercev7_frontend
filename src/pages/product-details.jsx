@@ -33,8 +33,7 @@ const ProductDetails = () => {
     const [productWeight, setProductWeight] = useState(''); 
     const [selectedPrice, setSelectedPrice] = useState(0); 
     const [selectedMRP, setSelectedMRP] = useState(0);
-  
-    
+    const [currentPrice, setCurrentPrice] = useState(0);    
   
 
   const handleProductWeightChange = (event, ProductWeightLists) => {
@@ -54,40 +53,60 @@ const ProductDetails = () => {
   };
   
 
-  useEffect(() => {    
-    const existingProduct = cartItems.find(item => item.Id === productDetails?.Id);
+  useEffect(() => {
+    // Check if the product exists in cartItems
+    const existingProduct = cartItems.find(item => {
+      const itemId = item?.Productid ? item.Productid : item?.Id;
+      const productId = productDetails?.Productid ? productDetails.Productid : productDetails?.Id;
+      return itemId === productId;
+    });
+  
     if (existingProduct) {
       setQuantity(existingProduct.item);
       setTotalPrice(existingProduct.totalPrice);
+      setCurrentPrice(existingProduct.totalPrice);
     } else {
       setQuantity(0);
       setTotalPrice(productDetails?.Price || 0);
+      setCurrentPrice(selectedPrice > 0 ? selectedPrice : productDetails?.Price || 0);
     }
-  }, [cartItems, productDetails]);
+  }, [cartItems, productDetails, selectedPrice]);
   
   // Update cartItems function
-  const updateCartItems = (newQuantity, newTotalPrice, MRP) => {
+  const updateCartItems = (newQuantity, newTotalPrice, MRP, selected_price) => {
     setCartItems(prevCartItems => {
-      const existingProductIndex = prevCartItems.findIndex(item => item.Id === productDetails?.Id);
-      let updatedCartItems = [...prevCartItems];
+      const updatedCartItems = [...prevCartItems];
+      const productId = productDetails?.Productid ? productDetails.Productid : productDetails?.Id;
+  
+      const existingProductIndex = updatedCartItems.findIndex(item => {
+        const itemId = item?.Productid ? item.Productid : item?.Id;
+        return itemId === productId;
+      });
   
       if (existingProductIndex >= 0) {
         if (newQuantity > 0) {
+          // Update existing product in the cart
           updatedCartItems[existingProductIndex] = {
             ...updatedCartItems[existingProductIndex],
             item: newQuantity,
             totalPrice: newTotalPrice,
-            totalMRP: MRP  
+            totalMRP: MRP,
+            selectedPrice: selected_price,
+            selectedMRP: MRP  
           };
         } else {
-          updatedCartItems = updatedCartItems.filter(item => item.Id !== productDetails?.Id);
+          // Remove product if the quantity is zero
+          updatedCartItems.splice(existingProductIndex, 1);
         }
       } else if (newQuantity > 0) {
-        updatedCartItems.push({ 
-          ...productDetails, 
-          item: newQuantity, 
+        // Add new product to the cart
+        updatedCartItems.push({
+          ...productDetails,
+          item: newQuantity,
           totalPrice: newTotalPrice,
-          totalMRP: MRP  
+          totalMRP: MRP,
+          selectedPrice: selected_price,
+          selectedMRP: MRP
         });
       }
   
@@ -95,6 +114,7 @@ const ProductDetails = () => {
       return updatedCartItems;
     });
   };
+  
   
   // Quantity increment function
   const handleIncrement = (event) => {

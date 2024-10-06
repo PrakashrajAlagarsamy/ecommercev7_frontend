@@ -10,7 +10,7 @@ import { API_InsertMyFavoriteProducts } from '../services/userServices';
 import { useCart } from '../context/CartContext';
 import { useTheme } from '@mui/material/styles';
 
-const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => {
+const ProductCard = ({ product, isLoading, offerProducts, relatedProducts, newProducts }) => {
   const navigate = useNavigate();
   const theme = useTheme();
   const { cartItems, setCartItems } = useCart();
@@ -53,8 +53,15 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => 
     }
   }, [product]);
   
+  
+  // Check if the product exists in cartItems
   useEffect(() => {
-    const existingProduct = cartItems.find(item => item.Id === product?.Id);
+    const existingProduct = cartItems.find(item => {
+      const itemId = item?.Productid ? item.Productid : item?.Id;
+      const productId = product?.Productid ? product.Productid : product?.Id;
+      return itemId === productId;
+    });
+  
     if (existingProduct) {
       setQuantity(existingProduct.item);
       setTotalPrice(existingProduct.totalPrice);
@@ -62,18 +69,24 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => 
     } else {
       setQuantity(0);
       setTotalPrice(product?.Price || 0);
-      setCurrentPrice(selectedPrice > 0 ? selectedPrice : product.Price || 0);
+      setCurrentPrice(selectedPrice > 0 ? selectedPrice : product?.Price || 0);
     }
   }, [cartItems, product, selectedPrice]);
   
   // Update cartItems function
   const updateCartItems = (newQuantity, newTotalPrice, MRP, selected_price) => {
     setCartItems(prevCartItems => {
-      const existingProductIndex = prevCartItems.findIndex(item => item.Id === product?.Id);
-      let updatedCartItems = [...prevCartItems];
+      const updatedCartItems = [...prevCartItems];
+      const productId = product?.Productid ? product.Productid : product?.Id;
+  
+      const existingProductIndex = updatedCartItems.findIndex(item => {
+        const itemId = item?.Productid ? item.Productid : item?.Id;
+        return itemId === productId;
+      });
   
       if (existingProductIndex >= 0) {
         if (newQuantity > 0) {
+          // Update existing product in the cart
           updatedCartItems[existingProductIndex] = {
             ...updatedCartItems[existingProductIndex],
             item: newQuantity,
@@ -83,23 +96,27 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => 
             selectedMRP: MRP  
           };
         } else {
-          updatedCartItems = updatedCartItems.filter(item => item.Id !== product?.Id);
+          // Remove product if the quantity is zero
+          updatedCartItems.splice(existingProductIndex, 1);
         }
       } else if (newQuantity > 0) {
-        updatedCartItems.push({ 
-          ...product, 
-          item: newQuantity, 
+        // Add new product to the cart
+        updatedCartItems.push({
+          ...product,
+          item: newQuantity,
           totalPrice: newTotalPrice,
-          totalMRP: MRP, 
+          totalMRP: MRP,
           selectedPrice: selected_price,
           selectedMRP: MRP
         });
-      }      
+      }
+  
       localStorage.setItem('cartItems', JSON.stringify(updatedCartItems));
       return updatedCartItems;
     });
   };
-  
+
+
   // Quantity increment function
   const handleIncrement = (event) => {
     event.stopPropagation();
@@ -174,7 +191,7 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => 
       name={product.Description}
       value={product?.Productid ? product.Productid : product?.Id}      
       sx={{
-        width: { xs: offerProducts === null && relatedProducts === null ? 155 : 175, sm: 220, md: 260, lg: 280 },
+        width: { xs: offerProducts === null && relatedProducts === null && newProducts === null ? 155 : 175, sm: 220, md: 260, lg: 280 },
         height: { xs: 320, sm: 380, md: 400, lg: 420 },
         margin: '0 auto',
         textAlign: 'left',
@@ -211,7 +228,7 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => 
             value={product?.Productid ? product.Productid : product?.Id}    
             component="img"
             onClick={handleProductClick}
-            image={ImagePathRoutes.ProductImagePath + product.Img0}
+            image={newProducts === 'new_product' ? ImagePathRoutes.ProductDetailsImagePath + product.Img0 : ImagePathRoutes.ProductImagePath + product.Img0}
             alt={product.Description}
             className="card-media"
             sx={{

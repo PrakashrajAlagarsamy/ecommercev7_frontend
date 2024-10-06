@@ -30,6 +30,9 @@ export const APIRoutes = {
     GET_OFFER_FAST_MOVING_PRODUCT: `${ServerURL.PRODUCTION_HOST_URL}api/WebMobileApp/OfferProductFastingMovingProduct`,
     GET_PRODUCT_ID_MORE_ITEMS: `${ServerURL.PRODUCTION_HOST_URL}api/WebMobileApp/SelectProductIdMoreItems`,
 
+    //New product 
+    GET_NEW_PRODUCT: `${ServerURL.PRODUCTION_HOST_URL}api/WebMobileApp/SelectNewProdcut`,
+
     //Main product index page
     GET_PRODUCT_BY_INDEX_PAGE: `${ServerURL.PRODUCTION_HOST_URL}api/WebMobileApp/SelectProductByCategoryIndexPage`,
     GET_PRODUCT_BY_CATEGORY: `${ServerURL.PRODUCTION_HOST_URL}api/WebMobileApp/SelectProductByCategory`,

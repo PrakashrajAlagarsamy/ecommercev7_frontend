@@ -14,7 +14,6 @@ const CategoryCard = () => {
 
     const handleCategoryClickChange = (event, id, newValue) => {
         const selectedCategoryId = event.currentTarget.id;
-        console.log("selectedCategoryId:", selectedCategoryId);
         navigate(`/product-list?pcid=${btoa(selectedCategoryId)}&pcname=${btoa(newValue)}`);
     };
     
@@ -44,7 +43,7 @@ const CategoryCard = () => {
                         className=""
                     >
                         {/* Image container */}
-                        <Box key={index} id={item.Id} value={item.Category} onClick={(event) => handleCategoryClickChange(event, item.Id, item.Category)}>
+                        <Box sx={{cursor: 'pointer'}} key={index} id={item.Id} value={item.Category} onClick={(event) => handleCategoryClickChange(event, item.Id, item.Category)}>
                             <img
                                 src={ImagePathRoutes.CategoryImagePath + item.ImagePath}
                                 alt={item.Category}

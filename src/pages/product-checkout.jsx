@@ -19,7 +19,7 @@ const style = {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 300,
+    width: {xs: '100%', sm: '100%', md: 280, lg: 300, xl: 300},
     bgcolor: 'background.paper',
     py: 2,
     borderRadius: 1
@@ -278,8 +278,8 @@ export default function ProductCheckout() {
                     </Box>
                 </Box>
             </Modal>
-            <Container>
-                <Grid container spacing={4} style={{ padding: '20px' }}>
+            <Container maxWidth="lg" sx={{ px: { xs: 0, md: 3, lg: 5 }, py: { xs: 0, md: 3 } }}>
+                <Grid container spacing={4} style={{ padding: {xs: '0px', sm: '0px', md: '12px', lg: '20px', xl: '20px'} }}>
                     {/* Left Section - Delivery Address */}
                     <Grid item xs={12} md={8}>
                         <Box sx={{ border: '1px solid #3BB77' }} padding={3} mb={2}>
@@ -396,18 +396,20 @@ export default function ProductCheckout() {
                     </Grid>
 
                     {/* Right Section - Order Summary */}
-                    <Grid item xs={12} md={4}>
+                    <Grid item xs={12} md={4} sx={{ px: { xs: 1, md: 3 } }}>
+                        <Box sx={{ px: { xs: 1, md: 0 } }}>
                         <Typography align='left' variant="h6">Order Summary</Typography>
                         <Divider style={{ marginBottom: '20px' }} />
                         {cartItems.map((product, index) => (
+                            <>
                             <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
                                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: '7px' }}>
                                     <Box
                                         component="img"
                                         sx={{
-                                            width: 60,
-                                            height: 60,
-                                            borderRadius: 1,
+                                            width: 50,
+                                            height: 50,
+                                            borderRadius: '50px',
                                             marginRight: 0,
                                         }}
                                         src={ImagePathRoutes.ProductImagePath + product.Img0}
@@ -440,11 +442,15 @@ export default function ProductCheckout() {
                                                 </Typography>
                                             </Typography>
                                         </Box>
-                                        <Typography align='left' variant="body2">Qty: {product.item} X {product.Price.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Typography>
+                                        <Box>
+                                            <Typography align='left' variant="body2">Qty: {product.item} X {product.Price.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Typography>
+                                            {/* <Typography variant="body2" align="right" style={{ color: 'green' }}>{product.totalMRP.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Typography> */}
+                                        </Box>
                                     </Box>
                                 </Box>
                                 <Typography variant="body2" align="right" style={{ color: 'green' }}>{product.totalPrice.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Typography>
                             </Box>
+                            </>
                         ))}
 
                         <Divider style={{ margin: '20px 0' }} />
@@ -502,6 +508,7 @@ export default function ProductCheckout() {
                                     </Typography>
                                 </Grid>
                             </Grid>
+                        </Box>
                         </Box>
                     </Grid>
                 </Grid>
