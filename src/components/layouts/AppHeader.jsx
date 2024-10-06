@@ -13,6 +13,7 @@ import AppForgetPassword from '../authentication/AppForgetPassword';
 import AppSearchBox from './AppSearchBox';
 import { useAuth } from '../../context/authContext';
 import { useCart } from '../../context/CartContext';
+import { useTheme } from '@mui/material/styles';
 
 const drawerContent = (
   <List>
@@ -35,6 +36,7 @@ const drawerContent = (
 );
 
 export default function AppHeader() {
+  const theme = useTheme();
   const { isAuthenticated, setIsAuthenticated } = useAuth();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [registerDrawerOpen, setRegisterDrawerOpen] = useState(false);
@@ -182,8 +184,13 @@ export default function AppHeader() {
               )}
 
               <IconButton color="inherit" onClick={handleAuthDrawerToggle}>
-                <Badge badgeContent={cartItemsCount} color="primary">
-                  <ShoppingBagIcon color="action" />
+                <Badge badgeContent={cartItemsCount} sx={{
+                    '& .MuiBadge-badge': {
+                      backgroundColor: theme.palette.basecolorCode.main, 
+                      color: theme.palette.footertextcolorCode.main
+                    },
+                  }}>
+                  <ShoppingBagIcon />
                 </Badge>
               </IconButton>
             </Grid>

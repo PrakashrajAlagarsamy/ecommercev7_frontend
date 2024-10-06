@@ -81,14 +81,14 @@ const TopCategory = (props) => {
         sx={{ pt: 2, pb: 2, p: { xs: 0, sm: 0 } }}
       >
         <Tabs
-          // value={categoryValue}
-          // onChange={handleCategoryClickChange}
+          value={categoryValue}
+          onChange={handleCategoryClickChange}
           variant="scrollable"
           scrollButtons={false}
           aria-label="scrollable prevent tabs example"
           sx={{
             '.MuiTabs-indicator': {
-              backgroundColor: theme.palette.basecolorCode.main || '#3BB77E', // Set the indicator color for the active tab
+              backgroundColor: theme.palette.basecolorCode.main || '#3BB77E',
             },
           }}
         >
@@ -97,7 +97,7 @@ const TopCategory = (props) => {
             sx={{
               cursor: "pointer",
               '&.Mui-selected': {
-                color: theme.palette.basecolorCode.main || '#3BB77E', // Set the text color for the active tab
+                color: theme.palette.basecolorCode.main || '#3BB77E',
                 backgroundColor: theme.palette.basecolorCode.secondary || '#3bb77e1c',
                 borderColor: theme.palette.basecolorCode.main || '#3BB77E',
               },

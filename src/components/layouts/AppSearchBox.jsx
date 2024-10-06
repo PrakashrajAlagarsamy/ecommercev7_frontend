@@ -88,7 +88,7 @@ const AppSearchBox = () => {
           value={option?.Productid ? option.Productid : option?.Id}
           onClick={handleProductClick}
           >
-            <ListItem style={{ display: 'flex', alignItems: 'center' }}>
+            <ListItem style={{ display: 'flex', alignItems: 'center', p: 0 }}>
               <ListItemAvatar>
                 <Avatar src={ImagePathRoutes.ProductImagePath + option.Img0} alt={option.Description} />
               </ListItemAvatar>

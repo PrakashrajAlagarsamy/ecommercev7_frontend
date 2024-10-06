@@ -174,7 +174,9 @@ const ProductList = () => {
     setCategoryName(decodeURIComponent(encodedName));
     setSubCategoryId(decodeURIComponent(encodedSId));
     setSubCategoryName(decodeURIComponent(encodedSName));
-    GetCategoryBySubCategory(atob(encodedId));
+    if(atob(encodedId) !== 'new_product'){
+      GetCategoryBySubCategory(atob(encodedId));
+    }    
     if (encodedSId === null) {
       setActiveCategory("All Products");
       GetProductLists(atob(encodedId), Multipleitems, Startindex, PageCount);
