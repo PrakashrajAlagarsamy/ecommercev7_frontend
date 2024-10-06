@@ -1,8 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Badge, AppBar, Toolbar, Grid, IconButton, InputAdornment, TextField, Button, Typography, Drawer, List, ListItem, ListItemText } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
+import { Badge, AppBar, Toolbar, Grid, IconButton, Button, Typography, Drawer, List, ListItem, ListItemText } from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -11,6 +10,7 @@ import AppRegister from '../authentication/AppRegister';
 import AppLogin from '../authentication/AppLogin';
 import AppCart from '../cart/AppCart';
 import AppForgetPassword from '../authentication/AppForgetPassword';
+import AppSearchBox from './AppSearchBox';
 import { useAuth } from '../../context/authContext';
 import { useCart } from '../../context/CartContext';
 
@@ -46,7 +46,7 @@ export default function AppHeader() {
   const [isScrolled, setIsScrolled] = useState(false);
 
   const toggleDrawer = (open) => () => {
-    setDrawerOpen(open);
+    setDrawerOpen((open) => !open);
   };
 
   // Authentication right sidebar
@@ -140,23 +140,7 @@ export default function AppHeader() {
                 zIndex: 9,
               }}
             >
-              <TextField
-                placeholder='Search for "your products"'
-                fullWidth
-                variant="outlined"
-                sx={{ padding: 0 }}
-                autoComplete={"off"}
-                size="small"
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <IconButton edge="start">
-                        <SearchIcon />
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-              />
+              <AppSearchBox/>              
             </Grid>
 
             {/* Navigation and User Action Section */}

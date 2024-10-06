@@ -268,8 +268,10 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts }) => 
               <Typography
                 variant="body2"
                 component={"p"}
-                onClick={handleProductClick}
+                id={product?.Productid ? product.Productid : product?.Id}
                 name={product.Description}
+                value={product?.Productid ? product.Productid : product?.Id}
+                onClick={handleProductClick}
                 sx={{
                   fontSize: { xs: '12px', sm: '12px', md: '12px', lg: '14px', xl: '14px' }, 
                   fontWeight: 'bold',

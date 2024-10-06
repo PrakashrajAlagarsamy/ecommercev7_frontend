@@ -35,6 +35,12 @@ export default function AppBottomNavigation() {
     } else if (flag === 2) {
       setLoginDrawerOpen((prev) => !prev);
     }
+    if(cartDrawerOpen === true){
+        setCartDrawerOpen((prev) => !prev);
+    }
+    else if(loginDrawerOpen === true){
+        setLoginDrawerOpen((prev) => !prev);
+    }
   };
 
   const handleNavigation = (event, newValue) => {

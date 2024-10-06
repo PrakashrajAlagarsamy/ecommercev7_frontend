@@ -315,7 +315,7 @@ const ProductDetails = () => {
                                     sx={{
                                         display: quantity === 0 ? 'block' : 'none',
                                         marginTop: '10px',
-                                        width: "20%",
+                                        width: {xs: 'auto', sm: 'auto', md: "30%", lg: "20%"},
                                         textTransform: 'none',
                                         fontFamily: 'inherit',
                                         fontWeight: 600,

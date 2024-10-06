@@ -176,3 +176,33 @@ export const API_FetchProductById = async (ProductId) => {
         throw error; // Re-throw so the calling function can handle it
     }
 };
+
+//Search products
+export const API_SearchByProduct = async (keyword) => {
+    let Description = "Description";
+    let objlist = {
+        Comid: ServerURL.COMPANY_REF_ID,
+    };
+    try {
+        const response = await fetch(`${APIRoutes.GET_SEARCH_BY_PRODUCT}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json; charset=utf-8',
+                Keyword: keyword,
+                Column: Description,              
+            },
+            body: JSON.stringify(objlist)
+        });
+        if (!response.ok) {
+            throw new Error('Network response was not ok.');
+        }
+        const data = await response.json();
+        if (!data || !Array.isArray(data)) {
+            throw new Error('No data found.');
+        }
+        return data;
+    } catch (error) {
+        console.error('Failed to fetch details:', error);
+        throw error; // Re-throw so the calling function can handle it
+    }
+};
