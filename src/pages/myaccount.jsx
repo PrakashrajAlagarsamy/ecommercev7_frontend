@@ -13,8 +13,10 @@ import Addresses from '../components/myAccount/Addresses';
 import Referrals from '../components/myAccount/Referrals';
 import PasswordSettings from '../components/myAccount/PasswordSettings';
 import { API_FetchCustomerAddress } from '../services/userServices';
+import {useAuth} from '../context/authContext';
 
 const MyAccount = () => {
+    const { isAuthenticated, setIsAuthenticated } = useAuth();
     const [activeComponent, setActiveComponent] = useState('Orders');
     const [customerDetails, setCustomerDetails] = useState({});
     const [isLoading, setIsLoading] = useState(true);
@@ -52,12 +54,15 @@ const MyAccount = () => {
     // Update URL whenever active component changes
     useEffect(() => {
         if(activeComponent === 'Logout'){
+            setIsAuthenticated(false);
+            localStorage.removeItem('userLogin');
+            localStorage.removeItem('userId');
             navigate('/');
         }
         else{
             navigate(`/myaccount?page=${activeComponent}`, { replace: false });
         }
-    }, [activeComponent, navigate]);
+    }, [activeComponent, navigate, setIsAuthenticated]);
 
     const renderActiveComponent = () => {
         switch (activeComponent) {
@@ -80,6 +85,7 @@ const MyAccount = () => {
             case 'PasswordSettings':
                 return <PasswordSettings customerDetails={customerDetails}/>;
             case 'Logout':
+                setIsAuthenticated(false);
                 localStorage.removeItem('userLogin');
                 localStorage.removeItem('userId');
                 return '/';

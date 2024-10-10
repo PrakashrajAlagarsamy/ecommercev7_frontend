@@ -55,24 +55,34 @@ export default function AppHeader() {
   const handleAuthDrawerToggle = (event) => {
     if (event === false) {
       if (registerDrawerOpen === true) {
+        setLoginDrawerOpen(false);
         setRegisterDrawerOpen((prev) => !prev);
       }
       else if (loginDrawerOpen === true) {
+        setRegisterDrawerOpen(false);
         setLoginDrawerOpen((prev) => !prev);
       }
       else {
+        setRegisterDrawerOpen(false);
+        setLoginDrawerOpen(false);
         setCartDrawerOpen((prev) => !prev);
       }
     }
     else {
       const id = event.currentTarget.id;
       if (id === "register_btn") {
+        setLoginDrawerOpen(false);
+        setCartDrawerOpen(false);
         setRegisterDrawerOpen((prev) => !prev);
       }
       else if (id === "login_btn") {
+        setRegisterDrawerOpen(false);
+        setCartDrawerOpen(false);
         setLoginDrawerOpen((prev) => !prev);
       }
       else {
+        setRegisterDrawerOpen(false);
+        setLoginDrawerOpen(false);
         setCartDrawerOpen((prev) => !prev);
       }
     }
@@ -201,9 +211,9 @@ export default function AppHeader() {
         <Drawer anchor="right" open={drawerOpen} onClose={toggleDrawer(false)}>
           {drawerContent}
         </Drawer>
-        <AppRegister RegisterDrawerOpen={registerDrawerOpen} handleAuthDrawerToggle={handleAuthDrawerToggle} />
-        <AppLogin LoginDrawerOpen={loginDrawerOpen} handleAuthDrawerToggle={handleAuthDrawerToggle} />
-        <AppCart CartDrawerOpen={cartDrawerOpen} handleAuthDrawerToggle={handleAuthDrawerToggle} />
+        <AppRegister RegisterDrawerOpen={registerDrawerOpen} setLoginDrawerOpen={setLoginDrawerOpen} handleAuthDrawerToggle={handleAuthDrawerToggle} />
+        <AppLogin LoginDrawerOpen={loginDrawerOpen} setRegisterDrawerOpen={setRegisterDrawerOpen} handleAuthDrawerToggle={handleAuthDrawerToggle} />
+        <AppCart CartDrawerOpen={cartDrawerOpen} setLoginDrawerOpen={setLoginDrawerOpen} handleAuthDrawerToggle={handleAuthDrawerToggle} />
         <AppForgetPassword ForgetPasswordDrawerOpen={forgetPasswordDrawerOpen} handleAuthDrawerToggle={handleAuthDrawerToggle} />
       </AppBar>
     </>

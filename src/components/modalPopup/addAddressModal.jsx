@@ -59,20 +59,20 @@ const AddAddressModal = ({ AddressModalOpen, handleAddressModalClose, AddressDet
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [AddressModalOpen, addressFields]);
 
-    useEffect(() => {
-        if (AddressModalOpen) {
-            // Initialize address fields when the modal opens
-            setAddressFields({
-                Address1: defaultAddressDetails.Address1 || '',
-                Address2: defaultAddressDetails.Address2 || '',
-                City: defaultAddressDetails.City || '',
-                Pincode: defaultAddressDetails.Pincode || '',
-                Landmark: defaultAddressDetails.Landmark || '',
-                lattitude: markerPosition.lat,
-                longitude: markerPosition.lng,
-            });
-        }
-    }, [AddressModalOpen, defaultAddressDetails, markerPosition]);
+    // useEffect(() => {
+    //     if (AddressModalOpen) {
+    //         // Initialize address fields when the modal opens
+    //         setAddressFields({
+    //             Address1: defaultAddressDetails.Address1 || '',
+    //             Address2: defaultAddressDetails.Address2 || '',
+    //             City: defaultAddressDetails.City || '',
+    //             Pincode: defaultAddressDetails.Pincode || '',
+    //             Landmark: defaultAddressDetails.Landmark || '',
+    //             lattitude: markerPosition.lat,
+    //             longitude: markerPosition.lng,
+    //         });
+    //     }
+    // }, [AddressModalOpen, defaultAddressDetails, markerPosition]);
 
     const geocodeAddress = useCallback((address) => {
         if (!isLoaded) return;
@@ -170,10 +170,10 @@ const AddAddressModal = ({ AddressModalOpen, handleAddressModalClose, AddressDet
     };
 
     const handleSave = () => {
-        if (!AddressDetails) {
-            console.error("AddressDetails is not provided");
-            return;
-        }
+        // if (!AddressDetails) {
+        //     console.error("AddressDetails is not provided");
+        //     return;
+        // }
 
         let objlist =
         {
@@ -188,7 +188,7 @@ const AddAddressModal = ({ AddressModalOpen, handleAddressModalClose, AddressDet
             FlatNo: 0,
             AreaMasterRefId: null,
             firstorder: "0",
-            ParentId: defaultAddressDetails.ParentId ? defaultAddressDetails.ParentId : 0,
+            ParentId: defaultAddressDetails.ParentId ? defaultAddressDetails.ParentId : Number(atob(localStorage.getItem("userId"))),
             ReferMobileNo: 0,
             Active: 1,
             OrderCount: 0,
@@ -299,11 +299,11 @@ const AddAddressModal = ({ AddressModalOpen, handleAddressModalClose, AddressDet
                                         <TextField
                                             size="small"
                                             name="Address1"
-                                            value={addressFields.Address1} 
+                                            value={addressFields.Address1 ? addressFields.Address1 : ''} 
                                             placeholder="Enter your address"
                                             variant="outlined"
                                             fullWidth
-                                            error={!!errors.Address1}
+                                            error={!!errors.Address1}   
                                             helperText={errors.Address1}
                                             onChange={handleInputChange}
                                         />
@@ -313,7 +313,7 @@ const AddAddressModal = ({ AddressModalOpen, handleAddressModalClose, AddressDet
                                         <TextField
                                             size="small"
                                             name="Address2"
-                                            value={addressFields.Address2}
+                                            value={addressFields.Address2 ? addressFields.Address2 : ''}
                                             placeholder="Enter your address details"
                                             variant="outlined"
                                             fullWidth

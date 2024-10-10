@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
@@ -5,10 +6,13 @@ import { TextField, Button, Typography, Link, IconButton, InputAdornment } from 
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import AppLogo from '../logo/AppLogo';
 import {useAuth} from '../../context/authContext';
+import { useTheme } from '@mui/material/styles';
+import AppRegister from './AppRegister';
 //API
 import { loginUser } from '../../services/userServices';
 
-export default function AppLogin({ LoginDrawerOpen, handleAuthDrawerToggle }) {
+export default function AppLogin({ LoginDrawerOpen, setRegisterDrawerOpen, handleAuthDrawerToggle }) {
+  const theme = useTheme();
   const { setIsAuthenticated } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
 
@@ -73,6 +77,7 @@ export default function AppLogin({ LoginDrawerOpen, handleAuthDrawerToggle }) {
   };
 
   return (
+    <>
     <Drawer
       open={LoginDrawerOpen}
       anchor="right"
@@ -138,8 +143,7 @@ export default function AppLogin({ LoginDrawerOpen, handleAuthDrawerToggle }) {
                 fullWidth
                 variant="contained"
                 color="success"
-                className="bg-green-700 hover:bg-green-800 text-white"
-                sx={{ my: 3 }}
+                sx={{ my: 3, background: theme.palette.basecolorCode.main,color: theme.palette.whitecolorCode.main }}
                 type="submit"
               >
                 Login
@@ -151,7 +155,10 @@ export default function AppLogin({ LoginDrawerOpen, handleAuthDrawerToggle }) {
               <Link
                 href="#"
                 className="text-blue-600 hover:underline"
-                onClick={() => handleAuthDrawerToggle(false)}
+                onClick={() => {
+                  handleAuthDrawerToggle(false); 
+                  setRegisterDrawerOpen(true); 
+                }}
               >
                 Register
               </Link>
@@ -160,5 +167,10 @@ export default function AppLogin({ LoginDrawerOpen, handleAuthDrawerToggle }) {
         </div>
       </Box>
     </Drawer>
+    {/* <AppRegister
+    registerDrawerOpen={true}
+    handleLoginDrawerToggle={false}
+  /> */}
+    </>
   );
 }

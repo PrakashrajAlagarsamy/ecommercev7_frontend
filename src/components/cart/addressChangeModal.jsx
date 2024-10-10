@@ -55,10 +55,10 @@ const AddressChangeModal = ({ ModalOpen, handleChangeAddressClose, handleAddress
 
     useEffect(() => {
         const userId = localStorage.getItem("userId");
-        const CId = userId ? decodeURIComponent(userId) : null;
-        if (CId) {
-            fetchCustomerAddress(atob(CId));
-        }
+        let CID = atob(userId);
+        if(CID !== 0){
+            fetchCustomerAddress(Number(CID));
+        }        
     }, []);
 
     const handleModalClose = () => {

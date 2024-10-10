@@ -58,7 +58,7 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
   }),
 );
 
-export default function AppCart({ CartDrawerOpen, handleAuthDrawerToggle }) {
+export default function AppCart({ CartDrawerOpen, setLoginDrawerOpen, handleAuthDrawerToggle }) {
   const theme = useTheme();
   const navigate = useNavigate();
   const { cartItems, setCartItems } = useCart();
@@ -113,8 +113,13 @@ export default function AppCart({ CartDrawerOpen, handleAuthDrawerToggle }) {
     let userLogin = localStorage.getItem("userLogin");
     let userId = Number(atob(localStorage.getItem("userId")));
 
-    if (userLogin === false && userId === 0) {
-      handleAuthDrawerToggle(true);
+    if (userLogin === null) {
+      handleAuthDrawerToggle(false);
+      setLoginDrawerOpen(true);      
+    }
+    else if(userLogin === "false" || userId === 0){
+      handleAuthDrawerToggle(false);
+      setLoginDrawerOpen(true);  
     }
     else if (selectedAddress !== 'No address selected') {
       const CartTotalAmount = cartTotalAmountCheck();
@@ -313,19 +318,21 @@ export default function AppCart({ CartDrawerOpen, handleAuthDrawerToggle }) {
                     textTransform: 'none',
                     fontWeight: 'bold',
                     fontSize: '14px',
-                    background: '#3bb77e1c',
-                    border: '1px solid #3BB77E',
-                    color: '#3BB77E',
+                    background: theme.palette.basecolorCode.main,
+                    border: '1px solid',
+                    borderColor: theme.palette.basecolorCode.main,
+                    color: theme.palette.whitecolorCode.main,
                     boxShadow: 'none',
                     '&:hover': {
-                      background: '#3BB77E',
-                      border: '1px solid #3BB77E',
-                      color: '#FFF',
+                      background: theme.palette.basecolorCode.main,
+                      border: '1px solid',
+                      borderColor: theme.palette.basecolorCode.main,
+                      color: theme.palette.whitecolorCode.main,
                       boxShadow: 'none',
                     }
                   }}
                 >
-                  Continue to Payment
+                  Proceed to checkout
                 </Button>
               </Box>
             </Box>

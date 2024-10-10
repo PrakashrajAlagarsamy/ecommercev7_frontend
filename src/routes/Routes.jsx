@@ -29,7 +29,7 @@ function AppRouter() {
     const isMobile = useMediaQuery(theme.breakpoints.down('sm', 'xs'));
 
     useEffect(() => {
-    //FetchMySettings();
+    FetchMySettings();
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

@@ -1,16 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import { TextField, Button, Typography, Link, IconButton, InputAdornment } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import AppLogo from '../logo/AppLogo';
-import AppLogin from './AppLogin'; 
+import {ServerURL} from '../../server/serverUrl';
+import { useTheme } from '@mui/material/styles';
 
 //API's
 import { checkExistingUser, registerUser } from '../../services/userServices';
 
-export default function AppRegister({ RegisterDrawerOpen, handleAuthDrawerToggle }) {
-  const [loginDrawerOpen, setLoginDrawerOpen] = useState(false);
+export default function AppRegister({ RegisterDrawerOpen, setLoginDrawerOpen, handleAuthDrawerToggle }) {
+  const theme = useTheme();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -34,37 +35,41 @@ export default function AppRegister({ RegisterDrawerOpen, handleAuthDrawerToggle
     });
   };
 
-  const [objList, setObjList] = useState({
-    Id: 0,
-    CompanyRefId: 41,
-    CustomerName: formData.fullname,
-    MobileNo: formData.mobileNumber,
-    Password: formData.password,
-    Email: formData.email,
-    ReferMobileNo: "",
-    TokenId: "",
-    Address1: "",
-    Address2: "",
-    City: "",
-    Landmark: "",
-    FlatNo: "",
-    PhoneNo: "",
-    Pincode: 0,
-    AreaMasterRefId: null,
-    Active: 1,
-    firstorder: 1,
-    OrderCount: 1
-  });
-
-  useEffect(() => {
-    setObjList((prevState) => ({
-      ...prevState,
+  let objList = [{     
+      Id: 0,
+      CompanyRefid: ServerURL.COMPANY_REF_ID,
       CustomerName: formData.fullname,
-      MobileNo: formData.mobileNumber,
-      Password: formData.password,
+      Address1: "",
+      Address2: "",
+      City: "",
+      Pincode: "",
       Email: formData.email,
-    }));
-  }, [formData]);
+      Password: formData.password,
+      MobileNo: formData.mobileNumber,
+      PhoneNo: 0,
+      TokenId: "",
+      Landmark: "",
+      FlatNo: 0,
+      AreaMasterRefId: null,
+      firstorder: "0",
+      lattitude: 0,
+      longitude: 0,
+      ParentId: 0,
+      ReferMobileNo: 0,
+      Active: 1,
+      OrderCount: 0,
+      Createddate: new Date(),
+  }];
+
+  // useEffect(() => {
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  //   objList = [{
+  //     CustomerName: formData.fullname,
+  //     MobileNo: formData.mobileNumber,
+  //     Password: formData.password,
+  //     Email: formData.email,
+  //   }];
+  // }, [formData]);
   
 
   // Toggle password visibility
@@ -87,7 +92,7 @@ export default function AppRegister({ RegisterDrawerOpen, handleAuthDrawerToggle
       tempErrors.mobileNumber = "Mobile number must be 10 digits";
     }
     if (!formData.password) tempErrors.password = "Password is required";
-    else if (formData.password.length > 6) tempErrors.password = "Password must be at most 6 characters";
+    else if (formData.password.length < 6) tempErrors.password = "Password must be at most 6 characters";
     if (formData.password !== formData.confirmPassword) {
       tempErrors.confirmPassword = "Passwords do not match";
     }
@@ -112,8 +117,8 @@ export default function AppRegister({ RegisterDrawerOpen, handleAuthDrawerToggle
       const response = await registerUser(objList);
       if (response) {
         alert("Account created successfully!");
-        handleAuthDrawerToggle(false); // Close register drawer
-        setLoginDrawerOpen(true); // Open login drawer
+        handleAuthDrawerToggle(false); 
+        setLoginDrawerOpen(true); 
       } else {
         alert("Failed to create account.");
       }
@@ -251,8 +256,7 @@ export default function AppRegister({ RegisterDrawerOpen, handleAuthDrawerToggle
                   fullWidth
                   variant="contained"
                   color="success"
-                  className="bg-green-700 hover:bg-green-800 text-white"
-                  sx={{ my: 3 }}
+                  sx={{ my: 3, background: theme.palette.basecolorCode.main, color: theme.palette.whitecolorCode.main }}
                   type="submit"
                 >
                   Create Account
@@ -278,10 +282,10 @@ export default function AppRegister({ RegisterDrawerOpen, handleAuthDrawerToggle
       </Drawer>
 
       {/* Login Drawer Component */}
-      <AppLogin
+      {/* <AppLogin
         LoginDrawerOpen={loginDrawerOpen}
         handleLoginDrawerToggle={setLoginDrawerOpen}
-      />
+      /> */}
     </>
   );
 }
