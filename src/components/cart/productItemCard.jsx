@@ -6,8 +6,10 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import { ImagePathRoutes } from '../../routes/ImagePathRoutes';
 import { useCart } from '../../context/CartContext';
 import { ServerURL } from '../../server/serverUrl';
+import { useTheme } from '@mui/material/styles';
 
 const ProductItemCard = ({ product }) => {
+  const theme = useTheme();
   const { cartItems, setCartItems } = useCart();
   const [quantity, setQuantity] = useState(0);
   const [totalPrice, setTotalPrice] = useState(product?.Price || 0);
@@ -160,7 +162,7 @@ const ProductItemCard = ({ product }) => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          background: '#3bb77e1c',
+          background: theme.palette.shadowcolorCode.main,
           border: '1px solid #3BB77E',
           color: '#3BB77E',
           fontFamily: 'inherit',

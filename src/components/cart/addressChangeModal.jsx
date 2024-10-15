@@ -55,9 +55,9 @@ const AddressChangeModal = ({ ModalOpen, handleChangeAddressClose, handleAddress
 
     useEffect(() => {
         const userId = localStorage.getItem("userId");
-        let CID = atob(userId);
+        let CID = Number(atob(userId));
         if(CID !== 0){
-            fetchCustomerAddress(Number(CID));
+            fetchCustomerAddress(CID);
         }        
     }, []);
 

@@ -261,15 +261,15 @@ const ProductList = () => {
                       key={index}
                       onClick={() => handleSubCategoryClick(category.SubCategory, category.Id)}
                       sx={{
-                        borderLeft: activeCategory === category.SubCategory ? '4px solid #3BB77E' : 'none',
-                        backgroundColor: activeCategory === category.SubCategory ? '#3bb77e1c' : 'transparent',
-                        color: activeCategory === category.SubCategory ? '#3BB77E' : '#253D4E',
+                        borderLeft: activeCategory === category.SubCategory ? `4px solid ${theme.palette.basecolorCode.main}` : 'none',
+                        backgroundColor: activeCategory === category.SubCategory ? `${theme.palette.shadowcolorCode.main}` : 'transparent',
+                        color: activeCategory === category.SubCategory ? `${theme.palette.basecolorCode.main}` : '#253D4E',
                         '& .MuiListItemIcon-root': {
                           color: activeCategory === category.SubCategory ? '#000' : 'inherit',
                         },
                         '&:hover': {
-                          backgroundColor: '#3bb77e1c',
-                          color: "#3BB77E"
+                          backgroundColor: theme.palette.shadowcolorCode.main,
+                          color: theme.palette.basecolorCode.main
                         },
                       }}
                     >
@@ -326,7 +326,7 @@ const ProductList = () => {
                       key={index}
                       onClick={() => handleSubCategoryClick(category.SubCategory, category.Id)}
                       sx={{
-                        borderLeft: activeCategory === category.SubCategory ? '4px solid #3BB77E' : 'none',
+                        borderLeft: activeCategory === category.SubCategory ? `4px solid ${theme.palette.basecolorCode.main}` : 'none',
                         backgroundColor: activeCategory === category.SubCategory ? '#3bb77e1c' : 'transparent',
                         color: activeCategory === category.SubCategory ? '#3BB77E' : '#253D4E',
                         '& .MuiListItemIcon-root': {
@@ -387,7 +387,7 @@ const ProductList = () => {
                   !backdropOpen && (
                     <Typography
                       variant="h6"
-                      sx={{ mt: 3, width: '100%', textAlign: 'center', color: theme.palette.basecolorCode.main || 'grey.600' }}
+                      sx={{ mt: 3, width: '100%', textAlign: 'center', color: theme.palette.basecolorCode.main }}
                     >
                       No products available.
                     </Typography>
