@@ -15,6 +15,7 @@ export default function AppLogin({ LoginDrawerOpen, setRegisterDrawerOpen, handl
   const theme = useTheme();
   const { setIsAuthenticated } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
+  const [ErrorMsg, setErrorMsg] = useState(false);
 
   // Error state for validation
   const [errors, setErrors] = useState({});
@@ -27,6 +28,7 @@ export default function AppLogin({ LoginDrawerOpen, setRegisterDrawerOpen, handl
 
   // Handle input change
   const handleChange = (e) => {
+    setErrorMsg(false);
     setLoginData({
       ...loginData,
       [e.target.name]: e.target.value,
@@ -62,17 +64,18 @@ export default function AppLogin({ LoginDrawerOpen, setRegisterDrawerOpen, handl
 
     try {
       const response = await loginUser(loginData.MobileNumber, loginData.Password);
-      if (response[0].Id !== 0) {
+      if (response[0].Id !== 0 && response !== "Not found") {
         localStorage.setItem("userLogin", 'true');
         localStorage.setItem("userId", btoa(response[0].Id));
         setIsAuthenticated(true);
-        handleAuthDrawerToggle(false); // Close login drawer
+        setErrorMsg(false);
+        handleAuthDrawerToggle(false); 
       } else {
-        alert("Invalid mobile number or Password.");
+        setErrorMsg(true);
       }
     } catch (error) {
       console.error("Error during login:", error);
-      alert("An error occurred while logging in.");
+      setErrorMsg(true);
     }
   };
 
@@ -138,7 +141,9 @@ export default function AppLogin({ LoginDrawerOpen, setRegisterDrawerOpen, handl
                   ),
                 }}
               />
-
+              {ErrorMsg && (
+                <><Typography color="error" align="center">Invalid mobile number or Password.</Typography></>
+              )}
               <Button
                 fullWidth
                 variant="contained"

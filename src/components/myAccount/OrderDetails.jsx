@@ -1,7 +1,7 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, Button, Avatar, List, ListItem, ListItemText, ListItemAvatar } from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import CancelIcon from '@mui/icons-material/Cancel';
 import { ServerURL } from '../../server/serverUrl';
 import { ImagePathRoutes } from '../../routes/ImagePathRoutes';
 import { useTheme } from '@mui/material/styles';

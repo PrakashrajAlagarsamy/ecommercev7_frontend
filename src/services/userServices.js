@@ -137,6 +137,35 @@ export const API_FetchCustomerAddress = async (UserId) => {
 };
 
 
+// Delete customer address
+export const API_DeleteCustomerAddress = async (UserId) => {
+  let objlist = {
+    Comid: ServerURL.COMPANY_REF_ID,
+  };
+  try {
+    const response = await fetch(`${APIRoutes.DELETE_CUSTOMER_ADDRESS}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8',
+        Id: UserId
+      },
+      //body: JSON.stringify(objlist)
+    });
+    if (!response.ok) {
+      throw new Error('Network response was not ok.');
+    }
+    const data = await response.json();
+    if (!data || !Array.isArray(data)) {
+      throw new Error('No data found.');
+    }
+    return response;
+  } catch (error) {
+    console.error('Failed to delete customer address:', error);
+    throw error; // Re-throw so the calling function can handle it
+  }
+};
+
+
 // Fetch My orders
 export const API_FetchMyOrders = async (UserId) => {
   let objlist = {

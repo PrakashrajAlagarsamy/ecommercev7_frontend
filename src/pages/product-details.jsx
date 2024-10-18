@@ -190,7 +190,7 @@ const ProductDetails = () => {
     const settings1 = {
         customPaging: function (index) {
             return (
-                <img src={ImagePathRoutes.ProductDetailsImagePath + imageLists[index]} alt={productDetails.Description || "Product name is not available" + index + 1} />
+                <img src={ImagePathRoutes.ProductImagePath + imageLists[index]} alt={productDetails.Description || "Product name is not available" + index + 1} />
             );
         },
         dots: true,
@@ -223,7 +223,7 @@ const ProductDetails = () => {
                     <Grid item xs={12} sm={6}>
                         <Slider {...settings1}>
                             {imageLists.map((image, index) => (
-                                <img src={ImagePathRoutes.ProductDetailsImagePath + image} alt={productDetails.Description || "Product name is not available" + index + 1} />
+                                <img style={{width: '100%', height: '300px'}} src={ImagePathRoutes.ProductImagePath + image} alt={productDetails.Description || "Product name is not available" + index + 1} />
                             ))}
                         </Slider>
                     </Grid>

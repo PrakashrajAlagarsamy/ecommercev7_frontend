@@ -163,15 +163,15 @@ const ProductItemCard = ({ product }) => {
           alignItems: 'center',
           justifyContent: 'space-between',
           background: theme.palette.shadowcolorCode.main,
-          border: '1px solid #3BB77E',
-          color: '#3BB77E',
+          border: `1px solid ${theme.palette.basecolorCode.main}`,
+          color: theme.palette.basecolorCode.main,
           fontFamily: 'inherit',
           marginRight: 0,
           padding: { xs: '4px 0px', sm: '5px 0px', md: '5px 0px' },
           '&:hover': {
-            background: '#3bb77e1c',
-            border: '1px solid #3BB77E',
-            color: '#3BB77E'
+            background: theme.palette.shadowcolorCode.main,
+            border: `1px solid ${theme.palette.basecolorCode.main}`,
+            color: theme.palette.basecolorCode.main,
           }
         }}
       >
@@ -181,7 +181,7 @@ const ProductItemCard = ({ product }) => {
           disabled={quantity === 0}
           sx={{
             width: '25%',
-            color: '#3BB77E',
+            color: theme.palette.basecolorCode.main,
             fontFamily: 'inherit',
           }}
         >
@@ -191,7 +191,7 @@ const ProductItemCard = ({ product }) => {
           variant="body2"
           sx={{
             width: '50%',
-            color: '#3BB77E',
+            color: theme.palette.basecolorCode.main,
             fontFamily: 'inherit',
           }}
         >
@@ -205,7 +205,7 @@ const ProductItemCard = ({ product }) => {
           onClick={(e) => { handleIncrement(e); }}
           sx={{
             width: '25%',
-            color: '#3BB77E',
+            color: theme.palette.basecolorCode.main,
             fontFamily: 'inherit',
           }}
         >

@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { Edit, Delete } from '@mui/icons-material';
 import AddAddressModal from '../modalPopup/addAddressModal';
 import ConfirmationPopup from '../modalPopup/confirmationPopup';
-import { API_FetchCustomerAddress } from '../../services/userServices';
+import { API_FetchCustomerAddress, API_DeleteCustomerAddress } from '../../services/userServices';
 import { useTheme } from '@mui/material/styles';
 
 const Address = () => {
@@ -33,9 +33,11 @@ const Address = () => {
     } else if (type === 'Delete') {
       setModalState({
         ...modalState,
+        type: type,
         confirmationModalOpen: true,
         currentAddress: address,
-      });
+        Id: Id
+      });      
     }
     modalState.currentAddress = address;
   };
@@ -49,9 +51,11 @@ const Address = () => {
     });
   };
 
-  const handleConfirmationAction = (action) => {
-    if (action === 'Yes' && modalState.currentAddress) {
-      // Perform delete action here using modalState.currentAddress
+  const handleConfirmationAction = async(event) => {
+    if (event.target.value === 'Yes') {
+      if(modalState.type === "Delete" && modalState.Id !== 0){
+        await DeleteCustomerAddress(modalState.Id);
+      }      
     }
     handleModalClose();
   };
@@ -66,6 +70,20 @@ const Address = () => {
         Email: address[0].Email,
         MobileNo: address[0].MobileNo
       };
+      setIsLoading(false);
+    } catch (error) {
+      console.error("Error fetching customer address:", error);
+      setIsLoading(false);
+    }
+  };
+
+  //Delete adderess
+  const DeleteCustomerAddress = async (userId) => {
+    try {
+      const response = await API_DeleteCustomerAddress(userId);
+      if(response.ok){
+        console.log("address deleted");
+      }
       setIsLoading(false);
     } catch (error) {
       console.error("Error fetching customer address:", error);
