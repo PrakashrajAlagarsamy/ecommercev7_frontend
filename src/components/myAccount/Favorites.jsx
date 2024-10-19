@@ -24,8 +24,7 @@ const Favorites = ({ setActiveComponent }) => {
         try {
             const response = await API_DeleteMyFavoriteProducts(ProductId, Number(atob(userId)));
             if (response && response.ok) {
-                console.log("Product removed successfully:", response);    
-                //FetchMyFavoriteProducts(userId);             
+                await FetchMyFavoriteProducts(userId);             
             }
         } catch (error) {
             console.error("Error removing favorite product lists:", error);

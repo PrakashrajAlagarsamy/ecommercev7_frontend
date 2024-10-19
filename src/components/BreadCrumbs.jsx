@@ -1,13 +1,17 @@
 import * as React from 'react';
+import { useNavigate } from 'react-router-dom';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 
-function handleClick(event) {
-  event.preventDefault();
-}
 
-export default function BreadCrumbs({CategoryId, SubCateoryId, SubCategoryName, ProductName}) {
+export default function BreadCrumbs({CategoryId, CategoryName, SubCateoryId, SubCategoryName, ProductName}) {
+  const navigate = useNavigate();
+
+  const handleClick = (CategoryId, CategoryName, SubCateoryId, SubCategoryName) => {
+    navigate(`/product-list?pcid=${btoa(CategoryId)}&pcname=${btoa(CategoryName)}&pscid=${btoa(SubCateoryId)}&pscname=${SubCategoryName}`);
+  }
+
   const breadcrumbs = [
     <Typography key="1" sx={{cursor: 'pointer', color:"black"}} fontSize={13} font onClick={handleClick}>
       Home
@@ -18,9 +22,9 @@ export default function BreadCrumbs({CategoryId, SubCateoryId, SubCategoryName, 
       sx={{cursor: 'pointer', color:"black"}}
       id={CategoryId}
       dataId={SubCateoryId}
-      onClick={handleClick}
+      onClick={(event) => handleClick(CategoryId, CategoryName, SubCateoryId, SubCategoryName)}
     >
-      {SubCategoryName}
+      {CategoryName ? CategoryName : SubCategoryName}
     </Typography>,
     <Typography key="3" fontSize={14} color="inherit">
       {ProductName}

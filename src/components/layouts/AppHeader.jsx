@@ -14,6 +14,7 @@ import AppSearchBox from './AppSearchBox';
 import { useAuth } from '../../context/authContext';
 import { useCart } from '../../context/CartContext';
 import { useTheme } from '@mui/material/styles';
+import { ServerURL } from '../../server/serverUrl';
 
 const drawerContent = (
   <List>
@@ -37,7 +38,7 @@ const drawerContent = (
 
 export default function AppHeader() {
   const theme = useTheme();
-  const { isAuthenticated, setIsAuthenticated } = useAuth();
+  const { isAuthenticated, setIsAuthenticated, isAuthenticatedName } = useAuth();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [registerDrawerOpen, setRegisterDrawerOpen] = useState(false);
   const [loginDrawerOpen, setLoginDrawerOpen] = useState(false);
@@ -159,9 +160,10 @@ export default function AppHeader() {
             <Grid item xs={6} sm={3} md={5} sx={{ display: { xs: 'none', sm: 'flex' }, justifyContent: 'flex-end', alignItems: 'center', gap: '30px' }}>
               <Button sx={{ color: '#333', textTransform: 'none', display: { xs: 'none', md: 'block' } }}>
                 <Typography component={"p"} sx={{ fontFamily: 'inherit', fontWeight: 600 }}>WhatsApp Only<br />
+                <span style={{fontSize: 14}}>{ServerURL.COMPANY_MOBILE}</span>
                 </Typography>
               </Button>
-              <Button sx={{ color: '#333', fontWeight: 600, fontFamily: 'inherit', textTransform: 'none', display: { xs: 'none', md: 'block' } }}><Link to={"/"}>Home</Link></Button>
+              <Button sx={{ color: '#333', fontWeight: 600, fontFamily: 'inherit', textTransform: 'none', display: { xs: 'none', md: 'none' } }}><Link to={"/"}>Home</Link></Button>
               {!isAuthenticated && (
                 <>
                   <Button
@@ -189,7 +191,7 @@ export default function AppHeader() {
                   sx={{ color: '#333', textTransform: 'none' }}
                 >
                   <PersonIcon sx={{ ml: 1 }} />
-                  <Typography sx={{ fontFamily: 'inherit', fontWeight: 600 }}><Link to={"/myaccount"}>Profile</Link></Typography>
+                  <Typography sx={{ fontFamily: 'inherit', fontWeight: 600 }}><Link to={"/myaccount"}>{isAuthenticatedName !== '' ? isAuthenticatedName : 'Profile'}</Link></Typography>
                 </Button>
               )}
 

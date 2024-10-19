@@ -1,5 +1,6 @@
 import React from 'react';
 import { Container, Typography, Box, Divider, List, ListItem } from '@mui/material';
+import { ServerURL } from '../server/serverUrl';
 
 export default function PrivacyPolicy() {
     return (
@@ -73,11 +74,9 @@ export default function PrivacyPolicy() {
 
                     <Typography variant="h6" fontSize={18} fontWeight={600}>Contact Information</Typography>
                     <Typography variant="body1" paragraph>
-                        HealthySteps.<br />
-                        Address: 5 Ajnja Flat, Namantangal, Chennai, Tamil Nadu 600117,<br />
-                        Chrompet Salai,<br />
-                        Mobile: 9441061889<br />
-                        Email: <a href="mailto:info@healthysteps.in">info@healthysteps.in</a>
+                        {ServerURL.COMPANY_ADDRESS}<br />
+                        Mobile: {ServerURL.COMPANY_MOBILE}<br />
+                        Email: <a href={ServerURL.COMPANY_EMAIL}>{ServerURL.COMPANY_EMAIL}</a>
                     </Typography>
                 </Box>
             </Container>

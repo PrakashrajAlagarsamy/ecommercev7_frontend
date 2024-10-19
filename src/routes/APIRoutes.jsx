@@ -10,13 +10,15 @@ export const APIRoutes = {
     APP_REGISTER_USER: `${ServerURL.PRODUCTION_HOST_URL}api/CustomerApp/InsertCustomer`,
     APP_LOGIN_USER: `${ServerURL.PRODUCTION_HOST_URL}api/WebMobileApp/Login`,
     APP_FORGET_PASSWORD: `${ServerURL.PRODUCTION_HOST_URL}api/WebMobileApp/ForgetPassword`,
+    UPDATE_PASSWORD: `${ServerURL.PRODUCTION_HOST_URL}api/WebMobileApp/UpdatePassword`,
+    UPDATE_CUSTOMER_PASSWORD: `${ServerURL.PRODUCTION_HOST_URL}api/WebMobileApp/UpdateCustomerPassword`,
 
     //User details for address, orders, wallets, profile etc..
     GET_MY_ORDERS: `${ServerURL.PRODUCTION_HOST_URL}api/WebMobileApp/MyOrder`,
     GET_MY_WALLET_IN: `${ServerURL.PRODUCTION_HOST_URL}api/WebMobileApp/SelectWalletIN`,
     GET_CUSTOMER_ADDRESS: `${ServerURL.PRODUCTION_HOST_URL}api/WebMobileApp/SelectCustomerAddress`,
     DELETE_CUSTOMER_ADDRESS: `${ServerURL.PRODUCTION_HOST_URL}api/WebMobileApp/DeleteCustomerAddress`,
-    INSERT_CUSTOMER_DETAILS: `${ServerURL.PRODUCTION_HOST_URL}api/CustomerApp/InsertCustomer`,
+    INSERT_CUSTOMER_DETAILS: `${ServerURL.PRODUCTION_HOST_URL}api/CustomerApp/InsertCustomer`,    
     GET_MINIMUM_ORDER_AMOUNT: `${ServerURL.PRODUCTION_HOST_URL}api/WebMobileApp/SelectMinimumOrderAmount`,
 
     //Sale order 
@@ -43,7 +45,7 @@ export const APIRoutes = {
 
     //Wishlist product (favorite)
     INSERT_FAVORITE_PRODUCT: `${ServerURL.PRODUCTION_HOST_URL}api/WhishlistApp/InsertWishlist`,
-    GET_PRODUCT_BY_FAVORITE_LISTS: `${ServerURL.PRODUCTION_HOST_URL}api/WhishlistApp/SelectProductByWishlist`,
+    GET_PRODUCT_BY_FAVORITE_LISTS: `${ServerURL.PRODUCTION_HOST_URL}api/WebMobileApp/SelectProductByWishlist`,
     DELETE_FAVORITE_PRODUCT: `${ServerURL.PRODUCTION_HOST_URL}api/WhishlistApp/DeleteWishlist`,    
 };
 

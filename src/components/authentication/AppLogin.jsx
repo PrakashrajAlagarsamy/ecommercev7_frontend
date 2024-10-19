@@ -67,6 +67,7 @@ export default function AppLogin({ LoginDrawerOpen, setRegisterDrawerOpen, handl
       if (response[0].Id !== 0 && response !== "Not found") {
         localStorage.setItem("userLogin", 'true');
         localStorage.setItem("userId", btoa(response[0].Id));
+        localStorage.setItem("userName", btoa(response[0].CustomerName));
         setIsAuthenticated(true);
         setErrorMsg(false);
         handleAuthDrawerToggle(false); 

@@ -16,7 +16,7 @@ import { API_FetchCustomerAddress } from '../services/userServices';
 import {useAuth} from '../context/authContext';
 
 const MyAccount = () => {
-    const { isAuthenticated, setIsAuthenticated } = useAuth();
+    const { isAuthenticated, setIsAuthenticated, isAuthenticatedName } = useAuth();
     const [activeComponent, setActiveComponent] = useState('Orders');
     const [customerDetails, setCustomerDetails] = useState({});
     const [isLoading, setIsLoading] = useState(true);

@@ -5,13 +5,17 @@ import { TextField, Button, Typography, Link, IconButton, InputAdornment } from 
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import AppLogo from '../logo/AppLogo';
 import {ServerURL} from '../../server/serverUrl';
+import {useAuth} from '../../context/authContext';
 import { useTheme } from '@mui/material/styles';
+import CircularLoader from '../../components/circular-loader';
 
 //API's
 import { checkExistingUser, registerUser } from '../../services/userServices';
 
 export default function AppRegister({ RegisterDrawerOpen, setLoginDrawerOpen, handleAuthDrawerToggle }) {
   const theme = useTheme();
+  const { setIsAuthenticated, setIsAuthenticatedName } = useAuth();
+  const [showLoader, setShowLoader] = React.useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -106,30 +110,41 @@ export default function AppRegister({ RegisterDrawerOpen, setLoginDrawerOpen, ha
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
-
+    setShowLoader(true);
     try {
       const existingUser = await checkExistingUser(formData.email, formData.mobileNumber); 
       if (existingUser.length !== 0) {
         if (existingUser.length !== 0) setErrors((prevErrors) => ({ ...prevErrors, email: "Email or Mobile numbers is already in use" }));
+        setShowLoader(false);
         return;
       }
       
       const response = await registerUser(objList);
       if (response) {
-        alert("Account created successfully!");
+        localStorage.setItem("userLogin", 'true');
+        localStorage.setItem("userId", btoa(response.Id));
+        localStorage.setItem("userName", btoa(response.CustomerName));
+        setIsAuthenticated(true);
+        setIsAuthenticatedName(response.CustomerName);
+        setShowLoader(false);
         handleAuthDrawerToggle(false); 
-        setLoginDrawerOpen(true); 
+        setLoginDrawerOpen(false); 
       } else {
-        alert("Failed to create account.");
+        setShowLoader(false);
+        handleAuthDrawerToggle(false); 
+        setLoginDrawerOpen(false); 
       }
     } catch (error) {
       console.error("Error:", error);
-      alert("An error occurred while creating the account.");
+      setShowLoader(false);
+      handleAuthDrawerToggle(false); 
+      setLoginDrawerOpen(false); 
     }
   };
 
   return (
     <>
+      <CircularLoader showLoader={showLoader} />
       <Drawer
         open={RegisterDrawerOpen}
         anchor="right"

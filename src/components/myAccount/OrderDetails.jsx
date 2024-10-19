@@ -140,21 +140,25 @@ const OrderDetails = ({ setActiveComponent }) => {
               <Typography variant="body2" sx={{ color: '#262a33', fontSize: '12px', fontWeight: 450, borderBottom: 'dashed 1px lightgray', display: 'inline' }}>Item Total & GST</Typography>
               <Typography variant="body2">{OrderIdDetail.Grossamt ? OrderIdDetail.Grossamt.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '₹0.00'}</Typography>
             </Box>
-            <Box display="flex" alignItems="center" justifyContent="space-between" my={1}>
+            <Box display="none" alignItems="center" justifyContent="space-between" my={1}>
               <Typography variant="body2" sx={{ color: '#262a33', fontSize: '12px', fontWeight: 450, borderBottom: 'dashed 1px lightgray', display: 'inline' }}>Handling Charge</Typography>
               <Typography variant="body2">{OrderIdDetail.HandlingCharge ? OrderIdDetail.HandlingCharge.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '₹0.00'}</Typography>
             </Box>
-            <Box display="flex" alignItems="center" justifyContent="space-between" my={1}>
+            <Box display="none" alignItems="center" justifyContent="space-between" my={1}>
               <Typography variant="body2" sx={{ color: '#000', fontSize: '12px', fontWeight: 450, borderBottom: 'dashed 1px lightgray', display: 'inline' }}>Convenience Fee</Typography>
               <Typography variant="body2">{OrderIdDetail.ConvenienceFee ? OrderIdDetail.ConvenienceFee.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '₹0.00'}</Typography>
             </Box>
-            <Box display="flex" alignItems="center" justifyContent="space-between" my={1}>
+            <Box display="none" alignItems="center" justifyContent="space-between" my={1}>
               <Typography variant="body2" sx={{ color: '#000', fontSize: '12px', fontWeight: 450, borderBottom: 'dashed 1px lightgray', display: 'inline' }}>Delivery Fee</Typography>
               <Typography variant="body2">{OrderIdDetail.DeliveryFees ? OrderIdDetail.DeliveryFees.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '₹0.00'}</Typography>
-            </Box>
-            <Box sx={{ borderBottom: '1px solid #ececec', pb: 1 }} display="flex" alignItems="center" justifyContent="space-between" my={1}>
+            </Box>            
+            <Box sx={{ borderBottom: '1px solid #ececec', pb: 1 }} display="none" alignItems="center" justifyContent="space-between" my={1}>
               <Typography variant="body2" sx={{ color: '#000', fontSize: '12px', fontWeight: 450, borderBottom: 'dashed 1px lightgray', display: 'inline' }}>Wallet Amount</Typography>
               <Typography variant="body2">{OrderIdDetail.WalletAmount ? OrderIdDetail.WalletAmount.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '₹0.00'}</Typography>
+            </Box>
+            <Box display="flex" alignItems="center" justifyContent="space-between" my={1}>
+              <Typography variant="body2" sx={{ color: '#000', fontSize: '12px', fontWeight: 450, borderBottom: 'dashed 1px lightgray', display: 'inline' }}>Savings</Typography>
+              <Typography variant="body2">{(totalMRP - OrderIdDetail.Grossamt) ? (totalMRP - OrderIdDetail.Grossamt).toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '₹0.00'}</Typography>
             </Box>
             <Box display="flex" mt={2} justifyContent="space-between">
               <Typography align='left' gutterBottom variant="body1" fontWeight="bold">Total Bill

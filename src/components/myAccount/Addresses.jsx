@@ -7,11 +7,14 @@ import AddAddressModal from '../modalPopup/addAddressModal';
 import ConfirmationPopup from '../modalPopup/confirmationPopup';
 import { API_FetchCustomerAddress, API_DeleteCustomerAddress } from '../../services/userServices';
 import { useTheme } from '@mui/material/styles';
+import CircularLoader from '../circular-loader';
 
 const Address = () => {
   const theme = useTheme();
   const [activeComponent, setActiveComponent] = useState('Addresses');
   const [customerDetails, setcustomerDetails] = useState([]);
+  const [showLoader, setShowLoader] = React.useState(false);
+  const [UserId, setUserId] = React.useState(0);
   let [objlist, setObjlist] = useState({});
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
@@ -61,6 +64,7 @@ const Address = () => {
   };
 
   const FetchCustomerAddress = async (userId) => {
+    setShowLoader(true);
     try {
       const address = await API_FetchCustomerAddress(userId);
       setcustomerDetails(address);
@@ -71,9 +75,11 @@ const Address = () => {
         MobileNo: address[0].MobileNo
       };
       setIsLoading(false);
+      setShowLoader(false);
     } catch (error) {
       console.error("Error fetching customer address:", error);
       setIsLoading(false);
+      setShowLoader(false);
     }
   };
 
@@ -82,7 +88,7 @@ const Address = () => {
     try {
       const response = await API_DeleteCustomerAddress(userId);
       if(response.ok){
-        console.log("address deleted");
+        await FetchCustomerAddress(userId);
       }
       setIsLoading(false);
     } catch (error) {
@@ -95,6 +101,7 @@ const Address = () => {
     const userId = localStorage.getItem("userId");
     const CId = userId ? decodeURIComponent(userId) : null;
     if (CId) {
+      setUserId(atob(CId));
       FetchCustomerAddress(atob(CId));
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -106,11 +113,15 @@ const Address = () => {
 
   return (
     <>
-      <AddAddressModal
+     <CircularLoader showLoader={showLoader} />
+      <AddAddressModal        
         AddressModalOpen={modalState.addressModalOpen}
         AddressModalType={modalState.addressModalType}
         handleAddressModalClose={handleModalClose}
         AddressDetails={modalState.currentAddress}
+        UserId={UserId} 
+        setUserId={setUserId} 
+        fetchCustomerAddress={FetchCustomerAddress}
       />
       <ConfirmationPopup
         ConfirmationModalOpen={modalState.confirmationModalOpen}
@@ -149,7 +160,7 @@ const Address = () => {
                     {`${address.Address1}, ${address.Address2} ${address.City} -${address.Pincode}`}
                   </Typography>
                   <Typography align="left" variant="body1" fontSize={16} sx={{ color: '#7E7E7E' }}>
-                    {`${address.Landmark}`}
+                    {`${address.Landmark !== null ? address.Landmark : ''}`}
                   </Typography>
                 </Box>
               </Grid>

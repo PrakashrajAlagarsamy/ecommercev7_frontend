@@ -6,6 +6,13 @@ import { useTheme } from '@mui/material/styles';
 
 const Referrals = () => {
   const theme = useTheme();
+
+  const handleWhatsAppInvite = () => {
+    const message = encodeURIComponent('Hey! Check this out. % off for you');
+    const whatsappURL = `https://wa.me/?text=${message}`;
+    window.open(whatsappURL, '_blank'); 
+  };
+
   return (
     <Box align="left" sx={{ background: theme.palette.whitecolorCode.main || '#FFF', maxHeight: '700px', overflowY: 'scroll', p: 2, borderRadius: 2 }}>
       <Card sx={{ padding: 2 }}>
@@ -31,9 +38,11 @@ const Referrals = () => {
             </Typography>
           </Box>
           <Box display="flex" flexDirection="column" alignItems="center" mt={2} mb={2}>
-            <Button
+          <Button
               variant="outlined"
-              startIcon={<WhatsAppIcon />}
+              data-action="share/whatsapp/share"
+              onClick={handleWhatsAppInvite} 
+              startIcon={<WhatsAppIcon />}              
               sx={{
                 borderColor: theme.palette.lightblackcolorCode.main || 'black',
                 color: theme.palette.lightblackcolorCode.main || 'black',
@@ -45,6 +54,8 @@ const Referrals = () => {
             </Button>
             <Button
               variant="outlined"
+              data-action="share/whatsapp/share"
+              onClick={handleWhatsAppInvite} 
               startIcon={<LinkIcon />}
               sx={{
                 borderColor: theme.palette.lightblackcolorCode.main || 'black',

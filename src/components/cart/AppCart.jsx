@@ -62,23 +62,45 @@ export default function AppCart({ CartDrawerOpen, setLoginDrawerOpen, handleAuth
   const theme = useTheme();
   const navigate = useNavigate();
   const { cartItems, setCartItems } = useCart();
+  const [UserId, setUserId] = React.useState(0);
   const [ModalOpen, setModalOpen] = React.useState(false);
   const [ClearCartOpen, setClearCartOpen] = React.useState(false);
   const [selectedAddress, setSelectedAddress] = React.useState('No address selected');
-  const [WalletAmount, setWalletAmount] = React.useState(75);
+  const [WalletAmount, setWalletAmount] = React.useState(0);
   const [useWallet, setUseWallet] = React.useState(false);
   const [MinimumOrderAmountList, setMinimumOrderAmountList] = React.useState([]);
-  const [MinimumOrderAmount, setMinimumOrderAmount] = React.useState(300);
+  const [MinimumOrderAmount, setMinimumOrderAmount] = React.useState(ServerURL.MINIMUM_ORDER_AMOUNT);
+  const [CashOnDeliveryLimit, setCashOnDeliveryLimit] = React.useState(ServerURL.MINIMUM_ORDER_AMOUNT);
   const [minAmountCheck, setMinAmountCheck] = React.useState(false);
 
-  const handleChangeAddressOpen = () => setModalOpen(true);
+  const handleChangeAddressOpen = () => {
+    let userLogin = localStorage.getItem("userLogin");
+    let userId = Number(atob(localStorage.getItem("userId")));
+    if (userLogin === null) {
+      handleAuthDrawerToggle(false);
+      setLoginDrawerOpen(true);      
+    }
+    else if(userLogin === "false" || userId === 0){
+      handleAuthDrawerToggle(false);
+      setLoginDrawerOpen(true);  
+    }
+    else{
+      setUserId(userId);
+      setModalOpen(true);
+    }
+  };
+
   const handleChangeAddressClose = () => setModalOpen(false);
 
   // update the selected address
   const handleAddressSelect = (address) => {
     setSelectedAddress(address);
     setModalOpen(false);
-    sessionStorage.setItem('selectedAddress', JSON.stringify(address));
+  };
+
+  const handleBrowseProducts = () => {
+    handleAuthDrawerToggle(false);
+    navigate(`/`);
   };
 
   //Clear cart items
@@ -112,7 +134,7 @@ export default function AppCart({ CartDrawerOpen, setLoginDrawerOpen, handleAuth
   const handleProceedItems = () => {
     let userLogin = localStorage.getItem("userLogin");
     let userId = Number(atob(localStorage.getItem("userId")));
-
+    setUserId(userId);
     if (userLogin === null) {
       handleAuthDrawerToggle(false);
       setLoginDrawerOpen(true);      
@@ -150,14 +172,18 @@ export default function AppCart({ CartDrawerOpen, setLoginDrawerOpen, handleAuth
       const list = await API_FetchMinimumOrderAmount();
       if (list.length !== 0) {
         setMinimumOrderAmountList(list);
-        setMinimumOrderAmount(0);
+        setMinimumOrderAmount(list[0].MinOrderAmount);
+        setCashOnDeliveryLimit(list[0].CashOnDeliveryLimit);
       }
       else {
         setMinimumOrderAmountList([]);
-        setMinimumOrderAmount(300);
+        setMinimumOrderAmount(ServerURL.MINIMUM_ORDER_AMOUNT);
+        setCashOnDeliveryLimit(ServerURL.CSAH_ON_DELIVERY_LIMIT);
       }
     } catch (error) {
       setMinimumOrderAmountList([]);
+      setMinimumOrderAmount(ServerURL.MINIMUM_ORDER_AMOUNT);
+      setCashOnDeliveryLimit(ServerURL.CSAH_ON_DELIVERY_LIMIT);
       console.error('Error fetching amount lists:', error);
     }
   };
@@ -165,7 +191,6 @@ export default function AppCart({ CartDrawerOpen, setLoginDrawerOpen, handleAuth
   function cartTotalAmountCheck() {
     if (cartItems.length > 0) {
       const totalPrice = cartItems.reduce((acc, item) => acc + item.totalPrice, 0);
-      console.log("totalPrice:", totalPrice);
       return totalPrice;
     }
   }
@@ -189,7 +214,7 @@ export default function AppCart({ CartDrawerOpen, setLoginDrawerOpen, handleAuth
         </DialogActions>
       </Dialog>
 
-      <AddressChangeModal ModalOpen={ModalOpen} handleChangeAddressClose={handleChangeAddressClose} handleAddressSelect={handleAddressSelect} />
+      <AddressChangeModal UserId={UserId} setUserId={setUserId} ModalOpen={ModalOpen} handleChangeAddressClose={handleChangeAddressClose} handleAddressSelect={handleAddressSelect} />
       <Drawer
         sx={{
           width: drawerWidth,
@@ -218,9 +243,9 @@ export default function AppCart({ CartDrawerOpen, setLoginDrawerOpen, handleAuth
         </DrawerHeader>
         <DeliveryBanner />
 
-        <Main>
+        <Main sx={{overflow: 'scroll'}}>
           {cartItems.length === 0 ? (
-            <Box sx={{ textAlign: 'center', padding: 4 }}>
+            <Box sx={{ overflow: 'scroll', textAlign: 'center', padding: 4 }}>
               <Box
                 component="img"
                 src={emptyCartImage}
@@ -234,20 +259,21 @@ export default function AppCart({ CartDrawerOpen, setLoginDrawerOpen, handleAuth
                 variant="outlined"
                 color="secondary"
                 sx={{ marginTop: 2, textTransform: 'capitalize', fontFamily: 'inherit' }}
+                onClick={handleBrowseProducts}
               >
                 Browse Products
               </Button>
             </Box>
           ) : (
             cartItems.map((product, index) => (
-              <Box key={index} sx={{ background: "#FFF", px: 1 }}>
+              <Box key={index} sx={{ position: 'relative', bottom: 170, background: "#FFF", px: 1 }}>
                 <ProductItemCard product={product} />
               </Box>
             ))
           )}
           {cartItems.length !== 0 && (
             <>
-              <CouponModal />
+              {/* <CouponModal /> */}
               <AccordionAmountDetails useWallet={useWallet} walletAmount={WalletAmount} />
             </>
           )}

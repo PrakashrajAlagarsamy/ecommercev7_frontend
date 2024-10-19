@@ -17,7 +17,7 @@ const DeliveryBanner = () => {
       const totalPrice = cartItems.reduce((acc, item) => acc + item.totalPrice, 0);
   
       setSavingsAmount(totalMRP - totalPrice);
-      setDeliveryFee(25.77);
+      setDeliveryFee(0);
     }
   }, [cartItems]);
   return (
@@ -37,7 +37,7 @@ const DeliveryBanner = () => {
         <Typography variant="span" sx={{ fontWeight: 'bold', marginRight: 1, fontSize: '12px' }}>
         {SavingsAmount.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })} saved!
         </Typography>
-        <Typography variant="span" sx={{ marginRight: 1, color: '#000', fontSize: '12px' }}>
+        <Typography variant="span" sx={{ marginRight: 1, color: '#000', fontSize: '12px', display: 'none' }}>
           Your delivery fee on<Typography variant="span" sx={{ fontWeight: 'bold', color: theme.palette.basecolorCode.main}}> {DeliveryFee.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Typography>
         </Typography>        
       </Box>

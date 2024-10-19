@@ -1,10 +1,10 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { Grid, Box, TextField, Typography, Button, Chip, IconButton } from '@mui/material';
 import Modal from '@mui/material/Modal';
 import CloseIcon from '@mui/icons-material/Close';
 import { GoogleMap, useLoadScript, Marker } from '@react-google-maps/api';
+import CircularLoader from '../../components/circular-loader';
 //API's
 import { API_InsertCustomerDetails } from '../../services/userServices';
 import { ServerURL } from '../../server/serverUrl';
@@ -26,7 +26,7 @@ const style = {
 
 const mapContainerStyle = { width: '100%', height: '100%' };
 
-const AddAddressModal = ({ AddressModalOpen, handleAddressModalClose, AddressDetails }) => {
+const AddAddressModal = ({ EditAddressModalOpen = true, AddressModalOpen, handleAddressModalClose, AddressDetails, UserId, setUserId, fetchCustomerAddress }) => {
     const [markerPosition, setMarkerPosition] = useState({ lat: 13.0843, lng: 80.2705 });
     const defaultAddressDetails = AddressDetails || {};
     const [activeLabel, setActiveLabel] = useState("");
@@ -42,6 +42,7 @@ const AddAddressModal = ({ AddressModalOpen, handleAddressModalClose, AddressDet
 
     const [searchInput, setSearchInput] = useState('');
     const [errors, setErrors] = useState({});
+    const [showLoader, setShowLoader] = React.useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
     const { isLoaded } = useLoadScript({
@@ -54,25 +55,26 @@ const AddAddressModal = ({ AddressModalOpen, handleAddressModalClose, AddressDet
     useEffect(() => {
         if (AddressModalOpen) {
             const fullAddress = `${addressFields.Address1}, ${addressFields.City}, ${addressFields.Pincode}`;
-            //geocodeAddress(fullAddress);
+            geocodeAddress(fullAddress);
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [AddressModalOpen, addressFields]);
 
-    // useEffect(() => {
-    //     if (AddressModalOpen) {
-    //         // Initialize address fields when the modal opens
-    //         setAddressFields({
-    //             Address1: defaultAddressDetails.Address1 || '',
-    //             Address2: defaultAddressDetails.Address2 || '',
-    //             City: defaultAddressDetails.City || '',
-    //             Pincode: defaultAddressDetails.Pincode || '',
-    //             Landmark: defaultAddressDetails.Landmark || '',
-    //             lattitude: markerPosition.lat,
-    //             longitude: markerPosition.lng,
-    //         });
-    //     }
-    // }, [AddressModalOpen, defaultAddressDetails, markerPosition]);
+    useEffect(() => {
+        if (AddressModalOpen) {
+            // Initialize address fields when the modal opens
+            setAddressFields({
+                Address1: defaultAddressDetails.Address1 || '',
+                Address2: defaultAddressDetails.Address2 || '',
+                City: defaultAddressDetails.City || '',
+                Pincode: defaultAddressDetails.Pincode || '',
+                Landmark: defaultAddressDetails.Landmark || '',
+                lattitude: markerPosition.lat,
+                longitude: markerPosition.lng,
+            });
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const geocodeAddress = useCallback((address) => {
         if (!isLoaded) return;
@@ -169,11 +171,13 @@ const AddAddressModal = ({ AddressModalOpen, handleAddressModalClose, AddressDet
         setErrors(prev => ({ ...prev, [name]: '' }));
     };
 
-    const handleSave = () => {
+    const handleSave = async() => {
         // if (!AddressDetails) {
         //     console.error("AddressDetails is not provided");
         //     return;
         // }
+
+        setShowLoader(true);
 
         let objlist =
         {
@@ -211,7 +215,7 @@ const AddAddressModal = ({ AddressModalOpen, handleAddressModalClose, AddressDet
         if (objlist.Address2 === "" || objlist.Address2 === undefined) newErrors.Address2 = 'Address-2 is required';
         if (objlist.City === "" || objlist.City === undefined) newErrors.City = 'City is required';
         if (objlist.Pincode === "" || objlist.Pincode === undefined) newErrors.Pincode = 'Pincode is required';
-        if (objlist.Landmark === "" || objlist.Landmark === undefined) newErrors.Landmark = 'Landmark is required';
+        //if (objlist.Landmark === "" || objlist.Landmark === undefined) newErrors.Landmark = 'Landmark is required';
         // if (activeLabel === 'Other' && (objlist.AddressType === "" || objlist.AddressType === undefined)) {
         //     newErrors.AddressType = 'Label is required when selecting "Other"';
         // }
@@ -219,7 +223,9 @@ const AddAddressModal = ({ AddressModalOpen, handleAddressModalClose, AddressDet
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
         } else {
-            InsertCustomerAddressDetails(objlist1);
+            setUserId(objlist.ParentId);
+            await InsertCustomerAddressDetails(objlist1); 
+            await fetchCustomerAddress(objlist.ParentId);           
             handleAddressModalClose();
         }
     }; 
@@ -228,15 +234,21 @@ const AddAddressModal = ({ AddressModalOpen, handleAddressModalClose, AddressDet
     const InsertCustomerAddressDetails = async (objlist1) => {
         try {
             const response = await API_InsertCustomerDetails(objlist1);
-            setIsLoading(false);
+            if(response.data.length !== 0){
+                setShowLoader(false);
+                setIsLoading(false);
+            }            
         } catch (error) {
             console.error("Error inserting customer address details:", error);
+            setShowLoader(false);
             setIsLoading(false);
         }
     };
 
 
     return (
+        <>
+        <CircularLoader showLoader={showLoader} />
         <div>
             <Modal
                 open={AddressModalOpen}
@@ -423,6 +435,7 @@ const AddAddressModal = ({ AddressModalOpen, handleAddressModalClose, AddressDet
                 </Box>
             </Modal>
         </div>
+        </>
     );
 };
 

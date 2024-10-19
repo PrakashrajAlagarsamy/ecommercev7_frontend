@@ -13,6 +13,9 @@ import { useTheme } from '@mui/material/styles';
 import CircularLoader from '../components/circular-loader';
 import OrderSuccess from '../assets/success.gif';
 import OrderInfo from '../assets/information.gif';
+import AddressChangeModal from '../components/cart/addressChangeModal';
+import RazorpayPayment from '../components/RazorpayPayment';
+import dayjs from 'dayjs';
 
 const style = {
     position: 'absolute',
@@ -30,6 +33,8 @@ export default function ProductCheckout() {
     const theme = useTheme();
     const location = useLocation();
     const navigate = useNavigate();
+    const [UserId, setUserId] = React.useState(0);
+    const [ModalOpen, setModalOpen] = React.useState(false);
     const [MRPAmount, setMRPAmount] = React.useState(0);
     const [SavingsAmount, setSavingsAmount] = React.useState(0);
     const [TotalPrice, setTotalPrice] = React.useState(0);
@@ -38,10 +43,13 @@ export default function ProductCheckout() {
     const [DeliveryFee, setDeliveryFee] = React.useState(0);
     const [walletAmount, setwalletAmount] = React.useState(0);
     const [DeliveryTimeList, setDeliveryTimeList] = React.useState([]);
-    const [DateValue, setDateValue] = React.useState(null);
+    const [DateValue, setDateValue] = React.useState(dayjs());
     const [DeliverytimeId, setDeliverytimeId] = React.useState(0);
     const [Deliverytime, setDeliverytime] = React.useState('');
     const [PaymentType, setPaymentType] = React.useState('');
+    const [OnlinePayment, setOnlinePayment] = React.useState(false);
+    const [DeliveryType, setDeliveryType] = React.useState('Delivery');
+    const [DeliveryTypeState, setDeliveryTypeState] = React.useState(true);
     const [selectedAddress, setSelectedAddress] = React.useState('');
     const [InfoStatus, setInfoStatus] = React.useState('');
     const [loading, setLoading] = React.useState(false);
@@ -56,6 +64,25 @@ export default function ProductCheckout() {
         }
         setAlertOpen(false);
     };
+
+    const handleChangeAddress = () => {
+        let userLogin = localStorage.getItem("userLogin");
+        let userId = Number(atob(localStorage.getItem("userId")));
+        if (userLogin === null) {
+            setUserId(0);
+            setModalOpen(false);
+        }
+        else if(userLogin === "false" || userId === 0){
+            setUserId(0);
+            setModalOpen(false);
+        }
+        else{
+          setUserId(userId);
+          setModalOpen(true);
+        }
+    };
+
+    const handleChangeAddressClose = () => setModalOpen(false);
 
     //Load delivery time lists
     const FetchDeliveryTimes = async () => {
@@ -82,7 +109,7 @@ export default function ProductCheckout() {
         let address = JSON.parse(sessionStorage.getItem('selectedAddress'));
         setSelectedAddress(address);
 
-    }, [location.search, selectedAddress]);
+    }, [location.search]);
 
     useEffect(() => {
         if (cartItems.length > 0) {
@@ -116,8 +143,18 @@ export default function ProductCheckout() {
         setPaymentType(type);
     };
 
+    const handleDeliveryType = (type) => {
+        setDeliveryType(type);
+        if(type === 'Pickup'){
+            setDeliveryTypeState(false);
+        }        
+        else{
+            setDeliveryTypeState(true);
+        }
+    };
+
     //Place order function
-    const handlePlaceOrder = () => {        
+    const handlePlaceOrder = async() => {        
         if (Deliverytime === '') {
             setInfoStatus('Please choose delivery time');
             handleAlertOpen(true);
@@ -132,85 +169,20 @@ export default function ProductCheckout() {
         }
         else {
             if(PaymentType === 'COD'){
+                setOnlinePayment(false);
                 setAlertOpen(false);
-                setShowLoader(true);
-                const OrderDetails = [];
-                if (cartItems.length > 0 && cartItems != null) {
-                    for (let i = 0; i < cartItems.length; i++) {
-                        let detailslist = {};
-                        detailslist.ProductId = cartItems[i].Id;
-                        detailslist.ProductName = cartItems[i].Description;
-                        detailslist.MRP = cartItems[i].MRP;
-                        detailslist.ItemQty = cartItems[i].item;
-                        detailslist.DiscountAmt = (Number(cartItems[i].MRP) * 0) / 100;
-                        detailslist.Salerate = cartItems[i].Price;
-                        detailslist.WeightType = cartItems[i].UnitType;
-                        detailslist.CPrice = cartItems[i].totalPrice;
-                        OrderDetails[i] = detailslist;
-                    }
-                };
-    
-                const master = [
-                    {
-                        Id: 0,
-                        CustomerRefId: selectedAddress.Id,
-                        CompanyRefid: selectedAddress.CompanyRefId,
-                        SaleDate: DateValue,
-                        DeliveryDate: DateValue,
-                        PaymentMode: PaymentType,
-                        AreaMasterId: null,
-                        deliveryStoreName: null,
-                        DeliveryMode: "PICKUP",
-                        DeliveryStatus: 0,
-                        DeliveryCharge: DeliveryFee,
-                        NewCustomerStatus: 0,
-                        CouponDiscount: 0.0,
-                        CouponRefId: 0,
-                        OrderCount: 1,
-                        ReferalAmount: 0.0,
-                        Grossamt: Number(TotalPrice),
-                        disper: 0,
-                        discamount: 0,
-                        schargeamount: 0,
-                        TodaySaving: SavingsAmount,
-                        ReferalBalance: 0,
-                        WalletAmount: walletAmount,
-                        WalletStatus: walletAmount > 0 ? 1 : 0,
-                        WalletPayment: walletAmount,
-                        coinage: 0,
-                        NetAmount: Number(TotalPrice), //Final Total Amount
-                        Remarks: "",
-                        DeliveryTime: Deliverytime,
-                        CutomerName: selectedAddress.CustomerName,
-                        MobileNo: selectedAddress.MobileNo,
-                        CompanyMobile: "",
-                        CompanyEmail: "",
-                        Email: selectedAddress.Email,
-                        Address1: selectedAddress.Address1,
-                        Address2: selectedAddress.Address2,
-                        City: selectedAddress.City,
-                        LandMark: selectedAddress.LandMark,
-                        Pincode: selectedAddress.Pincode,
-                        lattitude: selectedAddress.Latitude,
-                        longitude: selectedAddress.Langitude,
-                        SaleOrderDetails: OrderDetails,
-                        //PaymentMode: $('#payment-method-wrapper').find('[name="paymentmethod"]:checked').val(),
-                        // CompanyName: CompanyName != "" ? CompanyName : "",
-                        // DeleteReason: "",
-                        // PaymentId: PaymentId
-                    },
-                ];
-                InsertSaleOrderSave(master);
+                PlaceOrder(0, '');
             }
             else{
-                setInfoStatus('Only COD payment available.');
-                handleAlertOpen(true);
+                setOnlinePayment(true);
+                console.log("call");
+                //PlaceOrder();
             }            
         }
     };
 
     //Order save API function
-    const InsertSaleOrderSave = async (master) => {
+    const InsertSaleOrderSave = async(master) => {
         try {
             const response = await API_InsertSaleOrderSave(master);
             if (response.length !== 0) {
@@ -236,10 +208,83 @@ export default function ProductCheckout() {
         }
     };
 
+    const PlaceOrder = async(onlinePStatus, onlinePaymentId) => {
+        setShowLoader(true);
+        const OrderDetails = [];
+        if (cartItems.length > 0 && cartItems != null) {
+            for (let i = 0; i < cartItems.length; i++) {
+                let detailslist = {};
+                detailslist.ProductId = cartItems[i].Id;
+                detailslist.ProductName = cartItems[i].Description;
+                detailslist.MRP = cartItems[i].MRP;
+                detailslist.ItemQty = cartItems[i].item;
+                detailslist.DiscountAmt = (Number(cartItems[i].MRP) * 0) / 100;
+                detailslist.Salerate = cartItems[i].Price;
+                detailslist.WeightType = cartItems[i].UnitType;
+                detailslist.CPrice = cartItems[i].totalPrice;
+                OrderDetails[i] = detailslist;
+            }
+        };
+
+        const master = [
+            {
+                Id: 0,
+                CustomerRefId: selectedAddress.ParentId !== 0 ? selectedAddress.ParentId : selectedAddress.Id,
+                CompanyRefid: selectedAddress.CompanyRefId,
+                SaleDate: DateValue,
+                DeliveryDate: DateValue,
+                PaymentMode: PaymentType,
+                PaymentId: onlinePaymentId,
+                AreaMasterId: null,
+                deliveryStoreName: null,
+                DeliveryMode: DeliveryType,
+                DeliveryStatus: 0,
+                DeliveryCharge: DeliveryFee,
+                NewCustomerStatus: 0,
+                CouponDiscount: 0.0,
+                CouponRefId: 0,
+                OrderCount: 1,
+                ReferalAmount: 0.0,
+                Grossamt: Number(TotalPrice),
+                disper: 0,
+                discamount: 0,
+                schargeamount: 0,
+                TodaySaving: SavingsAmount,
+                ReferalBalance: 0,
+                WalletAmount: walletAmount,
+                WalletStatus: walletAmount > 0 ? 1 : 0,
+                WalletPayment: walletAmount,
+                coinage: 0,
+                NetAmount: Number(TotalPrice), //Final Total Amount
+                Remarks: "",
+                DeliveryTime: Deliverytime,
+                CutomerName: selectedAddress.CustomerName,
+                MobileNo: selectedAddress.MobileNo,
+                CompanyName: ServerURL.COMPANY_NAME,
+                CompanyMobile: ServerURL.COMPANY_MOBILE,
+                CompanyEmail: ServerURL.COMPANY_EMAIL,
+                Email: selectedAddress.Email,
+                Address1: selectedAddress.Address1,
+                Address2: selectedAddress.Address2,
+                City: selectedAddress.City,
+                LandMark: selectedAddress.LandMark,
+                Pincode: selectedAddress.Pincode,
+                lattitude: selectedAddress.Latitude,
+                longitude: selectedAddress.Langitude,
+                SaleOrderDetails: OrderDetails,                
+                // DeleteReason: "",                
+            },
+        ];
+        await InsertSaleOrderSave(master);
+    };
 
     return (
         <>
             <CircularLoader showLoader={showLoader} />
+            {OnlinePayment && (
+                <RazorpayPayment PlaceOrder={InsertSaleOrderSave} OnlinePayment={OnlinePayment} payableamount={(TotalPrice + DeliveryFee + HandlingCharge - ExtraDiscount)} usedwalledamount={walletAmount} Customer={selectedAddress}/>
+            )}
+            <AddressChangeModal UserId={UserId} setUserId={setUserId} ModalOpen={ModalOpen} handleChangeAddressClose={handleChangeAddressClose} handleAddressSelect={handleChangeAddress} />
             <Modal
                 open={AlertOpen}
                 onClose={handleAlertClose}
@@ -287,6 +332,7 @@ export default function ProductCheckout() {
                                 <CheckCircleIcon color="success" style={{ marginRight: '10px' }} />
                                 Delivery Address
                                 <Button variant="outlined" size="small"
+                                    onClick={handleChangeAddress}
                                     sx={{
                                         marginLeft: 'auto',
                                         width: 'auto',
@@ -330,6 +376,18 @@ export default function ProductCheckout() {
                             </Grid>
                         </Box>
 
+                        {/* Delivery type */}
+                        <Box padding={3} sx={{ paddingTop: 0 }}>
+                            <Typography variant="h6" style={{ display: 'flex', alignItems: 'center' }}>
+                                <CheckCircleIcon color="success" style={{ marginRight: '10px' }} />
+                               Delivery Type
+                            </Typography>
+
+                            <RadioGroup>
+                                <FormControlLabel value="Pickup" control={<Radio checked={DeliveryType === 'Pickup' ? true : false} onChange={() => handleDeliveryType('Pickup')} size="small" />} label="Pickup" />
+                                <FormControlLabel value="Delivery" control={<Radio checked={DeliveryType === 'Delivery' ? true : false} onChange={() => handleDeliveryType('Delivery')} size="small" />} label="Delivery" />
+                            </RadioGroup>
+                        </Box>
 
                         {/* Delivery Time and Date */}
                         <Box padding={3} sx={{ paddingTop: 0 }}>
@@ -337,12 +395,13 @@ export default function ProductCheckout() {
                                 <CheckCircleIcon color="success" style={{ marginRight: '10px' }} />
                                 Delivery Time & Date
                             </Typography>
-
-                            <RadioGroup style={{ marginTop: '10px' }}>
-                                {DeliveryTimeList.map((item, index) => (
-                                    <FormControlLabel value={item.Id} control={<Radio onChange={() => handleDeliveryTime(item.Id, item.Deliverytime)} value={item.Id} size="small" />} label={item.Deliverytime} />
-                                ))}
-                            </RadioGroup>
+                            {DeliveryTypeState && (
+                                <RadioGroup style={{ marginTop: '10px' }}>
+                                    {DeliveryTimeList.map((item, index) => (
+                                        <FormControlLabel value={item.Id} control={<Radio onChange={() => handleDeliveryTime(item.Id, item.Deliverytime)} value={item.Id} size="small" />} label={item.Deliverytime} />
+                                    ))}
+                                </RadioGroup>
+                            )}                           
                             <Calendar DateValue={DateValue} handleSelectDate={handleSelectDate} />
                         </Box>
 
@@ -458,7 +517,7 @@ export default function ProductCheckout() {
                         <Box align='left' sx={{ width: '100%' }}>
                             <Grid container>
                                 <Grid item xs={8} sx={{ mt: 0.5 }}>
-                                    <Typography align='left' sx={{ fontSize: '14px', borderBottom: 'dashed 1px lightgray', display: 'inline' }} variant="body1">Item subtotal</Typography>
+                                    <Typography align='left' sx={{ fontSize: '14px', borderBottom: 'dashed 1px lightgray', display: 'inline' }} variant="body1">Item MRP total</Typography>
                                 </Grid>
                                 <Grid item xs={4} sx={{ mt: 0.5 }}>
                                     <Typography sx={{ fontSize: '14px' }} variant="body1" align="right">
@@ -473,27 +532,27 @@ export default function ProductCheckout() {
                                         {SavingsAmount.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                     </Typography>
                                 </Grid>
-                                <Grid item xs={8} sx={{ mt: 0.5 }}>
+                                <Grid item xs={8} sx={{ display: 'none', mt: 0.5 }}>
                                     <Typography sx={{ fontSize: '14px', borderBottom: 'dashed 1px lightgray', display: 'inline' }} variant="body1">Extra discount</Typography>
                                 </Grid>
-                                <Grid item xs={4} sx={{ mt: 0.5 }}>
+                                <Grid item xs={4} sx={{ display: 'none', mt: 0.5 }}>
                                     <Typography sx={{ fontSize: '14px' }} variant="body1" align="right" color="green">
                                         {ExtraDiscount.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                     </Typography>
                                 </Grid>
-                                <Grid item xs={8} sx={{ mt: 0.5 }}>
+                                <Grid item xs={8} sx={{ display: 'none', mt: 0.5 }}>
                                     <Typography sx={{ fontSize: '14px', borderBottom: 'dashed 1px lightgray', display: 'inline' }} variant="body1">Handling charge</Typography>
                                 </Grid>
-                                <Grid item xs={4} sx={{ mt: 0.5 }}>
+                                <Grid item xs={4} sx={{ display: 'none', mt: 0.5 }}>
                                     <Typography sx={{ fontSize: '14px' }} variant="body1" align="right">
                                         {HandlingCharge.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                     </Typography>
                                 </Grid>
 
-                                <Grid item xs={8} sx={{ mt: 0.5 }}>
+                                <Grid item xs={8} sx={{ display: 'none', mt: 0.5 }}>
                                     <Typography sx={{ fontSize: '14px', borderBottom: 'dashed 1px lightgray', display: 'inline' }} variant="body1">Delivery fee:</Typography>
                                 </Grid>
-                                <Grid item xs={4} sx={{ mt: 0.5 }}>
+                                <Grid item xs={4} sx={{ display: 'none', mt: 0.5 }}>
                                     <Typography sx={{ fontSize: '14px' }} variant="body1" align="right">
                                         {DeliveryFee.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                     </Typography>

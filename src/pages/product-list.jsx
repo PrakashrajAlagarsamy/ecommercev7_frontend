@@ -1,5 +1,5 @@
-/* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable no-unused-vars */
+/* eslint-disable jsx-a11y/alt-text */
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
@@ -47,14 +47,14 @@ const IconLabel = styled(Typography)({
 
 const ProductList = () => {
   const theme = useTheme();
+  const location = useLocation();
+  const navigate = useNavigate();
   const [activeCategory, setActiveCategory] = useState('All Products');
   const [subcategories, setSubcategories] = useState([]);
   const [productLists, setProductLists] = useState([]);
-  const [filteredProductLists, setFilteredProductLists] = useState([]); // State for filtered products
-  const [loading, setLoading] = useState(false); // Initially set to false
-  const [backdropOpen, setBackdropOpen] = useState(false);
-  const location = useLocation();
-  const navigate = useNavigate();
+  const [filteredProductLists, setFilteredProductLists] = useState([]); 
+  const [loading, setLoading] = useState(false);
+  const [backdropOpen, setBackdropOpen] = useState(false);  
   const [categoryId, setCategoryId] = useState(null);
   const [categoryName, setCategoryName] = useState(null);
   const [offerProducts, setOfferProducts] = useState(null);

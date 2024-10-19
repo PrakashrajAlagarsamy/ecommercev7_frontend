@@ -20,7 +20,7 @@ import { API_FetchSettings } from '../services/settings';
 import { ThemeProvider } from '@mui/material/styles';
 import { CssBaseline } from '@mui/material';
 import ThemeSettings from '../theme/theme';
-
+import {ServerURL} from '../server/serverUrl';
 
 function AppRouter() {
     let [themeLists, setThemeLists] = useState([]);
@@ -37,6 +37,12 @@ function AppRouter() {
         try {
             let objtheme = await API_FetchSettings();
             setThemeLists(objtheme.data[0]);
+            ServerURL.COMPANY_ADDRESS = [objtheme.data[0].Address1, objtheme.data[0].Address2, objtheme.data[0].City, objtheme.data[0].Pincode].filter(Boolean).join(', ');
+            ServerURL.COMPANY_NAME = objtheme.data[0].ShopName;
+            ServerURL.COMPANY_EMAIL = objtheme.data[0].Email;
+            ServerURL.COMPANY_MOBILE = objtheme.data[0].MobileNo1;            
+            ServerURL.COMPANY_URL = objtheme.data[0].CompanyUrl;
+            ServerURL.COMPANY_PAYMENT_RAZ_KEY = objtheme.data[0].PaymentId;
             setIsLoading(false);
         } catch (error) {
             console.error("Error fetching order lists:", error);

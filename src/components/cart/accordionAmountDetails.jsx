@@ -79,7 +79,7 @@ export default function AccordionAmountDetails({ useWallet, walletAmount }) {
 
   return (
     <div>
-      <Accordion expanded={expanded === 'panel3'} onChange={handleChange('panel3')}>
+      <Accordion sx={{display: 'none'}} expanded={expanded === 'panel3'} onChange={handleChange('panel3')}>
         <AccordionSummary aria-controls="panel3d-content" id="panel3d-header">
           <VolunteerActivismIcon sx={{ marginRight: '15px', color: '#5c5c5c' }} />
           <Typography sx={{ color: '#262a33', fontSize: '14px', fontWeight: 600, fontFamily: 'inherit' }}>Delivery partner tip
@@ -94,7 +94,7 @@ export default function AccordionAmountDetails({ useWallet, walletAmount }) {
         </AccordionDetails>
       </Accordion>
 
-      <Accordion expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
+      <Accordion sx={{display: 'none'}} expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
         <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
           <SmsIcon sx={{ marginRight: '15px', color: '#5c5c5c' }} />
           <Typography sx={{ color: '#262a33', fontSize: '14px', fontWeight: 600, fontFamily: 'inherit' }}>Delivery instructions
@@ -109,7 +109,7 @@ export default function AccordionAmountDetails({ useWallet, walletAmount }) {
         </AccordionDetails>
       </Accordion>
 
-      <Accordion expanded={expanded === 'panel1'} sx={{ borderBottom: '1px solid #f0f4f9' }} onChange={handleChange('panel1')}>
+      <Accordion sx={{position: 'fixed', bottom: 140, borderBottom: '1px solid #f0f4f9'}} expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
         <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
           <Box
             sx={{
@@ -169,52 +169,55 @@ export default function AccordionAmountDetails({ useWallet, walletAmount }) {
           <Box sx={{ width: '100%' }}>
             <Grid container>
               <Grid item xs={8} sx={{mt: 0.5}}>
-                <Typography sx={{ fontSize: '14px', borderBottom: 'dashed 1px lightgray', display: 'inline' }} variant="body1">Item subtotal</Typography>
+                <Typography sx={{ fontSize: '14px', borderBottom: 'dashed 1px lightgray', display: 'inline' }} variant="body1">Item MRP total</Typography>
               </Grid>
               <Grid item xs={4} sx={{mt: 0.5}}>
                 <Typography sx={{ fontSize: '14px' }} variant="body1" align="right">
                 {MRPAmount.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </Typography>
               </Grid>
-              {/* <Grid item xs={8} sx={{mt: 0.5}}>
-                <Typography sx={{ fontSize: '14px' }} variant="body1">Savings</Typography>
-              </Grid>
-              <Grid item xs={4} sx={{mt: 0.5}}>
-                <Typography sx={{ fontSize: '14px' }} variant="body1" align="right" color="green">
-                {SavingsAmount.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                </Typography>
-              </Grid> */}
-              <Grid item xs={8} sx={{mt: 0.5}}>
+              
+              <Grid item xs={8} sx={{mt: 0.5, display: 'none'}}>
                 <Typography sx={{ fontSize: '14px', borderBottom: 'dashed 1px lightgray', display: 'inline' }} variant="body1">Extra discount</Typography>
               </Grid>
-              <Grid item xs={4} sx={{mt: 0.5}}>
+              <Grid item xs={4} sx={{mt: 0.5, display: 'none'}}>
                 <Typography sx={{ fontSize: '14px' }} variant="body1" align="right" color="green">
                 {ExtraDiscount.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </Typography>
               </Grid>
-              <Grid item xs={8} sx={{mt: 0.5}}>
+              <Grid item xs={8} sx={{mt: 0.5, display: 'none'}}>
                 <Typography sx={{ fontSize: '14px', borderBottom: 'dashed 1px lightgray', display: 'inline' }} variant="body1">Handling charge</Typography>
               </Grid>
-              <Grid item xs={4} sx={{mt: 0.5}}>
+              <Grid item xs={4} sx={{mt: 0.5, display: 'none'}}>
                 <Typography sx={{ fontSize: '14px' }} variant="body1" align="right">
                 {HandlingCharge.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </Typography>
               </Grid>
 
-              <Grid item xs={8} sx={{mt: 0.5}}>
+              <Grid item xs={8} sx={{mt: 0.5, display: 'none'}}>
                 <Typography sx={{ fontSize: '14px', borderBottom: 'dashed 1px lightgray', display: 'inline' }} variant="body1">Delivery fee:</Typography>
               </Grid>
-              <Grid item xs={4} sx={{mt: 0.5}}>
+              <Grid item xs={4} sx={{mt: 0.5, display: 'none'}}>
                 <Typography sx={{ fontSize: '14px' }} variant="body1" align="right">
                 {DeliveryFee.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </Typography>
               </Grid>
 
               <Grid item xs={8} sx={{mt: 0.5}}>
-                <Typography sx={{ fontSize: '14px', borderBottom: 'dashed 1px lightgray', display: 'inline' }} variant="body1">Item total & GST</Typography>
+                <Typography sx={{ fontSize: '14px', borderBottom: 'dashed 1px lightgray', display: 'inline' }} variant="body1">Today Savings</Typography>
+              </Grid>
+              <Grid item xs={4} sx={{mt: 0.5}}>
+                <Typography sx={{ fontSize: '14px' }} variant="body1" align="right" color="green">
+                  <span></span>
+                {SavingsAmount.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                </Typography>
+              </Grid>
+
+              <Grid item xs={8} sx={{mt: 0.5}}>
+                <Typography sx={{ fontSize: '14px', borderBottom: 'dashed 1px lightgray', display: 'inline' }} variant="body1">Item Total & GST</Typography>
               </Grid>
               <Grid item xs={4} sx={{mt: 0.5}}>                
-                <Typography sx={{ fontSize: '14px' }} variant="body1" align="right">
+                <Typography sx={{ fontSize: '14px', fontWeight: 600 }} variant="body1" align="right">
                   {(TotalPrice + DeliveryFee + HandlingCharge - ExtraDiscount).toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </Typography>
               </Grid>

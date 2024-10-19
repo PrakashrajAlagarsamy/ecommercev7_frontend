@@ -22,7 +22,7 @@ const modalStyle = {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: {xs: '100%', sm: '100%', md: 350, lg: 500, xl: 500},
+    width: { xs: '100%', sm: '100%', md: 350, lg: 500, xl: 500 },
     bgcolor: '#f5f1f7',
     borderRadius: '12px',
     boxShadow: 24,
@@ -37,14 +37,20 @@ const skeletonStyle = {
     mb: 2,
 };
 
-const AddressChangeModal = ({ ModalOpen, handleChangeAddressClose, handleAddressSelect }) => {
+const AddressChangeModal = ({ UserId, setUserId, ModalOpen, handleChangeAddressClose, handleAddressSelect }) => {
     const [customerDetails, setCustomerDetails] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [AddressNewModalState, setAddressNewModalState] = useState(false);
 
-    const fetchCustomerAddress = async (userId) => {
+    useEffect(() => {
+        if (UserId !== 0) {            
+            fetchCustomerAddress(UserId);
+        }
+    }, [UserId]);
+
+    const fetchCustomerAddress = async (UserId) => {
         try {
-            const address = await API_FetchCustomerAddress(userId);
+            const address = await API_FetchCustomerAddress(UserId);
             setCustomerDetails(address);
             setIsLoading(false);
         } catch (error) {
@@ -52,14 +58,6 @@ const AddressChangeModal = ({ ModalOpen, handleChangeAddressClose, handleAddress
             setIsLoading(false);
         }
     };
-
-    useEffect(() => {
-        const userId = localStorage.getItem("userId");
-        let CID = Number(atob(userId));
-        if(CID !== 0){
-            fetchCustomerAddress(CID);
-        }        
-    }, []);
 
     const handleModalClose = () => {
         setAddressNewModalState(false);
@@ -71,7 +69,8 @@ const AddressChangeModal = ({ ModalOpen, handleChangeAddressClose, handleAddress
 
     const handleSelectAddress = (address) => {
         handleAddressSelect(address);
-        handleChangeAddressClose(); 
+        sessionStorage.setItem('selectedAddress', JSON.stringify(address));
+        handleChangeAddressClose();
     }
 
 
@@ -80,6 +79,9 @@ const AddressChangeModal = ({ ModalOpen, handleChangeAddressClose, handleAddress
             <AddAddressModal
                 AddressModalOpen={AddressNewModalState}
                 handleAddressModalClose={handleModalClose}
+                UserId={UserId}
+                setUserId={setUserId}
+                fetchCustomerAddress={fetchCustomerAddress}
             />
             <Modal open={ModalOpen} onClose={handleChangeAddressClose} aria-labelledby="address-modal-title">
                 <Box sx={modalStyle}>

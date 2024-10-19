@@ -6,6 +6,7 @@ import AppLogo from '../logo/AppLogo';
 import PlayStrore from '../../assets/play-store.svg';
 import AppStrore from '../../assets/app-store.svg';
 import { useTheme } from '@mui/material/styles';
+import { ServerURL } from '../../server/serverUrl';
 
 const AppFooter = ({ CompanyDetails }) => {
     const theme = useTheme();
@@ -72,13 +73,14 @@ const AppFooter = ({ CompanyDetails }) => {
                             <Typography sx={{ color: theme.palette.footertextcolorCode.main, borderBottom: `2px solid ${theme.palette.basecolorCode.main}`, display: 'inline' }} fontWeight={600} variant={'h5'}>Official info:</Typography>
                             <Box display="flex" gap={2}>
                                 <Typography component={'p'} sx={{ mt: 1, color: theme.palette.footertextcolorCode.main }} className="text-sm sm:text-base lg:text-lg">
-                                    No.1/181,1st Floor Elumalai Salai<br />
-                                    Nanmangalam, Chennai – 600 129<br />
-                                    Landmark: Near Nanmangalam Panchayat<br />
+                                    {ServerURL.COMPANY_ADDRESS}
                                 </Typography>
                             </Box>
                             <Box>
-                                <Typography component={'p'} sx={{ mt: 1, color: theme.palette.footertextcolorCode.main }}>info@healthysteps.in</Typography>
+                                <Typography component={'p'} sx={{ mt: 1, color: theme.palette.footertextcolorCode.main }}>Mobile: {ServerURL.COMPANY_MOBILE}</Typography>
+                            </Box>
+                            <Box>
+                                <Typography component={'p'} sx={{ mt: 1, color: theme.palette.footertextcolorCode.main }}>Email: {ServerURL.COMPANY_EMAIL}</Typography>
                             </Box>
                         </Grid>
 
