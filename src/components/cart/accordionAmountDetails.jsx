@@ -109,7 +109,7 @@ export default function AccordionAmountDetails({ useWallet, walletAmount }) {
         </AccordionDetails>
       </Accordion>
 
-      <Accordion sx={{position: 'fixed', bottom: 140, borderBottom: '1px solid #f0f4f9'}} expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
+      <Accordion sx={{p: 0}} expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
         <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
           <Box
             sx={{

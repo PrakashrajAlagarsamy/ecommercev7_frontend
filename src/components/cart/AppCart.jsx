@@ -243,7 +243,7 @@ export default function AppCart({ CartDrawerOpen, setLoginDrawerOpen, handleAuth
         </DrawerHeader>
         <DeliveryBanner />
 
-        <Main sx={{overflow: 'scroll'}}>
+        <Main>
           {cartItems.length === 0 ? (
             <Box sx={{ overflow: 'scroll', textAlign: 'center', padding: 4 }}>
               <Box
@@ -266,21 +266,21 @@ export default function AppCart({ CartDrawerOpen, setLoginDrawerOpen, handleAuth
             </Box>
           ) : (
             cartItems.map((product, index) => (
-              <Box key={index} sx={{ position: 'relative', bottom: 170, background: "#FFF", px: 1 }}>
+              <Box key={index} sx={{ position: 'relative', background: "#FFF", px: 1 }}>
                 <ProductItemCard product={product} />
               </Box>
             ))
-          )}
-          {cartItems.length !== 0 && (
+          )}          
+        </Main>
+        {cartItems.length !== 0 && (
+          <>
+            <Box sx={{ width: '100%', display: 'block', position: 'sticky', bottom: '0', background: '#FFF', py: 3, px: 1.5, boxShadow: '0px 0px 1px #0000' }}>
+            {cartItems.length !== 0 && (
             <>
               {/* <CouponModal /> */}
               <AccordionAmountDetails useWallet={useWallet} walletAmount={WalletAmount} />
             </>
           )}
-        </Main>
-        {cartItems.length !== 0 && (
-          <>
-            <Box sx={{ width: '100%', display: 'block', position: 'sticky', bottom: '0', background: '#FFF', py: 3, px: 1.5, boxShadow: '0px 0px 1px #0000' }}>
               <Box>
                 <Grid container>
                   <Grid item xs={9} sx={{ justifyContent: 'space-between' }}>
