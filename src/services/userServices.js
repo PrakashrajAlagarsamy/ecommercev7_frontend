@@ -79,6 +79,30 @@ export const loginUser = async (mobileNumber, password) => {
   }
 };
 
+// Function to login the user
+export const forgetpasswordUser = async (Email, CompanyName, CompanyMobile, CompanyEmail) => {
+  const apiEndpoint = APIRoutes.APP_FORGET_PASSWORD;
+  try {
+    const response = await fetch(apiEndpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Email: Email,
+        CompanyName: CompanyName,
+        CompanyMobile: CompanyMobile,
+        CompanyEmail: CompanyEmail
+      },
+      body: JSON.stringify({
+        Comid: ServerURL.COMPANY_REF_ID,
+      }),
+    });
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error logging in:', error);
+    return { success: false };
+  }
+};
 
 // Function to Insert the customer address
 export const API_InsertCustomerDetails = async (customerDetails) => {
@@ -91,6 +115,32 @@ export const API_InsertCustomerDetails = async (customerDetails) => {
         objData: objData,
       },
       body: JSON.stringify(customerDetails),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else {
+      console.error("Failed to create account.");
+      return null;
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    throw new Error("An error occurred while creating the account.");
+  }
+};
+
+// Function to Insert the customer address
+export const API_UpdateCustomerPassword = async (UserId, oldPassword, newPassword, confirmPassword) => {
+  let objData = "";
+  try {
+    const response = await fetch(`${APIRoutes.UPDATE_CUSTOMER_PASSWORD}?`, {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+        objData: objData,
+      },
+      //body: JSON.stringify(customerDetails),
     });
 
     if (response.ok) {
@@ -142,13 +192,13 @@ export const API_DeleteCustomerAddress = async (UserId) => {
     Comid: ServerURL.COMPANY_REF_ID,
   };
   try {
-    const response = await fetch(`${APIRoutes.DELETE_CUSTOMER_ADDRESS}`, {
+    const response = await fetch(`${APIRoutes.DELETE_CUSTOMER_ADDRESS}?Id=${UserId}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json; charset=utf-8',
-        Id: UserId
+        //Id: UserId
       },
-      //body: JSON.stringify(objlist)
+      body: JSON.stringify(objlist)
     });
     if (!response.ok) {
       throw new Error('Network response was not ok.');

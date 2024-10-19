@@ -57,15 +57,26 @@ export default function AppHeader() {
     if (event === false) {
       if (registerDrawerOpen === true) {
         setLoginDrawerOpen(false);
+        setForgetPasswordDrawerOpen(false);
+        setCartDrawerOpen(false);
         setRegisterDrawerOpen((prev) => !prev);
       }
       else if (loginDrawerOpen === true) {
         setRegisterDrawerOpen(false);
+        setForgetPasswordDrawerOpen(false);
+        setCartDrawerOpen(false);
         setLoginDrawerOpen((prev) => !prev);
+      }
+      else if (forgetPasswordDrawerOpen === true) {
+        setRegisterDrawerOpen(false);
+        setLoginDrawerOpen(false);
+        setCartDrawerOpen(false);
+        setForgetPasswordDrawerOpen((prev) => !prev);
       }
       else {
         setRegisterDrawerOpen(false);
         setLoginDrawerOpen(false);
+        setForgetPasswordDrawerOpen(false);
         setCartDrawerOpen((prev) => !prev);
       }
     }
@@ -214,7 +225,7 @@ export default function AppHeader() {
           {drawerContent}
         </Drawer>
         <AppRegister RegisterDrawerOpen={registerDrawerOpen} setLoginDrawerOpen={setLoginDrawerOpen} handleAuthDrawerToggle={handleAuthDrawerToggle} />
-        <AppLogin LoginDrawerOpen={loginDrawerOpen} setRegisterDrawerOpen={setRegisterDrawerOpen} handleAuthDrawerToggle={handleAuthDrawerToggle} />
+        <AppLogin LoginDrawerOpen={loginDrawerOpen} setRegisterDrawerOpen={setRegisterDrawerOpen} setForgetPasswordDrawerOpen={setForgetPasswordDrawerOpen} handleAuthDrawerToggle={handleAuthDrawerToggle} />
         <AppCart CartDrawerOpen={cartDrawerOpen} setLoginDrawerOpen={setLoginDrawerOpen} handleAuthDrawerToggle={handleAuthDrawerToggle} />
         <AppForgetPassword ForgetPasswordDrawerOpen={forgetPasswordDrawerOpen} handleAuthDrawerToggle={handleAuthDrawerToggle} />
       </AppBar>

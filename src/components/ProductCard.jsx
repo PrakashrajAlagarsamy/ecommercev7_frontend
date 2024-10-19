@@ -161,22 +161,16 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts, newPr
 
   //Add fav product
   const handleAddFavProduct = async (ProductId, event, status) => {
-    event.stopPropagation();
-    
-    // Optimistically toggle favorite status first
+    event.stopPropagation();    
     setIsFavoriteProduct(status === 'Add' ? 1 : 0);
-    
     let userId = localStorage.getItem("userId");
     userId = Number(atob(userId));
     try {
       const response = await API_InsertMyFavoriteProducts(ProductId, userId);
       if (!response.ok) {
-        // Revert the optimistic UI update if the API call fails
         setIsFavoriteProduct(status === 'Add' ? 0 : 1);
         console.error("Error updating favorite status:", response);
-      } else {
-        console.log("Favorite status updated successfully:", response);
-      }
+      } 
     } catch (error) {
       // Revert the optimistic UI update on error
       setIsFavoriteProduct(status === 'Add' ? 0 : 1);

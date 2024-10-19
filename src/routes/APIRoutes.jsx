@@ -9,9 +9,7 @@ export const APIRoutes = {
     APP_CHECK_EXISTING_USER: `${ServerURL.PRODUCTION_HOST_URL}api/WebMobileApp/AppEmailMobileCheck`,
     APP_REGISTER_USER: `${ServerURL.PRODUCTION_HOST_URL}api/CustomerApp/InsertCustomer`,
     APP_LOGIN_USER: `${ServerURL.PRODUCTION_HOST_URL}api/WebMobileApp/Login`,
-    APP_FORGET_PASSWORD: `${ServerURL.PRODUCTION_HOST_URL}api/WebMobileApp/ForgetPassword`,
-    UPDATE_PASSWORD: `${ServerURL.PRODUCTION_HOST_URL}api/WebMobileApp/UpdatePassword`,
-    UPDATE_CUSTOMER_PASSWORD: `${ServerURL.PRODUCTION_HOST_URL}api/WebMobileApp/UpdateCustomerPassword`,
+    APP_FORGET_PASSWORD: `${ServerURL.PRODUCTION_HOST_URL}api/WebMobileApp/ForgetPassword`,    
 
     //User details for address, orders, wallets, profile etc..
     GET_MY_ORDERS: `${ServerURL.PRODUCTION_HOST_URL}api/WebMobileApp/MyOrder`,
@@ -20,6 +18,8 @@ export const APIRoutes = {
     DELETE_CUSTOMER_ADDRESS: `${ServerURL.PRODUCTION_HOST_URL}api/WebMobileApp/DeleteCustomerAddress`,
     INSERT_CUSTOMER_DETAILS: `${ServerURL.PRODUCTION_HOST_URL}api/CustomerApp/InsertCustomer`,    
     GET_MINIMUM_ORDER_AMOUNT: `${ServerURL.PRODUCTION_HOST_URL}api/WebMobileApp/SelectMinimumOrderAmount`,
+    UPDATE_PASSWORD: `${ServerURL.PRODUCTION_HOST_URL}api/WebMobileApp/UpdatePassword`,
+    UPDATE_CUSTOMER_PASSWORD: `${ServerURL.PRODUCTION_HOST_URL}api/WebMobileApp/UpdateCustomerPassword`,
 
     //Sale order 
     INSERT_SALE_ORDER_SAVE: `${ServerURL.PRODUCTION_HOST_URL}api/WebMobileApp/InsertSaleOrderSave`,

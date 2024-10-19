@@ -25,7 +25,7 @@ const Address = () => {
     currentAddress: '',
   });
 
-  const handleModalOpen = (type, address, Id) => {
+  const handleModalOpen = (type, address, Id, ParentId) => {
     if (type === 'New' || type === 'Update') {
       setModalState({
         ...modalState,
@@ -39,7 +39,8 @@ const Address = () => {
         type: type,
         confirmationModalOpen: true,
         currentAddress: address,
-        Id: Id
+        Id: Id,
+        ParentId: ParentId
       });      
     }
     modalState.currentAddress = address;
@@ -58,6 +59,7 @@ const Address = () => {
     if (event.target.value === 'Yes') {
       if(modalState.type === "Delete" && modalState.Id !== 0){
         await DeleteCustomerAddress(modalState.Id);
+        await FetchCustomerAddress(modalState.ParentId);
       }      
     }
     handleModalClose();
@@ -86,10 +88,7 @@ const Address = () => {
   //Delete adderess
   const DeleteCustomerAddress = async (userId) => {
     try {
-      const response = await API_DeleteCustomerAddress(userId);
-      if(response.ok){
-        await FetchCustomerAddress(userId);
-      }
+      const response = await API_DeleteCustomerAddress(userId);      
       setIsLoading(false);
     } catch (error) {
       console.error("Error fetching customer address:", error);
@@ -170,16 +169,17 @@ const Address = () => {
                     <IconButton
                       aria-label="edit"
                       value={address.Id}
-                      onClick={() => handleModalOpen('Update', address, address.Id)}
+                      onClick={() => handleModalOpen('Update', address, address.Id, address.ParentId)}
                     >
                       <Edit />
                     </IconButton>
                   </Grid>
                   <Grid item>
                     <IconButton
+                      disabled={address.ParentId === 0 || address.Id === address.ParentId ? true : false}
                       aria-label="delete"
                       value={address}
-                      onClick={() => handleModalOpen('Delete', address, address.Id)}
+                      onClick={() => handleModalOpen('Delete', address, address.Id, address.ParentId)}
                     >
                       <Delete />
                     </IconButton>

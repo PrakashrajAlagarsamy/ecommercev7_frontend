@@ -273,7 +273,6 @@ export default function AppRegister({ RegisterDrawerOpen, setLoginDrawerOpen, ha
                 <Button
                   fullWidth
                   variant="contained"
-                  color="success"
                   sx={{ my: 3, background: theme.palette.basecolorCode.main, color: theme.palette.whitecolorCode.main }}
                   type="submit"
                 >

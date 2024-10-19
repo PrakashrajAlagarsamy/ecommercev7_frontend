@@ -11,7 +11,7 @@ import AppRegister from './AppRegister';
 //API
 import { loginUser } from '../../services/userServices';
 
-export default function AppLogin({ LoginDrawerOpen, setRegisterDrawerOpen, handleAuthDrawerToggle }) {
+export default function AppLogin({ LoginDrawerOpen, setRegisterDrawerOpen, handleAuthDrawerToggle, setForgetPasswordDrawerOpen }) {
   const theme = useTheme();
   const { setIsAuthenticated } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
@@ -148,13 +148,27 @@ export default function AppLogin({ LoginDrawerOpen, setRegisterDrawerOpen, handl
               <Button
                 fullWidth
                 variant="contained"
-                color="success"
                 sx={{ my: 3, background: theme.palette.basecolorCode.main,color: theme.palette.whitecolorCode.main }}
                 type="submit"
               >
                 Login
               </Button>
             </form>
+
+            <Box display='flex' alignItems='center' justifyContent='space-between'>
+            <Typography align='right' variant="body2" className="mt-10">
+            <Link
+                href="#"
+                className="text-blue-600 hover:underline"
+                onClick={() => {
+                  handleAuthDrawerToggle(false); 
+                  setRegisterDrawerOpen(false); 
+                  setForgetPasswordDrawerOpen(true); 
+                }}
+              >
+                Forget password?
+              </Link>
+            </Typography>
 
             <Typography variant="body2" align="left" className="mt-10">
               Don't have an account?{' '}
@@ -169,6 +183,7 @@ export default function AppLogin({ LoginDrawerOpen, setRegisterDrawerOpen, handl
                 Register
               </Link>
             </Typography>
+            </Box>
           </div>
         </div>
       </Box>
