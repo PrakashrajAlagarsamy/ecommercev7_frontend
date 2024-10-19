@@ -16,13 +16,13 @@ export const checkExistingUser = async (email, mobileNumber) => {
         Comid: ServerURL.COMPANY_REF_ID,
       }),
     });
-
+    const data = await response.json();
     if (response.ok) {
-      const data = await response.json();
+      
       return data; // Returning the API response for further checks
     } else {
       console.error("Error checking existing user");
-      return null;
+      return data;
     }
   } catch (error) {
     console.error("Error:", error);
@@ -43,13 +43,12 @@ export const registerUser = async (userDetails) => {
       },
       body: JSON.stringify(userDetails),
     });
-
-    if (response.ok) {
-      const data = await response.json();
+    const data = await response.json();
+    if (response.ok) {      
       return data; // Returning API response after successful registration
     } else {
       console.error("Failed to create account.");
-      return null;
+      return data;
     }
   } catch (error) {
     console.error("Error:", error);

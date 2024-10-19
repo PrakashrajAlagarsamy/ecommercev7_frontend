@@ -154,8 +154,8 @@ export default function ProductCheckout() {
     };
 
     //Place order function
-    const handlePlaceOrder = async() => {        
-        if (Deliverytime === '') {
+    const handlePlaceOrder = async() => {          
+        if (Deliverytime === '' && DeliveryType === 'Delivery') {
             setInfoStatus('Please choose delivery time');
             handleAlertOpen(true);
         }

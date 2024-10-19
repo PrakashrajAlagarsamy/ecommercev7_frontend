@@ -18,6 +18,7 @@ export default function AppRegister({ RegisterDrawerOpen, setLoginDrawerOpen, ha
   const [showLoader, setShowLoader] = React.useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [ShowErrorMsg, setShowErrorMsg] = useState('');
 
   // Error state for validation
   const [errors, setErrors] = useState({});
@@ -120,7 +121,8 @@ export default function AppRegister({ RegisterDrawerOpen, setLoginDrawerOpen, ha
       }
       
       const response = await registerUser(objList);
-      if (response) {
+      
+      if (response.Id !== 0 && response.Id !== undefined) {
         localStorage.setItem("userLogin", 'true');
         localStorage.setItem("userId", btoa(response.Id));
         localStorage.setItem("userName", btoa(response.CustomerName));
@@ -131,11 +133,10 @@ export default function AppRegister({ RegisterDrawerOpen, setLoginDrawerOpen, ha
         setLoginDrawerOpen(false); 
       } else {
         setShowLoader(false);
-        handleAuthDrawerToggle(false); 
-        setLoginDrawerOpen(false); 
+        setShowErrorMsg(response);
       }
     } catch (error) {
-      console.error("Error:", error);
+      console.log("Error:", error);
       setShowLoader(false);
       handleAuthDrawerToggle(false); 
       setLoginDrawerOpen(false); 
@@ -266,6 +267,8 @@ export default function AppRegister({ RegisterDrawerOpen, setLoginDrawerOpen, ha
                     ),
                   }}
                 />
+
+                <Typography sx={{textAlign: 'center', color: 'red'}}>{ShowErrorMsg}</Typography>
 
                 <Button
                   fullWidth
