@@ -13,11 +13,13 @@ import { ImagePathRoutes } from '../routes/ImagePathRoutes';
 import { API_FetchProductById } from '../services/productListServices';
 import RelatedProducts from '../components/slider/relatedProducts';
 import BreadCrumbs from '../components/BreadCrumbs';
-import { API_InsertMyFavoriteProducts, API_DeleteMyFavoriteProducts } from '../services/userServices';
+import { API_InsertMyFavoriteProducts, API_FetchMyFavoriteProducts, API_DeleteMyFavoriteProducts } from '../services/userServices';
 import { useCart } from '../context/CartContext';
 import { useTheme } from '@mui/material/styles';
+import { connect } from 'react-redux';
+import * as actionType from '../redux1/actionType';
 
-const ProductDetails = () => {
+const ProductDetails = (props) => {
     const theme = useTheme();
     const location = useLocation();
     const navigate = useNavigate();
@@ -51,6 +53,16 @@ const ProductDetails = () => {
                 const images = [product.Img0, product.Img1, product.Img2]
                     .filter(img => img && img !== "Undefined.jpg" && img !== "Undefined.png");
                 setImageLists(images);
+
+                //Fav product load
+                const selectedFavList = props.get_fav_lists.find(item => item.Id === Number(productId));
+                if (selectedFavList !== undefined && selectedFavList.length !== 0) {
+                    setIsFavoriteProduct(1);
+                }
+                else {
+                    setIsFavoriteProduct(0);
+                }
+
             } else {
                 setProductDetails({});
                 setImageLists([]);
@@ -71,9 +83,10 @@ const ProductDetails = () => {
         const productId = encodedId ? decodeURIComponent(encodedId) : null;
         setProductId(atob(productId));
         if (productId) {
-            GetProductDetails(atob(productId));
+            GetProductDetails(atob(productId));           
         }
-    }, [location.search]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [location.search, props.get_fav_lists]);
 
     const handleProductWeightChange = (event, ProductWeightLists) => {
         event.stopPropagation();
@@ -199,38 +212,51 @@ const ProductDetails = () => {
     };
 
     //Add fav product
-    const handleAddFavProduct = async (ProductId, event, status) => {
-        event.stopPropagation();
-        setIsFavoriteProduct(status === 'Add' ? 1 : 0);
-        let userId = localStorage.getItem("userId");
-        userId = Number(atob(userId));
-        try {
-            const response = await API_InsertMyFavoriteProducts(ProductId, userId);
-            if (!response.ok) {
-                setIsFavoriteProduct(status === 'Add' ? 0 : 1);
-                console.error("Error updating favorite status:", response);
-            }
-        } catch (error) {
-            // Revert the optimistic UI update on error
-            setIsFavoriteProduct(status === 'Add' ? 0 : 1);
-            console.error("Error handling favorite product:", error);
-        }
-    };
+  const handleAddFavProduct = async (ProductId, event, status) => {
+    event.stopPropagation();
+    setIsFavoriteProduct(1);
+    let userId = localStorage.getItem("userId");
+    userId = userId ? decodeURIComponent(userId) : null;
+    try {
+      const response = await API_InsertMyFavoriteProducts(ProductId,  Number(atob(userId)));
+      if (response.DeleteStatus === 0 && response.ItemmasterRefid !== 0) {
+        await FetchMyFavoriteProducts(atob(userId));
+        setIsFavoriteProduct(1);
+      }
+      else{
+        setIsFavoriteProduct(0);
+      }
+    } catch (error) {
+      setIsFavoriteProduct(0);
+    }
+  };
 
-    //Remove fav list
-    const handleRemoveFavProduct = async (ProductId) => {
-        let userId = localStorage.getItem("userId");
-        userId = userId ? decodeURIComponent(userId) : null;
-        try {
-            const response = await API_DeleteMyFavoriteProducts(ProductId, Number(atob(userId)));
-            if (response.DeleteStatus === 1 && response.ItemmasterRefid !== 0) {
-                await GetProductDetails(ProductId);
-            }
-        } catch (error) {
-            console.error("Error removing favorite product lists:", error);
-        }
-    };
+  const FetchMyFavoriteProducts = async (userId) => {
+    try {
+        const favlist = await API_FetchMyFavoriteProducts(userId);
+        if(favlist !== undefined && favlist.length !== 0){
+          props.setFavouriteLists(favlist);
+        }        
+    } catch (error) {
+        console.error("Error fetching favorite product lists:", error);
+    }
+};
 
+  //Remove fav list
+  const handleRemoveFavProduct = async (ProductId, event) => {
+    event.stopPropagation();
+    let userId = localStorage.getItem("userId");
+    userId = userId ? decodeURIComponent(userId) : null;
+    try {
+      const response = await API_DeleteMyFavoriteProducts(ProductId, Number(atob(userId)));
+      if (response.DeleteStatus === 1 && response.ItemmasterRefid !== 0) {
+        await FetchMyFavoriteProducts(atob(userId));
+        setIsFavoriteProduct(0);
+      }
+    } catch (error) {
+      setIsFavoriteProduct(1);
+    }
+  };
     // Slick Slider settings
     const settings1 = {
         customPaging: function (index) {
@@ -301,7 +327,7 @@ const ProductDetails = () => {
                                     cursor: 'pointer',
                                     color: productDetails.isFavorite ? '#3BB77E' : '#3BB77E',
                                 }}>
-                                    {isFavoriteProduct !== 0 ? <FavoriteIcon size="small" sx={{ color: '#ee4372', fontSize: '18px' }} onClick={(event) => { handleAddFavProduct(productDetails?.Productid ? productDetails.Productid : productDetails?.Id, event, 'Remove'); }} /> : <FavoriteBorderIcon onClick={(event) => { handleAddFavProduct(productDetails?.Productid ? productDetails.Productid : productDetails?.Id, event, 'Add'); }} size="small" sx={{ color: '#ee4372', fontSize: '18px' }} />}
+                                    {isFavoriteProduct !== 0 ? <FavoriteIcon size="small" sx={{ color: '#ee4372', fontSize: '18px' }} onClick={(event) => { handleRemoveFavProduct(productDetails?.Productid ? productDetails.Productid : productDetails?.Id, event); }} /> : <FavoriteBorderIcon onClick={(event) => { handleAddFavProduct(productDetails?.Productid ? productDetails.Productid : productDetails?.Id, event, 'Add'); }} size="small" sx={{ color: '#ee4372', fontSize: '18px' }} />}
                                 </Box>
                             </Box>
                             <Box sx={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', pb: 2 }}>
@@ -485,4 +511,17 @@ const ProductDetails = () => {
     );
 };
 
-export default ProductDetails;
+
+const mapStateToProps = (state) => {
+    return {
+      get_fav_lists: state.get_fav_lists, // Get favourite lists from Redux state (Wishlists)
+    };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {    
+      setFavouriteLists: (data) => dispatch({type: actionType.GET_GLOBAL_FAVOURITE_LISTS, payload: data})
+    };
+  };
+  
+export default connect(mapStateToProps, mapDispatchToProps)(ProductDetails);

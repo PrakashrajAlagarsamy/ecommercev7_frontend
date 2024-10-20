@@ -7,8 +7,9 @@ import "slick-carousel/slick/slick-theme.css";
 import CategoryHeader from '../category/categoryHeader';
 import { API_FetchOfferFastMovingProduct } from '../../services/productListServices';
 import { useTheme } from '@mui/material/styles';
+import { connect } from 'react-redux';
 
-const OfferFastMovingProduct = () => {
+const OfferFastMovingProduct = (props) => {
   const theme = useTheme();
   const [productLists, setProductLists] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -136,7 +137,7 @@ const OfferFastMovingProduct = () => {
           ) : (
             productLists.map((product) => (
               <Box key={product.id} sx={{ padding: 2 }}>
-                <ProductCard product={product} />
+                <ProductCard get_fav_lists={props.get_fav_lists} product={product} />
               </Box>
             ))
           )}
@@ -146,4 +147,10 @@ const OfferFastMovingProduct = () => {
   );
 };
 
-export default OfferFastMovingProduct;
+const mapStateToProps = (state) => {
+  return {
+    get_fav_lists: state.get_fav_lists, // Get favourite lists from Redux state (Wishlists)
+  };
+};
+
+export default connect(mapStateToProps, null)(OfferFastMovingProduct);

@@ -8,6 +8,7 @@ import FooterCategories from '../category/FooterCategory';
 import { Container, Box } from '@mui/material';
 import { API_FetchSettings } from '../../services/settings';
 import { API_FetchCategory } from '../../services/categoryServices';
+import { API_FetchMyFavoriteProducts } from '../../services/userServices';
 import * as actionType from '../../redux1/actionType';
 import { connect } from 'react-redux';
 
@@ -53,7 +54,23 @@ const AppLayout = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const FetchMyFavoriteProducts = async (userId) => {
+    try {
+        const favlist = await API_FetchMyFavoriteProducts(userId);
+        if(favlist !== undefined && favlist.length !== 0){
+          props.setFavouriteLists(favlist);
+        }        
+    } catch (error) {
+        console.error("Error fetching favorite product lists:", error);
+    }
+};
+
   useEffect(() => {
+    const userId = localStorage.getItem("userId");
+        const CId = userId ? decodeURIComponent(userId) : null;
+        if (CId) {
+            FetchMyFavoriteProducts(atob(CId));
+        }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -81,9 +98,8 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-  return {
-    SetGlobalSettings: (data) => dispatch({ type: actionType.GET_GLOBAL_SETTINGS, payload: data }),
-    SetGlobalCategories: (data) => dispatch({ type: actionType.GET_GLOBAL_CATEGORIES, payload: data }),
+  return {    
+    setFavouriteLists: (data) => dispatch({type: actionType.GET_GLOBAL_FAVOURITE_LISTS, payload: data})
   };
 };
 

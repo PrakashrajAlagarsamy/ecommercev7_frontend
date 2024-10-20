@@ -2,7 +2,8 @@ import * as actionType from '../redux1/actionType';
 
 const initial_state = {
     get_settings_lists: [],
-    get_catgory_lists: [] // Initialize as an empty array to avoid undefined issues
+    get_catgory_lists: [], // Initialize as an empty array to avoid undefined issues
+    get_fav_lists: []
 };
 
 const reducer = (state = initial_state, action) => {
@@ -16,6 +17,11 @@ const reducer = (state = initial_state, action) => {
             return {
                 ...state, 
                 get_catgory_lists: action.payload // Ensure the payload is being passed correctly
+            }
+        case actionType.GET_GLOBAL_FAVOURITE_LISTS:
+            return {
+                ...state, 
+                get_fav_lists: action.payload 
             }
         default:
             return state;

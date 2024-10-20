@@ -9,8 +9,9 @@ import ImageCategorySlider from './ImageCategorySlider';
 import { API_FetchCategory } from '../../services/categoryServices';
 import { API_FetchProductByIndexPage } from '../../services/productListServices';
 import { useTheme } from '@mui/material/styles';
+import { connect } from 'react-redux';
 
-const ProductByIndexPage = () => {
+const ProductByIndexPage = (props) => {
   const theme = useTheme();
   const [categoryLists, setCategoryLists] = useState([]);
   const [productsByCategory, setProductsByCategory] = useState({});
@@ -167,7 +168,7 @@ const ProductByIndexPage = () => {
               <Slider {...getSliderSettings(products.length)}>
                 {products.map((product) => (
                   <Box key={product.id} sx={{ padding: 0 }}>
-                    <ProductCard product={product} />
+                    <ProductCard get_fav_lists={props.get_fav_lists} product={product} />
                   </Box>
                 ))}
               </Slider>
@@ -186,4 +187,11 @@ const ProductByIndexPage = () => {
   );
 };
 
-export default ProductByIndexPage;
+const mapStateToProps = (state) => {
+  return {
+    get_fav_lists: state.get_fav_lists, // Get favourite lists from Redux state (Wishlists)
+  };
+};
+
+export default connect(mapStateToProps, null)(ProductByIndexPage);
+

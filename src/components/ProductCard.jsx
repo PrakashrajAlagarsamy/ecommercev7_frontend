@@ -9,8 +9,10 @@ import { ServerURL } from '../server/serverUrl';
 import { API_InsertMyFavoriteProducts, API_DeleteMyFavoriteProducts, API_FetchMyFavoriteProducts } from '../services/userServices';
 import { useCart } from '../context/CartContext';
 import { useTheme } from '@mui/material/styles';
+import * as actionType from '../redux1/actionType';
+import { connect } from 'react-redux';
 
-const ProductCard = ({ product, isLoading, offerProducts, relatedProducts, newProducts }) => {
+const ProductCard = ({ get_fav_lists, product, isLoading, offerProducts, relatedProducts, newProducts }) => {
   const navigate = useNavigate();
   const theme = useTheme();
   const { cartItems, setCartItems } = useCart();
@@ -27,34 +29,22 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts, newPr
   const [favProductLists, setFavProductLists] = useState([]);
 
   //Fav product lists
-  const FetchMyFavoriteProducts = async (userId, ProductId) => {
-    try {
-      const favlist = await API_FetchMyFavoriteProducts(userId);
-      if (favlist.length !== 0) {
-        setFavProductLists(favlist);
-        const productId = ProductId !== 0 ? ProductId : product?.Productid ? product.Productid : product?.Id;
-        const selectedFavList = favlist.find(item => item.Id === productId);
-        if (selectedFavList.length !== 0) {
-          setIsFavoriteProduct(1);
-        }
-        else {
-          setIsFavoriteProduct(0);
-        }
+  const FetchMyFavoriteProducts = async (ProductId) => {
+    if (get_fav_lists.length !== 0) {
+      setFavProductLists(get_fav_lists);
+      const productId = ProductId !== 0 ? ProductId : product?.Productid ? product.Productid : product?.Id;
+      const selectedFavList = get_fav_lists.find(item => item.Id === productId);
+      if (selectedFavList !== undefined && selectedFavList.length !== 0) {
+        setIsFavoriteProduct(1);
       }
       else {
-        setFavProductLists([]);
+        setIsFavoriteProduct(0);
       }
-    } catch (error) {
-      setFavProductLists([]);
     }
   };
 
   useEffect(() => {
-    const userId = localStorage.getItem("userId");
-    const CId = userId ? decodeURIComponent(userId) : null;
-    if (CId) {
-      FetchMyFavoriteProducts(atob(CId), 0);
-    }
+    FetchMyFavoriteProducts(product?.Productid ? product.Productid : product?.Id);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -202,7 +192,7 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts, newPr
     try {
       const response = await API_InsertMyFavoriteProducts(ProductId,  Number(atob(userId)));
       if (response.DeleteStatus === 0 && response.ItemmasterRefid !== 0) {
-        await FetchMyFavoriteProducts(atob(userId), ProductId);
+        await FetchMyFavoriteProducts(ProductId);
         setIsFavoriteProduct(1);
       }
       else{
@@ -520,4 +510,10 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts, newPr
   );
 };
 
-export default ProductCard;
+const mapStateToProps = (state) => {
+  return {
+    get_fav_lists: state.get_fav_lists, // Get favourite lists from Redux state (Wishlists)
+  };
+};
+
+export default connect(mapStateToProps, null)(ProductCard);
