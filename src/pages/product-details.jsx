@@ -388,7 +388,7 @@ const ProductDetails = () => {
                                         fontFamily: 'inherit',
                                         fontWeight: 600,
                                         borderColor: theme.palette.basecolorCode.main,
-                                        backgroundColor: theme.palette.basecolorCode.secondary,
+                                        backgroundColor: theme.palette.shadowcolorCode.main,
                                         color: theme.palette.basecolorCode.main,
                                         '&:hover': {
                                             background: 'none',

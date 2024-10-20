@@ -427,7 +427,7 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts, newPr
                   fontWeight: 600,
                   border: '1px solid',
                   borderColor: theme.palette.basecolorCode.main,
-                  backgroundColor: theme.palette.basecolorCode.secondary,
+                  backgroundColor: theme.palette.shadowcolorCode.main,
                   color: theme.palette.basecolorCode.main,
                   '&:hover': {
                     background: 'none',

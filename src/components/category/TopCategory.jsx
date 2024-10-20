@@ -88,7 +88,7 @@ const TopCategory = (props) => {
           aria-label="scrollable prevent tabs example"
           sx={{
             '.MuiTabs-indicator': {
-              backgroundColor: theme.palette.basecolorCode.main || '#3BB77E',
+              backgroundColor: theme.palette.basecolorCode.main,
             },
           }}
         >
@@ -97,9 +97,9 @@ const TopCategory = (props) => {
             sx={{
               cursor: "pointer",
               '&.Mui-selected': {
-                color: theme.palette.basecolorCode.main || '#3BB77E',
-                backgroundColor: theme.palette.basecolorCode.secondary || '#3bb77e1c',
-                borderColor: theme.palette.basecolorCode.main || '#3BB77E',
+                color: theme.palette.basecolorCode.main,
+                backgroundColor: theme.palette.shadowcolorCode.main,
+                borderColor: theme.palette.basecolorCode.main,
               },
             }}
             value="all_categories"
@@ -109,9 +109,9 @@ const TopCategory = (props) => {
               <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <Avatar
                   src={AllCategories}
-                  sx={{ width: 55, height: 55, mb: 0.5, boxShadow: `0px 0px 40px 20px ${theme.palette.shadowcolorCode.main || '#3bb77e1c'}` }}
+                  sx={{ width: 55, height: 55, mb: 0.5, boxShadow: `0px 0px 40px 20px ${theme.palette.shadowcolorCode.main}` }}
                 />
-                <Typography variant="caption" sx={{ textAlign: 'center', textTransform: 'capitalize', fontWeight: 600, fontSize: '14px', color: theme.palette.colorCode.main || "#253D4E" }}>
+                <Typography variant="caption" sx={{ textAlign: 'center', textTransform: 'capitalize', fontWeight: 600, fontSize: '14px', color: theme.palette.colorCode.main}}>
                   All Categories
                 </Typography>
               </Box>
@@ -123,7 +123,7 @@ const TopCategory = (props) => {
               cursor: "pointer",
               '&.Mui-selected': {
                 color: theme.palette.basecolorCode.main,
-                backgroundColor: theme.palette.basecolorCode.secondary,
+                backgroundColor: theme.palette.shadowcolorCode.main,
                 borderColor: theme.palette.basecolorCode.main,
               },
             }}
@@ -134,9 +134,9 @@ const TopCategory = (props) => {
               <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <Avatar
                   src={TopOffers}
-                  sx={{ width: 55, height: 55, mb: 0.5, boxShadow: `0px 0px 40px 20px ${theme.palette.shadowcolorCode.main || '#3bb77e1c'}` }}
+                  sx={{ width: 55, height: 55, mb: 0.5, boxShadow: `0px 0px 40px 20px ${theme.palette.shadowcolorCode.main}` }}
                 />
-                <Typography variant="caption" sx={{ textAlign: 'center', textTransform: 'capitalize', fontWeight: 600, fontSize: '14px', color: theme.palette.colorCode.main || "#253D4E" }}>
+                <Typography variant="caption" sx={{ textAlign: 'center', textTransform: 'capitalize', fontWeight: 600, fontSize: '14px', color: theme.palette.colorCode.main}}>
                   Top Offers
                 </Typography>
               </Box>
@@ -147,9 +147,9 @@ const TopCategory = (props) => {
             sx={{
               cursor: "pointer",
               '&.Mui-selected': {
-                color: theme.palette.basecolorCode.main || '#3BB77E', // Set the text color for the active tab
-                backgroundColor: theme.palette.basecolorCode.secondary || '#3bb77e1c',
-                borderColor: theme.palette.basecolorCode.main || '#3BB77E',
+                color: theme.palette.basecolorCode.main, // Set the text color for the active tab
+                backgroundColor: theme.palette.shadowcolorCode.main,
+                borderColor: theme.palette.basecolorCode.main,
               },
             }}
             value="new_product"
@@ -159,9 +159,9 @@ const TopCategory = (props) => {
               <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <Avatar
                   src={NewProducts}
-                  sx={{ width: 55, height: 55, mb: 0.5, boxShadow: `0px 0px 40px 20px ${theme.palette.shadowcolorCode.main || '#3bb77e1c'}` }}
+                  sx={{ width: 55, height: 55, mb: 0.5, boxShadow: `0px 0px 40px 20px ${theme.palette.shadowcolorCode.main}` }}
                 />
-                <Typography variant="caption" sx={{ textAlign: 'center', textTransform: 'capitalize', fontWeight: 600, fontSize: '14px', color: theme.palette.colorCode.main || "#253D4E" }}>
+                <Typography variant="caption" sx={{ textAlign: 'center', textTransform: 'capitalize', fontWeight: 600, fontSize: '14px', color: theme.palette.colorCode.main }}>
                   New Arrivals
                 </Typography>
               </Box>
@@ -187,9 +187,9 @@ const TopCategory = (props) => {
                 sx={{
                   cursor: "pointer",
                   '&.Mui-selected': {
-                    color: theme.palette.basecolorCode.main || '#3BB77E', // Set the text color for the active tab
-                    backgroundColor: theme.palette.basecolorCode.secondary || '#3bb77e1c',
-                    borderColor: theme.palette.basecolorCode.main || '#3BB77E',
+                    color: theme.palette.basecolorCode.main, // Set the text color for the active tab
+                    backgroundColor: theme.palette.shadowcolorCode.main,
+                    borderColor: theme.palette.basecolorCode.main,
                   },
                 }}
                 key={index}
@@ -199,10 +199,10 @@ const TopCategory = (props) => {
                   <Box id={item.Id} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <Avatar
                       src={ImagePathRoutes.CategoryImagePath + item.ImagePath}
-                      sx={{ width: 55, height: 55, mb: 0.5, boxShadow: `0px 0px 40px 20px ${theme.palette.shadowcolorCode.main || '#3bb77e1c'}` }}
+                      sx={{ width: 55, height: 55, mb: 0.5, boxShadow: `0px 0px 40px 20px ${theme.palette.shadowcolorCode.main}` }}
                       alt={item.Category}
                     />
-                    <Typography variant="caption" sx={{ textAlign: 'center', textTransform: 'capitalize', fontWeight: 600, fontSize: '14px', color: theme.palette.colorCode.main || "#253D4E" }}>
+                    <Typography variant="caption" sx={{ textAlign: 'center', textTransform: 'capitalize', fontWeight: 600, fontSize: '14px', color: theme.palette.colorCode.main }}>
                       {item.Category}
                     </Typography>
                   </Box>
