@@ -68,6 +68,8 @@ export default function AppLogin({ LoginDrawerOpen, setRegisterDrawerOpen, handl
         localStorage.setItem("userLogin", 'true');
         localStorage.setItem("userId", btoa(response[0].Id));
         localStorage.setItem("userName", btoa(response[0].CustomerName));
+        localStorage.setItem("userMobileNo", btoa(response[0].MobileNo));
+        localStorage.setItem("userEmail", btoa(response[0].Email));
         setIsAuthenticated(true);
         setErrorMsg(false);
         handleAuthDrawerToggle(false); 
@@ -148,7 +150,7 @@ export default function AppLogin({ LoginDrawerOpen, setRegisterDrawerOpen, handl
               <Button
                 fullWidth
                 variant="contained"
-                sx={{ my: 3, background: theme.palette.basecolorCode.main,color: theme.palette.whitecolorCode.main }}
+                sx={{ my: 3, background: theme.palette.basecolorCode.main, color: theme.palette.whitecolorCode.main, '&:hover': {background: theme.palette.basecolorCode.main, color: theme.palette.whitecolorCode.main} }}
                 type="submit"
               >
                 Login

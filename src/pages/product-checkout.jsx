@@ -104,7 +104,7 @@ export default function ProductCheckout() {
         const queryParams = new URLSearchParams(location.search);
         const encodedWalletAmount = queryParams.get('Wallet');
         let amt = atob(encodedWalletAmount);
-        setwalletAmount(Number(amt));
+        //setwalletAmount(Number(amt));
 
         let address = JSON.parse(sessionStorage.getItem('selectedAddress'));
         setSelectedAddress(address);
@@ -155,7 +155,7 @@ export default function ProductCheckout() {
 
     //Place order function
     const handlePlaceOrder = async() => {          
-        if (Deliverytime === '' && DeliveryType === 'Delivery') {
+        if (Deliverytime === '' && DeliveryType === 'Delivery' && DeliveryTimeList.length !== 0) {
             setInfoStatus('Please choose delivery time');
             handleAlertOpen(true);
         }
@@ -229,41 +229,10 @@ export default function ProductCheckout() {
         const master = [
             {
                 Id: 0,
-                CustomerRefId: selectedAddress.ParentId !== 0 ? selectedAddress.ParentId : selectedAddress.Id,
-                CompanyRefid: selectedAddress.CompanyRefId,
-                SaleDate: DateValue,
-                DeliveryDate: DateValue,
-                PaymentMode: PaymentType,
-                PaymentId: onlinePaymentId,
-                AreaMasterId: null,
-                deliveryStoreName: null,
-                DeliveryMode: DeliveryType,
-                DeliveryStatus: 0,
-                DeliveryCharge: DeliveryFee,
-                NewCustomerStatus: 0,
-                CouponDiscount: 0.0,
-                CouponRefId: 0,
-                OrderCount: 1,
-                ReferalAmount: 0.0,
-                Grossamt: Number(TotalPrice),
-                disper: 0,
-                discamount: 0,
-                schargeamount: 0,
-                TodaySaving: SavingsAmount,
-                ReferalBalance: 0,
-                WalletAmount: walletAmount,
-                WalletStatus: walletAmount > 0 ? 1 : 0,
-                WalletPayment: walletAmount,
-                coinage: 0,
-                NetAmount: Number(TotalPrice), //Final Total Amount
-                Remarks: "",
-                DeliveryTime: Deliverytime,
-                CutomerName: selectedAddress.CustomerName,
-                MobileNo: selectedAddress.MobileNo,
-                CompanyName: ServerURL.COMPANY_NAME,
-                CompanyMobile: ServerURL.COMPANY_MOBILE,
-                CompanyEmail: ServerURL.COMPANY_EMAIL,
-                Email: selectedAddress.Email,
+                CustomerRefId: Number(atob(localStorage.getItem("userId"))),
+                CutomerName: atob(localStorage.getItem("userName")),
+                MobileNo: atob(localStorage.getItem("userMobileNo")),
+                Email: atob(localStorage.getItem("userEmail")),
                 Address1: selectedAddress.Address1,
                 Address2: selectedAddress.Address2,
                 City: selectedAddress.City,
@@ -271,8 +240,40 @@ export default function ProductCheckout() {
                 Pincode: selectedAddress.Pincode,
                 lattitude: selectedAddress.Latitude,
                 longitude: selectedAddress.Langitude,
-                SaleOrderDetails: OrderDetails,                
-                // DeleteReason: "",                
+
+                CompanyRefid: selectedAddress.CompanyRefId,
+                CompanyName: ServerURL.COMPANY_NAME,
+                CompanyMobile: ServerURL.COMPANY_MOBILE,
+                CompanyEmail: ServerURL.COMPANY_EMAIL,
+                
+                SaleDate: DateValue,
+                DeliveryDate: DateValue,
+                DeliveryTime: Deliverytime, 
+                DeliveryMode: DeliveryType,   
+                PaymentMode: PaymentType,
+                PaymentId: onlinePaymentId,
+                AreaMasterId: null,
+                deliveryStoreName: null,                
+                DeliveryStatus: 0,                
+                NewCustomerStatus: 0,
+                CouponDiscount: 0.0,
+                CouponRefId: 0,
+                OrderCount: 1,
+                ReferalAmount: 0.0,                
+                disper: 0,
+                discamount: 0,
+                schargeamount: 0,                
+                ReferalBalance: 0,
+                coinage: 0,
+                DeliveryCharge: DeliveryFee,
+                WalletAmount: walletAmount,
+                WalletStatus: walletAmount > 0 ? 1 : 0,
+                WalletPayment: walletAmount,                
+                TodaySaving: SavingsAmount,
+                Grossamt: Number(TotalPrice),
+                NetAmount: Number(TotalPrice), //Final Total Amount                                 
+                SaleOrderDetails: OrderDetails,     
+                Remarks: "",                    
             },
         ];
         await InsertSaleOrderSave(master);
@@ -517,7 +518,7 @@ export default function ProductCheckout() {
                         <Box align='left' sx={{ width: '100%' }}>
                             <Grid container>
                                 <Grid item xs={8} sx={{ mt: 0.5 }}>
-                                    <Typography align='left' sx={{ fontSize: '14px', borderBottom: 'dashed 1px lightgray', display: 'inline' }} variant="body1">Item MRP total</Typography>
+                                    <Typography align='left' sx={{ fontSize: '14px', borderBottom: 'dashed 1px lightgray', display: 'inline' }} variant="body1">MRP Total Amount</Typography>
                                 </Grid>
                                 <Grid item xs={4} sx={{ mt: 0.5 }}>
                                     <Typography sx={{ fontSize: '14px' }} variant="body1" align="right">
@@ -525,7 +526,7 @@ export default function ProductCheckout() {
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={8} sx={{ mt: 0.5 }}>
-                                    <Typography sx={{ fontSize: '14px' }} variant="body1">Savings</Typography>
+                                    <Typography align='left' sx={{ fontSize: '14px', borderBottom: 'dashed 1px lightgray', display: 'inline' }} variant="body1">Total Savings</Typography>
                                 </Grid>
                                 <Grid item xs={4} sx={{ mt: 0.5 }}>
                                     <Typography sx={{ fontSize: '14px' }} variant="body1" align="right" color="green">
@@ -559,7 +560,7 @@ export default function ProductCheckout() {
                                 </Grid>
 
                                 <Grid item xs={8} sx={{ mt: 0.5 }}>
-                                    <Typography sx={{ fontSize: '14px', borderBottom: 'dashed 1px lightgray', display: 'inline' }} variant="body1">Item total & GST</Typography>
+                                    <Typography sx={{ fontSize: '14px', borderBottom: 'dashed 1px lightgray', display: 'inline' }} variant="body1">Total Amount</Typography>
                                 </Grid>
                                 <Grid item xs={4} sx={{ mt: 0.5 }}>
                                     <Typography sx={{ fontSize: '14px' }} variant="body1" align="right">

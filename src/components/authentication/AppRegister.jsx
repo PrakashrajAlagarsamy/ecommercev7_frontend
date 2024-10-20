@@ -126,6 +126,8 @@ export default function AppRegister({ RegisterDrawerOpen, setLoginDrawerOpen, ha
         localStorage.setItem("userLogin", 'true');
         localStorage.setItem("userId", btoa(response.Id));
         localStorage.setItem("userName", btoa(response.CustomerName));
+        localStorage.setItem("userMobileNo", btoa(response[0].MobileNo));
+        localStorage.setItem("userEmail", btoa(response[0].Email));
         setIsAuthenticated(true);
         setIsAuthenticatedName(response.CustomerName);
         setShowLoader(false);
@@ -273,7 +275,7 @@ export default function AppRegister({ RegisterDrawerOpen, setLoginDrawerOpen, ha
                 <Button
                   fullWidth
                   variant="contained"
-                  sx={{ my: 3, background: theme.palette.basecolorCode.main, color: theme.palette.whitecolorCode.main }}
+                  sx={{ my: 3, background: theme.palette.basecolorCode.main, color: theme.palette.whitecolorCode.main, '&:hover': {background: theme.palette.basecolorCode.main, color: theme.palette.whitecolorCode.main} }}
                   type="submit"
                 >
                   Create Account

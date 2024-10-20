@@ -169,7 +169,7 @@ export default function AccordionAmountDetails({ useWallet, walletAmount }) {
           <Box sx={{ width: '100%' }}>
             <Grid container>
               <Grid item xs={8} sx={{mt: 0.5}}>
-                <Typography sx={{ fontSize: '14px', borderBottom: 'dashed 1px lightgray', display: 'inline' }} variant="body1">Item MRP total</Typography>
+                <Typography sx={{ fontSize: '14px', borderBottom: 'dashed 1px lightgray', display: 'inline' }} variant="body1">MRP Total Amount</Typography>
               </Grid>
               <Grid item xs={4} sx={{mt: 0.5}}>
                 <Typography sx={{ fontSize: '14px' }} variant="body1" align="right">
@@ -214,7 +214,7 @@ export default function AccordionAmountDetails({ useWallet, walletAmount }) {
               </Grid>
 
               <Grid item xs={8} sx={{mt: 0.5}}>
-                <Typography sx={{ fontSize: '14px', borderBottom: 'dashed 1px lightgray', display: 'inline' }} variant="body1">Item Total & GST</Typography>
+                <Typography sx={{ fontSize: '14px', borderBottom: 'dashed 1px lightgray', display: 'inline' }} variant="body1">Total Amount</Typography>
               </Grid>
               <Grid item xs={4} sx={{mt: 0.5}}>                
                 <Typography sx={{ fontSize: '14px', fontWeight: 600 }} variant="body1" align="right">
