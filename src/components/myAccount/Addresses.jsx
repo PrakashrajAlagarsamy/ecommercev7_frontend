@@ -143,6 +143,7 @@ const Address = () => {
           <Typography variant="h6" fontWeight="bold" sx={{ color: theme.palette.colorCode.main }}>All Saved Addresses</Typography>
           <Button
             variant="contained"
+            size='small'
             onClick={() => handleModalOpen('New', objlist, 0)}
             sx={{ background: theme.palette.basecolorCode.main, color: theme.palette.whitecolorCode.main, '&:hover': { background: theme.palette.basecolorCode.main, color: theme.palette.whitecolorCode.main } }}
           >
@@ -151,7 +152,7 @@ const Address = () => {
         </Box>
         {customerDetails.map((address, index) => (
           <React.Fragment key={index}>
-            <Grid container py={1} mb={2} px={3} alignItems="center">
+            <Grid container py={1} mb={2} sx={{px:{sm: 0, md: 3}}} alignItems="center">
               <Grid item xs={1}>
                 <Box sx={{ mr: 2 }} align="center">
                   <svg fill="none" height="24" viewBox="0 0 26 26" width="24" xmlns="http://www.w3.org/2000/svg">

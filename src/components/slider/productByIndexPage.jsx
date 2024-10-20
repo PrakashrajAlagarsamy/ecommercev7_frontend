@@ -136,7 +136,7 @@ const ProductByIndexPage = (props) => {
         {
           breakpoint: 600,
           settings: {
-            arrows: productCount > 1,
+            arrows: false,
             slidesToShow: Math.min(productCount, 2),
             slidesToScroll: 1,
           },

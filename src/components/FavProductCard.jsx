@@ -170,7 +170,7 @@ const FavCard = ({ list, handleRemoveFavProduct }) => {
         <Card
             key={list.Id}
             sx={{
-                width: '48%',
+                width: {xs: '100%', sm: '48%'},
                 display: 'flex',
                 padding: '12px',
                 borderRadius: '5px',
