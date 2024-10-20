@@ -1,12 +1,13 @@
 /* eslint-disable no-unused-vars */
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ServerURL } from '../server/serverUrl';
 import { useTheme } from '@mui/material/styles';
 
 export default function RazorpayPayment({ PlaceOrder, OnlinePayment, payableamount, usedwalledamount, Customer }) {
-
     const theme = useTheme();
-
+    const navigate = useNavigate();
+    
     const loadRazorpayScript = () => {
         return new Promise((resolve) => {
             const script = document.createElement('script');
@@ -17,7 +18,6 @@ export default function RazorpayPayment({ PlaceOrder, OnlinePayment, payableamou
         });
     };
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     const handlePayment = async () => {
         const res = await loadRazorpayScript();
 
@@ -38,10 +38,9 @@ export default function RazorpayPayment({ PlaceOrder, OnlinePayment, payableamou
                 const onlinePaymentId = response.razorpay_payment_id;
                 sessionStorage.setItem('onlinePStatus', 1);
                 sessionStorage.setItem('onlinePaymentId', onlinePaymentId);
-                // Call your order placement function
-                PlaceOrder(1, onlinePaymentId);
+                PlaceOrder(1, onlinePaymentId); // Call your order placement function
             },
-            prefill: {                
+            prefill: {
                 name: atob(localStorage.getItem("userName")),
                 contact: atob(localStorage.getItem("userMobileNo")),
                 email: atob(localStorage.getItem("userEmail")),
@@ -49,10 +48,6 @@ export default function RazorpayPayment({ PlaceOrder, OnlinePayment, payableamou
             theme: {
                 color: theme.palette.basecolorCode.main
             },
-            // wallet: {
-            //     WalletBalance: usedwalledamount,
-            //     WalletPayment: usedwalledamount
-            // }
         };
 
         const rzp1 = new window.Razorpay(options);
@@ -61,7 +56,10 @@ export default function RazorpayPayment({ PlaceOrder, OnlinePayment, payableamou
         rzp1.on('payment.failed', function (response) {
             alert(response.error.code);
             alert(response.error.description + ' ' + response.error.reason);
-            window.location.reload();
+            rzp1.close();
+
+            // Instead of reload page
+            window.location.href = "/product-checkout";
         });
 
         rzp1.open();
@@ -69,10 +67,8 @@ export default function RazorpayPayment({ PlaceOrder, OnlinePayment, payableamou
 
     useEffect(() => {
         if (OnlinePayment === true) {
-            console.log("pay call");
             handlePayment();
         }
-        // eslint-disable-next-line no-use-before-define
-    }, [OnlinePayment, handlePayment]);
-}
-
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);   
+};
