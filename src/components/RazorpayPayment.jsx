@@ -49,10 +49,10 @@ export default function RazorpayPayment({ PlaceOrder, OnlinePayment, payableamou
             theme: {
                 color: theme.palette.basecolorCode.main
             },
-            wallet: {
-                WalletBalance: usedwalledamount,
-                WalletPayment: usedwalledamount
-            }
+            // wallet: {
+            //     WalletBalance: usedwalledamount,
+            //     WalletPayment: usedwalledamount
+            // }
         };
 
         const rzp1 = new window.Razorpay(options);
