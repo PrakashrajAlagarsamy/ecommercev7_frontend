@@ -41,10 +41,10 @@ export default function RazorpayPayment({ PlaceOrder, OnlinePayment, payableamou
                 // Call your order placement function
                 PlaceOrder(1, onlinePaymentId);
             },
-            prefill: {
-                name: Customer.CustomerName,
-                email: Customer.Email,
-                contact: Customer.MobileNo
+            prefill: {                
+                name: atob(localStorage.getItem("userName")),
+                contact: atob(localStorage.getItem("userMobileNo")),
+                email: atob(localStorage.getItem("userEmail")),
             },
             theme: {
                 color: theme.palette.basecolorCode.main
