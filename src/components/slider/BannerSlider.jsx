@@ -24,13 +24,14 @@ export default function BannerSlider() {
     GetBannerSliderLists();
   }, []);
 
+  // Slider settings, adjusted for single banner scenario
   const settings = {
     dots: false,
-    infinite: true,
+    infinite: bannerSliderLists.length > 1, // Only infinite loop if more than 1 banner
     speed: 2500,
     slidesToShow: 1,
     slidesToScroll: 1,
-    autoplay: true,
+    autoplay: bannerSliderLists.length > 1, // Only autoplay if more than 1 banner
     autoplaySpeed: 5000,
     arrows: false,    
   };

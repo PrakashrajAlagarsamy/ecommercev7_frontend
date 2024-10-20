@@ -123,7 +123,7 @@ const Orders = ({ setActiveComponent }) => {
                                         style={{ width: '50px', height: '50px', borderRadius: '.5rem', objectFit: 'contain' }} />
                                 </Box>
                                 <Box sx={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', gap: '10px' }}>
-                                    <Box><Typography sx={{ textAlign: 'left', fontSize: 16, fontWeight: 500, cursor: 'pointer' }}>View<KeyboardArrowRightIcon size="small" sx={{ width: '18px', height: '18px', fontWeight: 600 }} /></Typography></Box>
+                                    <Box><Typography sx={{ textAlign: 'left', fontSize: 18, fontWeight: 500, cursor: 'pointer' }}>View<KeyboardArrowRightIcon size="small" sx={{ width: '18px', height: '18px', fontWeight: 600 }} /></Typography></Box>
                                     {/* <Box onClick={(event) => handleOrderCancel(event, order)}><Typography sx={{ color: 'red', textAlign: 'left', fontSize: 16, fontWeight: 500, cursor: 'pointer' }}>Cancel<CloseIcon size="small" sx={{ width: '18px', height: '18px', fontWeight: 600 }} /></Typography></Box> */}
                                 </Box>                                
                             </Box>

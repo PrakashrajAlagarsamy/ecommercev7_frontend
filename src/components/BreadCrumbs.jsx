@@ -9,8 +9,9 @@ export default function BreadCrumbs({CategoryId, CategoryName, SubCateoryId, Sub
   const navigate = useNavigate();
 
   const handleClick = (CategoryId, CategoryName, SubCateoryId, SubCategoryName) => {
-    navigate(`/product-list?pcid=${btoa(CategoryId)}&pcname=${btoa(CategoryName)}&pscid=${btoa(SubCateoryId)}&pscname=${SubCategoryName}`);
-  }
+    //navigate(`/product-list?pcid=${btoa(CategoryId)}&pcname=${btoa(CategoryName)}&pscid=${btoa(SubCateoryId)}&pscname=${SubCategoryName}`);
+    navigate(`/product-list?pcid=${btoa(CategoryId)}&pcname=${btoa(CategoryName)}`);
+  };
 
   const breadcrumbs = [
     <Typography key="1" sx={{cursor: 'pointer', color:"black"}} fontSize={13} font onClick={handleClick}>

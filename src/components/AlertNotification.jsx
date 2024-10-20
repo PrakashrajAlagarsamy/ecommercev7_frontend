@@ -23,7 +23,12 @@ function AlertNotification({ showNotify, showNotifyMsg, showNotifyError }) {
   };
 
   return (
-    <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
+    <Snackbar
+      open={open}
+      autoHideDuration={3000}
+      onClose={handleClose}
+      anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+    >
       <Alert onClose={handleClose} severity={showNotifyError === 'success' ? 'success' : 'error'}>
         {showNotifyMsg}
       </Alert>

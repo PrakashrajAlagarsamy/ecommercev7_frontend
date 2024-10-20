@@ -13,6 +13,7 @@ import { ImagePathRoutes } from '../routes/ImagePathRoutes';
 import { API_FetchProductById } from '../services/productListServices';
 import RelatedProducts from '../components/slider/relatedProducts';
 import BreadCrumbs from '../components/BreadCrumbs';
+import { API_InsertMyFavoriteProducts, API_DeleteMyFavoriteProducts } from '../services/userServices';
 import { useCart } from '../context/CartContext';
 import { useTheme } from '@mui/material/styles';
 
@@ -170,7 +171,7 @@ const ProductDetails = () => {
         event.stopPropagation();
         const newQuantity = quantity + 1;
         const newTotalPrice = newQuantity * (selectedPrice > 0 ? selectedPrice : productDetails.Price);
-        const MRP = newQuantity * productDetails.MRP;
+        const MRP = newQuantity * (selectedMRP > 0 ? selectedMRP : productDetails.MRP);
 
         setQuantity(newQuantity);
         setTotalPrice(newTotalPrice);
@@ -183,7 +184,7 @@ const ProductDetails = () => {
         event.stopPropagation();
         const newQuantity = quantity - 1;
         const newTotalPrice = newQuantity * (selectedPrice > 0 ? selectedPrice : productDetails.Price);
-        const MRP = newQuantity * productDetails.MRP;
+        const MRP = newQuantity * (selectedMRP > 0 ? selectedMRP : productDetails.MRP);
 
         if (newQuantity === 0) {
             setQuantity(0);
@@ -197,6 +198,38 @@ const ProductDetails = () => {
         }
     };
 
+    //Add fav product
+    const handleAddFavProduct = async (ProductId, event, status) => {
+        event.stopPropagation();
+        setIsFavoriteProduct(status === 'Add' ? 1 : 0);
+        let userId = localStorage.getItem("userId");
+        userId = Number(atob(userId));
+        try {
+            const response = await API_InsertMyFavoriteProducts(ProductId, userId);
+            if (!response.ok) {
+                setIsFavoriteProduct(status === 'Add' ? 0 : 1);
+                console.error("Error updating favorite status:", response);
+            }
+        } catch (error) {
+            // Revert the optimistic UI update on error
+            setIsFavoriteProduct(status === 'Add' ? 0 : 1);
+            console.error("Error handling favorite product:", error);
+        }
+    };
+
+    //Remove fav list
+    const handleRemoveFavProduct = async (ProductId) => {
+        let userId = localStorage.getItem("userId");
+        userId = userId ? decodeURIComponent(userId) : null;
+        try {
+            const response = await API_DeleteMyFavoriteProducts(ProductId, Number(atob(userId)));
+            if (response.DeleteStatus === 1 && response.ItemmasterRefid !== 0) {
+                await GetProductDetails(ProductId);
+            }
+        } catch (error) {
+            console.error("Error removing favorite product lists:", error);
+        }
+    };
 
     // Slick Slider settings
     const settings1 = {
@@ -268,7 +301,7 @@ const ProductDetails = () => {
                                     cursor: 'pointer',
                                     color: productDetails.isFavorite ? '#3BB77E' : '#3BB77E',
                                 }}>
-                                    {productDetails.isFavorite ? <FavoriteIcon /> : <FavoriteBorderIcon size="small" sx={{ color: '#ee4372', fontSize: '18px' }} />}
+                                    {isFavoriteProduct !== 0 ? <FavoriteIcon size="small" sx={{ color: '#ee4372', fontSize: '18px' }} onClick={(event) => { handleAddFavProduct(productDetails?.Productid ? productDetails.Productid : productDetails?.Id, event, 'Remove'); }} /> : <FavoriteBorderIcon onClick={(event) => { handleAddFavProduct(productDetails?.Productid ? productDetails.Productid : productDetails?.Id, event, 'Add'); }} size="small" sx={{ color: '#ee4372', fontSize: '18px' }} />}
                                 </Box>
                             </Box>
                             <Box sx={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', pb: 2 }}>

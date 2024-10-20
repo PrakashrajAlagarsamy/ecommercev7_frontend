@@ -8,8 +8,10 @@ import CategoryHeader from '../category/categoryHeader';
 import ImageCategorySlider from './ImageCategorySlider';
 import { API_FetchCategory } from '../../services/categoryServices';
 import { API_FetchProductByIndexPage } from '../../services/productListServices';
+import { useTheme } from '@mui/material/styles';
 
 const ProductByIndexPage = () => {
+  const theme = useTheme();
   const [categoryLists, setCategoryLists] = useState([]);
   const [productsByCategory, setProductsByCategory] = useState({});
   const [categoryImageLists, setCategoryImageLists] = useState({});
@@ -29,14 +31,14 @@ const ProductByIndexPage = () => {
 
   const GetProductsByCategory = async (categories) => {
     try {
-        const products = await API_FetchProductByIndexPage();
-        const productsByCategory = categories.reduce((acc, category) => {
+      const products = await API_FetchProductByIndexPage();
+      const productsByCategory = categories.reduce((acc, category) => {
         const filteredProducts = products.data1.filter(product => product.CId === category.Id);
         if (filteredProducts.length > 0) {
           acc[category.Id] = filteredProducts;
         }
         return acc;
-      }, {});      
+      }, {});
 
       const categoryImages = categories.reduce((acc, category) => {
         const filteredImage = products.data.filter(image => image.Id === category.Id);
@@ -44,7 +46,7 @@ const ProductByIndexPage = () => {
           acc[category.Id] = filteredImage;
         }
         return acc;
-      }, {});      
+      }, {});
 
       setProductsByCategory(productsByCategory);
       setCategoryImageLists(categoryImages);
@@ -63,38 +65,83 @@ const ProductByIndexPage = () => {
     fetchData();
   }, []);
 
-  const settings = {
-    dots: false,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 5,
-    slidesToScroll: 1,
-    arrows: true,
-    autoplay: false,
-    responsive: [
-      {
-        breakpoint: 1200,
-        settings: {
-          slidesToShow: 4,
-          slidesToScroll: 1,
+  const sliderArrowStyles = {
+    arrow: {
+      width: '30px',
+      height: '30px',
+      backgroundColor: theme.palette.basecolorCode.main,
+      borderRadius: '50%',
+      color: theme.palette.whitecolorCode.main,
+      position: 'absolute',
+      zIndex: 1,
+    },
+    prevArrow: {     
+      left: '-35px',
+    },
+    nextArrow: {
+      right: '-35px',
+    },
+  };
+  
+  const CustomPrevArrow = (props) => {
+    const { className, style, onClick } = props;
+    return (
+      <div
+        className={className}
+        style={{ ...style, ...sliderArrowStyles.arrow, ...sliderArrowStyles.prevArrow }}
+        onClick={onClick}
+      />
+    );
+  };
+  
+  const CustomNextArrow = (props) => {
+    const { className, style, onClick } = props;
+    return (
+      <div
+        className={className}
+        style={{ ...style, ...sliderArrowStyles.arrow, ...sliderArrowStyles.nextArrow }}
+        onClick={onClick}
+      />
+    );
+  };
+  
+
+  const getSliderSettings = (productCount) => {
+    return {
+      dots: false,
+      infinite: productCount > 1, // Disable infinite scrolling if there is only 1 product
+      speed: 500,
+      slidesToShow: 5, // Show the number of slides based on the product count
+      slidesToScroll: 1,
+      prevArrow: <CustomPrevArrow />,
+      nextArrow: <CustomNextArrow />,
+      arrows: productCount > 1, // Show arrows only if there's more 
+      autoplay: false,
+      responsive: [
+        {
+          breakpoint: 1200,
+          settings: {
+            slidesToShow: Math.min(productCount, 4),
+            slidesToScroll: 1,
+          },
         },
-      },
-      {
-        breakpoint: 900,
-        settings: {
-          slidesToShow: 3,
-          slidesToScroll: 1,
+        {
+          breakpoint: 900,
+          settings: {
+            slidesToShow: Math.min(productCount, 3),
+            slidesToScroll: 1,
+          },
         },
-      },
-      {
-        breakpoint: 600,
-        settings: {
-          arrows: false,
-          slidesToShow: 2,
-          slidesToScroll: 1,
+        {
+          breakpoint: 600,
+          settings: {
+            arrows: productCount > 1,
+            slidesToShow: Math.min(productCount, 2),
+            slidesToScroll: 1,
+          },
         },
-      },
-    ],
+      ],
+    };
   };
 
   return (
@@ -105,8 +152,8 @@ const ProductByIndexPage = () => {
         categoryLists.map((category) => {
           const products = productsByCategory[category.Id];
           const categoryImages = categoryImageLists[category.Id];
-          // Only render the category section if products are available and at least 5 products
-          if (!products || products.length < 5) return null;
+
+          if (!products || products.length === 0) return null; // Don't render if there are no products
 
           return (
             <Box key={category.Id} sx={{ marginBottom: 5 }}>
@@ -115,7 +162,9 @@ const ProductByIndexPage = () => {
                 categoryId={category.Id}
                 categoryValue={category.Id}
               />
-              <Slider {...settings}>
+
+              {/* Dynamic slider settings based on product count */}
+              <Slider {...getSliderSettings(products.length)}>
                 {products.map((product) => (
                   <Box key={product.id} sx={{ padding: 0 }}>
                     <ProductCard product={product} />
@@ -124,10 +173,10 @@ const ProductByIndexPage = () => {
               </Slider>
 
               {/* Render ImageCategorySlider if category images exist */}
-              {categoryLists && categoryLists.length > 0 && categoryImages.length !== 0 && (
+              {categoryImages && categoryImages.length > 0 && (
                 <Box sx={{ py: 1 }}>
-                    <ImageCategorySlider CategoryImageLists={categoryImages} />
-                </Box>                
+                  <ImageCategorySlider CategoryImageLists={categoryImages} />
+                </Box>
               )}
             </Box>
           );

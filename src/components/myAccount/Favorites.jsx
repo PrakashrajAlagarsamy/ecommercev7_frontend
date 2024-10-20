@@ -40,7 +40,7 @@ const Favorites = ({ setActiveComponent }) => {
         } catch (error) {
             console.error("Error removing favorite product lists:", error);
         }
-    }
+    };
 
     useEffect(() => {
         const userId = localStorage.getItem("userId");

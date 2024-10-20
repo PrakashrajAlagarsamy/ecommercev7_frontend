@@ -6,7 +6,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { ImagePathRoutes } from '../routes/ImagePathRoutes';
 import { ServerURL } from '../server/serverUrl';
-import { API_InsertMyFavoriteProducts } from '../services/userServices';
+import { API_InsertMyFavoriteProducts, API_DeleteMyFavoriteProducts } from '../services/userServices';
 import { useCart } from '../context/CartContext';
 import { useTheme } from '@mui/material/styles';
 
@@ -21,14 +21,14 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts, newPr
   let [isFavoriteProduct, setIsFavoriteProduct] = useState(0);
 
   const [productWeight, setProductWeight] = useState('');
-  const [selectedPrice, setSelectedPrice] = useState(0);  
+  const [selectedPrice, setSelectedPrice] = useState(0);
   const [selectedMRP, setselectedMRP] = useState(0);
   const [currentPrice, setCurrentPrice] = useState(0);
 
 
   const handleProductWeightChange = (event, ProductWeightLists) => {
     event.stopPropagation();
-    
+
     const selectedWeightId = event.target.value;
     const selectedWeight = ProductWeightLists.find(item => item.WeightType === selectedWeightId);
     if (selectedWeight) {
@@ -36,7 +36,7 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts, newPr
       setTotalPrice(selectedWeight.SaleRate);
       setSelectedPrice(selectedWeight.SaleRate);
       setCurrentPrice(selectedWeight.SaleRate);
-      setselectedMRP(selectedWeight.MRP);      
+      setselectedMRP(selectedWeight.MRP);
 
       const newTotalPrice = quantity * (selectedWeight.SaleRate);
       const newMRP = quantity * (selectedWeight.MRP);
@@ -52,8 +52,8 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts, newPr
       }
     }
   }, [product]);
-  
-  
+
+
   // Check if the product exists in cartItems
   useEffect(() => {
     const existingProduct = cartItems.find(item => {
@@ -61,7 +61,7 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts, newPr
       const productId = product?.Productid ? product.Productid : product?.Id;
       return itemId === productId;
     });
-  
+
     if (existingProduct) {
       setQuantity(existingProduct.item);
       setTotalPrice(existingProduct.totalPrice);
@@ -72,18 +72,18 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts, newPr
       setCurrentPrice(selectedPrice > 0 ? selectedPrice : product?.Price || 0);
     }
   }, [cartItems, product, selectedPrice]);
-  
+
   // Update cartItems function
   const updateCartItems = (newQuantity, newTotalPrice, MRP, selected_price) => {
     setCartItems(prevCartItems => {
       const updatedCartItems = [...prevCartItems];
       const productId = product?.Productid ? product.Productid : product?.Id;
-  
+
       const existingProductIndex = updatedCartItems.findIndex(item => {
         const itemId = item?.Productid ? item.Productid : item?.Id;
         return itemId === productId;
       });
-  
+
       if (existingProductIndex >= 0) {
         if (newQuantity > 0) {
           // Update existing product in the cart
@@ -93,7 +93,7 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts, newPr
             totalPrice: newTotalPrice,
             totalMRP: MRP,
             selectedPrice: selected_price,
-            selectedMRP: MRP  
+            selectedMRP: MRP
           };
         } else {
           // Remove product if the quantity is zero
@@ -110,7 +110,7 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts, newPr
           selectedMRP: MRP
         });
       }
-  
+
       localStorage.setItem('cartItems', JSON.stringify(updatedCartItems));
       return updatedCartItems;
     });
@@ -122,25 +122,25 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts, newPr
     event.stopPropagation();
     const newQuantity = quantity + 1;
     const newTotalPrice = newQuantity * (selectedPrice > 0 ? selectedPrice : product.Price);
-    const MRP = newQuantity * product.MRP;
-  
+    const MRP = newQuantity * (selectedMRP > 0 ? selectedMRP : product.MRP);
+
     setQuantity(newQuantity);
     setTotalPrice(newTotalPrice);
     setCurrentPrice(newTotalPrice);
     updateCartItems(newQuantity, newTotalPrice, MRP);
   };
-  
+
   // Quantity decrement function
   const handleDecrement = (event) => {
     event.stopPropagation();
     const newQuantity = quantity - 1;
     const newTotalPrice = newQuantity * (selectedPrice > 0 ? selectedPrice : product.Price);
-    const MRP = newQuantity * product.MRP;
-  
+    const MRP = newQuantity * (selectedMRP > 0 ? selectedMRP : product.MRP);
+
     if (newQuantity === 0) {
       setQuantity(0);
       setTotalPrice(selectedPrice > 0 ? selectedPrice : product.Price);
-      updateCartItems(0, selectedPrice > 0 ? selectedPrice : product.Price, MRP); 
+      updateCartItems(0, selectedPrice > 0 ? selectedPrice : product.Price, MRP);
     } else if (quantity > 0) {
       setQuantity(newQuantity);
       setTotalPrice(newTotalPrice);
@@ -148,7 +148,7 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts, newPr
       updateCartItems(newQuantity, newTotalPrice, MRP);
     }
   };
-  
+
   //View product description page
   const handleProductClick = (event) => {
     const pdId = event.currentTarget.id;
@@ -161,7 +161,7 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts, newPr
 
   //Add fav product
   const handleAddFavProduct = async (ProductId, event, status) => {
-    event.stopPropagation();    
+    event.stopPropagation();
     setIsFavoriteProduct(status === 'Add' ? 1 : 0);
     let userId = localStorage.getItem("userId");
     userId = Number(atob(userId));
@@ -170,20 +170,33 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts, newPr
       if (!response.ok) {
         setIsFavoriteProduct(status === 'Add' ? 0 : 1);
         console.error("Error updating favorite status:", response);
-      } 
+      }
     } catch (error) {
       // Revert the optimistic UI update on error
       setIsFavoriteProduct(status === 'Add' ? 0 : 1);
       console.error("Error handling favorite product:", error);
     }
   };
-  
+
+  //Remove fav list
+  const handleRemoveFavProduct = async (ProductId) => {
+    let userId = localStorage.getItem("userId");
+    userId = userId ? decodeURIComponent(userId) : null;
+    try {
+      const response = await API_DeleteMyFavoriteProducts(ProductId, Number(atob(userId)));
+      if (response.DeleteStatus === 1 && response.ItemmasterRefid !== 0) {
+        //await FetchMyFavoriteProducts(atob(userId));
+      }
+    } catch (error) {
+      console.error("Error removing favorite product lists:", error);
+    }
+  };
 
   return (
     <Card
       id={product?.Productid ? product.Productid : product?.Id}
       name={product.Description}
-      value={product?.Productid ? product.Productid : product?.Id}      
+      value={product?.Productid ? product.Productid : product?.Id}
       sx={{
         width: { xs: offerProducts === null && relatedProducts === null && newProducts === null ? 155 : 175, sm: 220, md: 260, lg: 280 },
         height: { xs: 320, sm: 380, md: 400, lg: 420 },
@@ -219,7 +232,7 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts, newPr
           <CardMedia
             id={product?.Productid ? product.Productid : product?.Id}
             name={product.Description}
-            value={product?.Productid ? product.Productid : product?.Id}    
+            value={product?.Productid ? product.Productid : product?.Id}
             component="img"
             onClick={handleProductClick}
             image={newProducts === 'new_product' ? ImagePathRoutes.ProductDetailsImagePath + product.Img0 : ImagePathRoutes.ProductImagePath + product.Img0}
@@ -234,7 +247,7 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts, newPr
               objectFit: 'contain',
             }}
           />
-          {Math.round(product.Offer) === 0 && (
+          {Math.round(product.Offer) !== 0 && (
             <Box
               sx={{
                 position: 'absolute',
@@ -284,7 +297,7 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts, newPr
                 value={product?.Productid ? product.Productid : product?.Id}
                 onClick={handleProductClick}
                 sx={{
-                  fontSize: { xs: '12px', sm: '12px', md: '12px', lg: '14px', xl: '14px' }, 
+                  fontSize: { xs: '12px', sm: '12px', md: '12px', lg: '14px', xl: '14px' },
                   fontWeight: 'bold',
                   overflow: 'hidden',
                   display: '-webkit-box',
@@ -293,7 +306,7 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts, newPr
                   textOverflow: 'ellipsis',
                   lineHeight: '15px',
                   fontFamily: 'inherit',
-                  minHeight: { xs: '23px', sm: '25px', md: '28px', lg: '32px', xl: '32px' }, 
+                  minHeight: { xs: '23px', sm: '25px', md: '28px', lg: '32px', xl: '32px' },
                   color: theme.palette.lightblackcolorCode.main
                 }}
               >

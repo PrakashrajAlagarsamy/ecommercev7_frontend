@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import AppHeader from './AppHeader';
 import TopCategory from '../category/TopCategory';
 import AppFooter from './AppFooter';
@@ -11,9 +12,9 @@ import * as actionType from '../../redux1/actionType';
 import { connect } from 'react-redux';
 
 const AppLayout = (props) => {
+
   const { children, get_catgory_lists, SetGlobalSettings, SetGlobalCategories, CompanyDetails } = props;
   const [settingsLists, setSettingsLists] = React.useState([]);
-
   const FetchSettingsLists = async () => {
     try {
       const settingsResponse = await API_FetchSettings(); // Fetch settings
@@ -46,8 +47,13 @@ const AppLayout = (props) => {
   };
 
   useEffect(() => {
+    //setIsActiveCategory(false);
     //FetchSettingsLists();
     //FetchTopCategoryLists();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

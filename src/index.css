@@ -30,7 +30,7 @@ body {
   }
 }
 
-.slick-prev {
+/* .slick-prev {
   left: -30px !important;
 }
 .slick-next {
@@ -42,11 +42,13 @@ body {
   color: #3BB77E !important;
   border-radius: 50px;
   background: #3BB77E !important;
-}
+} */
 .slick-prev:before, .slick-next:before {
   font-family: monospace !important;
   font-size: 20px !important;
   opacity: 1 !important;
+  top: 5px;
+  position: relative;
 }
 
 /* .slick-slide div img {

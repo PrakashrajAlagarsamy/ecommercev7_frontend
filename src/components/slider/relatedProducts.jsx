@@ -7,8 +7,10 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import CategoryHeader from '../category/categoryHeader';
 import { API_FetchProductIdMoreItems } from '../../services/productListServices';
+import { useTheme } from '@mui/material/styles';
 
 const RelatedProducts = ({ProductId}) => {
+  const theme = useTheme();
   const [productId, setProductId] = useState(0);
   const [productLists, setProductLists] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -35,13 +37,54 @@ const RelatedProducts = ({ProductId}) => {
     }
 }, [location.search, productId]);
 
+const sliderArrowStyles = {
+  arrow: {
+    width: '30px',
+    height: '30px',
+    backgroundColor: theme.palette.basecolorCode.main,
+    borderRadius: '50%',
+    color: theme.palette.whitecolorCode.main,
+    position: 'absolute',
+    zIndex: 1,
+  },
+  prevArrow: {     
+    left: '-30px',
+  },
+  nextArrow: {
+    right: '-30px',
+  },
+};
+
+const CustomPrevArrow = (props) => {
+  const { className, style, onClick } = props;
+  return (
+    <div
+      className={className}
+      style={{ ...style, ...sliderArrowStyles.arrow, ...sliderArrowStyles.prevArrow }}
+      onClick={onClick}
+    />
+  );
+};
+
+const CustomNextArrow = (props) => {
+  const { className, style, onClick } = props;
+  return (
+    <div
+      className={className}
+      style={{ ...style, ...sliderArrowStyles.arrow, ...sliderArrowStyles.nextArrow }}
+      onClick={onClick}
+    />
+  );
+};
+
   const settings = {
     dots: false,
     infinite: true,
     speed: 500,
     slidesToShow: 5,
     slidesToScroll: 1,
-    arrows: true,
+    prevArrow: <CustomPrevArrow />,
+    nextArrow: <CustomNextArrow />,
     autoplay: false,
     responsive: [
       {

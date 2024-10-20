@@ -245,7 +245,7 @@ export default function AppCart({ CartDrawerOpen, setLoginDrawerOpen, handleAuth
 
         <Main>
           {cartItems.length === 0 ? (
-            <Box sx={{ overflow: 'scroll', textAlign: 'center', padding: 4 }}>
+            <Box sx={{textAlign: 'center', padding: 4 }}>
               <Box
                 component="img"
                 src={emptyCartImage}

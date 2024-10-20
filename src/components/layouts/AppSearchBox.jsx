@@ -37,6 +37,7 @@ const AppSearchBox = () => {
     const pdId = event.currentTarget.id;
     const pdValue = event.currentTarget.getAttribute('name');   
     setSearchLists([]);
+    setSearchKeyword('');
     navigate(`/product-details?pdid=${encodeURIComponent(btoa(pdId))}&pdname=${encodeURIComponent(btoa(pdValue))}`);
     window.scrollTo(0, 0);
   };

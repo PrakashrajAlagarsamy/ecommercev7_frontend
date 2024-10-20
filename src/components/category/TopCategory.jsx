@@ -19,10 +19,11 @@ import NewProducts from '../../assets/new-products.png';
 const TopCategory = (props) => {
   const [categoryValue, setCategoryValue] = useState(null);
   const [categoryLists, setCategoryLists] = useState([]); 
-  const [isLoading, setIsLoading] = useState(true); 
+  const [isLoading, setIsLoading] = useState(true);   
   const navigate = useNavigate();
   const location = useLocation();
   const theme = useTheme();
+  const [isActiveCategory, setIsActiveCategory] = React.useState(false); 
 
   const handleCategoryClickChange = (event, newValue) => {
     const selectedCategoryId = event.currentTarget.id; 
@@ -53,6 +54,12 @@ const TopCategory = (props) => {
 
   useEffect(() => {
     FetchTopCategoryLists();
+    if(location.pathname.startsWith('/product-list')){
+      setIsActiveCategory(true);
+    }
+    else{
+      setIsActiveCategory(false);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -146,11 +153,11 @@ const TopCategory = (props) => {
           <Tab
             sx={{
               cursor: "pointer",
-              '&.Mui-selected': {
+               '&.Mui-selected': isActiveCategory ? {
                 color: theme.palette.basecolorCode.main, // Set the text color for the active tab
                 backgroundColor: theme.palette.shadowcolorCode.main,
                 borderColor: theme.palette.basecolorCode.main,
-              },
+              } : ''
             }}
             value="new_product"
             id="new_product"
@@ -186,11 +193,11 @@ const TopCategory = (props) => {
               <Tab
                 sx={{
                   cursor: "pointer",
-                  '&.Mui-selected': {
+                  '&.Mui-selected': isActiveCategory ? {
                     color: theme.palette.basecolorCode.main, // Set the text color for the active tab
                     backgroundColor: theme.palette.shadowcolorCode.main,
                     borderColor: theme.palette.basecolorCode.main,
-                  },
+                  } : ''
                 }}
                 key={index}
                 id={item.Id}

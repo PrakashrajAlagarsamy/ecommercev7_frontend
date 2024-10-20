@@ -14,15 +14,15 @@ const Referrals = () => {
   };
 
   return (
-    <Box align="left" sx={{ background: theme.palette.whitecolorCode.main || '#FFF', maxHeight: '700px', overflowY: 'scroll', p: 2, borderRadius: 2 }}>
-      <Card sx={{ padding: 2 }}>
+    <Box align="left" sx={{ background: '#FFF', maxHeight: '700px', overflowY: 'scroll', p: 2, borderRadius: 2 }}>
+      <Card sx={{ padding: 2, boxShadow: 'none' }}>
         <CardContent>
           <Box textAlign="center" mb={2}>
             <Typography variant="h5" fontWeight="bold" color="white">
               25% off for you, Pass for them @ ₹1!
             </Typography>
           </Box>
-          <Divider sx={{ backgroundColor: theme.palette.whitecolorCode.main || '#FFF', my: 2 }} />
+          <Divider sx={{ backgroundColor: '#FFF', my: 2 }} />
           <Box textAlign="left" mb={2}>
             <Typography variant="subtitle1" fontWeight="bold">
               How it works
