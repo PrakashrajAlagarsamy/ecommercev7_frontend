@@ -246,6 +246,30 @@ export const API_FetchMyOrders = async (UserId) => {
   }
 };
 
+// Delete My order
+export const API_CancelMyOrder = async (OrderId) => {
+  let objlist = {
+    Comid: ServerURL.COMPANY_REF_ID,
+  };
+  try {
+    const response = await fetch(`${APIRoutes.CANCEL_MY_ORDER}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8',
+        Id: OrderId
+      },
+      body: JSON.stringify(objlist)
+    });
+    //const data = await response.json();
+    if (!response.ok) {
+      throw new Error('Network response was not ok.');
+    }   
+    return response;
+  } catch (error) {
+    console.error('Failed to delete order:', error);
+    throw error; // Re-throw so the calling function can handle it
+  }
+};
 
 // Fetch My Wallet Amount
 export const API_FetchMyWalletIn = async (UserId) => {

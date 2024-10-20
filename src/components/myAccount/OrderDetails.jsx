@@ -2,9 +2,14 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, Button, Avatar, List, ListItem, ListItemText, ListItemAvatar } from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import CloseIcon from '@mui/icons-material/Close';
 import { ServerURL } from '../../server/serverUrl';
 import { ImagePathRoutes } from '../../routes/ImagePathRoutes';
 import ConfirmationPopup from '../modalPopup/confirmationPopup';
+import NotifyApp from '../AlertNotification';
+import CircularLoader from '../circular-loader';
+import NoImage from '../../assets/no-image.png';
+import {API_CancelMyOrder} from '../../services/userServices';
 import { useTheme } from '@mui/material/styles';
 
 const OrderDetails = ({ setActiveComponent }) => {
@@ -13,6 +18,11 @@ const OrderDetails = ({ setActiveComponent }) => {
   const [totalMRP, setTotalMRP] = useState(0);
   const [totalSalePrice, setTotalSalePrice] = useState(0);
   const [totalSavings, setTotalSavings] = useState(0);
+  const [cancelBtn, setCancelBtn] = useState(false);
+  const [showNotify, setshowNotify] = useState(false);
+  const [showNotifyError, setshowNotifyError] = useState('success');
+  const [showNotifyMsg, setshowNotifyMsg] = useState('');
+  const [showLoader, setShowLoader] = React.useState(false);
   const [modalState, setModalState] = useState({
     confirmationModalOpen: false,
     orderId: 0,
@@ -77,22 +87,54 @@ const OrderDetails = ({ setActiveComponent }) => {
     )
   };
 
-  const handleOrderCancel = (event, order) => {
+  const handleOrderCancel = (event, OrderIdDetail) => {
       event.stopPropagation();
       setModalState({
           ...modalState,
           confirmationModalOpen: true,
-          orderId: order.Id,
+          orderId: Number(OrderIdDetail.Id),
         });      
   };
 
   const handleConfirmationAction = async(event) => {
       if (event.target.value === 'Yes') {
-        if(modalState.orderId !== 0){
-          
-        }      
-      }
-      handleModalClose();
+        if(modalState.orderId !== 0){  
+          handleModalClose();     
+          setShowLoader(true);   
+          try {
+            const response = await API_CancelMyOrder(modalState.orderId);
+            if(response){
+              setCancelBtn(true);
+              setShowLoader(false);
+              setshowNotifyMsg('Your order has been cancelled');
+              setshowNotifyError('success');
+              setshowNotify(true);
+            }
+            else{
+              setshowNotify(true);
+              setShowLoader(false);
+              setshowNotifyError('error');
+              setshowNotifyMsg('Your order has been cancel failed');
+            }
+          } catch (error) {
+            setshowNotify(true);
+            setShowLoader(false);
+            setshowNotifyError('error');
+            setshowNotifyMsg('Your order has been cancel failed');
+            console.error("Error cancel order:", error);
+          }
+        }    
+        else{
+          handleModalClose();
+          setshowNotify(true);
+          setShowLoader(false);
+          setshowNotifyError('error');
+          setshowNotifyMsg('Your order has been cancel failed');
+        }  
+      } 
+      else{
+        handleModalClose();
+      }       
   };
 
   const handleModalClose = () => {
@@ -105,18 +147,20 @@ const OrderDetails = ({ setActiveComponent }) => {
 
   return (
     <>
+      <CircularLoader showLoader={showLoader} />
       <ConfirmationPopup
         ConfirmationModalOpen={modalState.confirmationModalOpen}
         handleConfirmationModalClose={handleModalClose}
         handleConfirmationClick={handleConfirmationAction}
       />
+      <NotifyApp showNotify={showNotify} showNotifyMsg={showNotifyMsg} showNotifyError={showNotifyError}/>
       {OrderIdDetail.length !== 0 && (
         <Box sx={{ background: '#f0f4f9', maxHeight: '700px', overflowY: 'scroll', borderRadius: 2 }}>
           {/* Header */}
           <Box sx={{ backgroundColor: '#FFF', py: 2, px: 2, borderBottom: '1px solid #ececec' }} display="flex" justifyContent="space-between" alignItems="center">
             <Button onClick={() => setActiveComponent('Orders')} startIcon={<ArrowBackIosIcon />} sx={{ color: '#000', fontWeight: 500 }}>Back</Button>
             <Button>
-              Order Id #{ServerURL.COMPANY_REF_ID + ' ' + btoa(OrderIdDetail.OrderNo)}
+              Order Id #{OrderIdDetail.Id}
             </Button>
           </Box>
 
@@ -134,7 +178,7 @@ const OrderDetails = ({ setActiveComponent }) => {
                 </Typography>             
             </Box>
               <Box>
-                <Button size='small' sx={{ p: 0, background: '#FFF', color: 'red', border: '1px solid red'}}>Cancel</Button>
+                <Button disabled={cancelBtn || OrderIdDetail.orderstatus === "Cancel" ? true : false} onClick={(event) => handleOrderCancel(event, OrderIdDetail)} size='small' sx={{ px: 1, background: '#FFF', color: 'red', border: '1px solid red'}}>Cancel<CloseIcon size="small" sx={{ width: '18px', height: '18px', fontWeight: 600 }} /></Button>
               </Box>
           </Box>
 
@@ -147,7 +191,7 @@ const OrderDetails = ({ setActiveComponent }) => {
                   <ListItem disableGutters key={index}>
                     <ListItemAvatar>
                       <Avatar
-                        src={lists.Img0 ? ImagePathRoutes.ProductImagePath + lists.Img0 : "https://www.healthysteps.in/productimages/5193a2a9-2af9-40da-8384-d474d93ff39d.jpg"}
+                        src={lists.Img0 ? ImagePathRoutes.ProductImagePath + lists.Img0 : NoImage}
                         alt={lists.ProductName}
                       />
                     </ListItemAvatar>

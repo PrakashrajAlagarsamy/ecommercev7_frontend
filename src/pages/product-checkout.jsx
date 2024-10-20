@@ -82,7 +82,11 @@ export default function ProductCheckout() {
         }
     };
 
-    const handleChangeAddressClose = () => setModalOpen(false);
+    const handleChangeAddressClose = () => {
+        setModalOpen(false);
+        let address = JSON.parse(sessionStorage.getItem('selectedAddress'));
+        setSelectedAddress(address);
+    };
 
     //Load delivery time lists
     const FetchDeliveryTimes = async () => {

@@ -13,6 +13,7 @@ export const APIRoutes = {
 
     //User details for address, orders, wallets, profile etc..
     GET_MY_ORDERS: `${ServerURL.PRODUCTION_HOST_URL}api/WebMobileApp/MyOrder`,
+    CANCEL_MY_ORDER: `${ServerURL.PRODUCTION_HOST_URL}api/OfferPost/CancelCustomerOrder`,    
     GET_MY_WALLET_IN: `${ServerURL.PRODUCTION_HOST_URL}api/WebMobileApp/SelectWalletIN`,
     GET_CUSTOMER_ADDRESS: `${ServerURL.PRODUCTION_HOST_URL}api/WebMobileApp/SelectCustomerAddress`,
     DELETE_CUSTOMER_ADDRESS: `${ServerURL.PRODUCTION_HOST_URL}api/WebMobileApp/DeleteCustomerAddress`,

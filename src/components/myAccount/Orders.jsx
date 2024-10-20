@@ -8,6 +8,7 @@ import { ServerURL } from '../../server/serverUrl';
 import { ImagePathRoutes } from '../../routes/ImagePathRoutes';
 import { API_FetchMyOrders } from '../../services/userServices';
 import ConfirmationPopup from '../modalPopup/confirmationPopup';
+import NoImage from '../../assets/no-image.png';
 import { useTheme } from '@mui/material/styles';
 
 const OrderPendingSvg = () => {
@@ -118,12 +119,12 @@ const Orders = ({ setActiveComponent }) => {
                         <Paper onClick={() => handleViewOrderDetails(order, 'OrderDetails')} key={index} sx={{ my: 2, boxShadow: '0 0 #0000, 0 0 #0000, 0px 0px 0px 0px rgba(0, 0, 0, 0.1), 0px 0px 0px 0px rgba(0, 0, 0, 0.1)', borderRadius: '1rem', cursor: 'pointer' }}>
                             <Box sx={{ p: 2, pb: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <Box>
-                                    <img src={order.Img0 ? ImagePathRoutes.ProductImagePath + order.Img0 : "https://www.healthysteps.in/productimages/48b699ca-b8bc-4ac1-8f86-5370ae8e3634.png"}
+                                    <img src={order.Img0 ? ImagePathRoutes.ProductImagePath + order.Img0 : NoImage}
                                         style={{ width: '50px', height: '50px', borderRadius: '.5rem', objectFit: 'contain' }} />
                                 </Box>
                                 <Box sx={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', gap: '10px' }}>
                                     <Box><Typography sx={{ textAlign: 'left', fontSize: 16, fontWeight: 500, cursor: 'pointer' }}>View<KeyboardArrowRightIcon size="small" sx={{ width: '18px', height: '18px', fontWeight: 600 }} /></Typography></Box>
-                                    <Box onClick={(event) => handleOrderCancel(event, order)}><Typography sx={{ color: 'red', textAlign: 'left', fontSize: 16, fontWeight: 500, cursor: 'pointer' }}>Cancel<CloseIcon size="small" sx={{ width: '18px', height: '18px', fontWeight: 600 }} /></Typography></Box>
+                                    {/* <Box onClick={(event) => handleOrderCancel(event, order)}><Typography sx={{ color: 'red', textAlign: 'left', fontSize: 16, fontWeight: 500, cursor: 'pointer' }}>Cancel<CloseIcon size="small" sx={{ width: '18px', height: '18px', fontWeight: 600 }} /></Typography></Box> */}
                                 </Box>                                
                             </Box>
                             <Box sx={{ mb: 2, p: 2, pt: 0, pb: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

@@ -71,8 +71,7 @@ const AddressChangeModal = ({ UserId, setUserId, ModalOpen, handleChangeAddressC
         handleAddressSelect(address);
         sessionStorage.setItem('selectedAddress', JSON.stringify(address));
         handleChangeAddressClose();
-    }
-
+    };
 
     return (
         <>
