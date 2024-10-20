@@ -6,7 +6,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { ImagePathRoutes } from '../routes/ImagePathRoutes';
 import { ServerURL } from '../server/serverUrl';
-import { API_InsertMyFavoriteProducts, API_DeleteMyFavoriteProducts } from '../services/userServices';
+import { API_InsertMyFavoriteProducts, API_DeleteMyFavoriteProducts, API_FetchMyFavoriteProducts } from '../services/userServices';
 import { useCart } from '../context/CartContext';
 import { useTheme } from '@mui/material/styles';
 
@@ -24,6 +24,41 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts, newPr
   const [selectedPrice, setSelectedPrice] = useState(0);
   const [selectedMRP, setselectedMRP] = useState(0);
   const [currentPrice, setCurrentPrice] = useState(0);
+  const [favProductLists, setFavProductLists] = useState([]);
+
+  //Fav product lists
+  const FetchMyFavoriteProducts = async (userId) => {
+    try {
+      const favlist = await API_FetchMyFavoriteProducts(userId);
+      if (favlist.length !== 0) {
+        setFavProductLists(favlist);
+        const productId = product?.Productid ? product.Productid : product?.Id;
+        const selectedFavList = favlist.find(item => item.Id === productId);
+        if (selectedFavList.length !== 0) {
+          setIsFavoriteProduct(1);
+        }
+        else {
+          setIsFavoriteProduct(0);
+        }
+      }
+      else {
+        setFavProductLists([]);
+      }
+    } catch (error) {
+      setFavProductLists([]);
+      console.error("Error fetching favorite product lists:", error);
+    }
+  };
+
+  useEffect(() => {
+    const userId = localStorage.getItem("userId");
+    const CId = userId ? decodeURIComponent(userId) : null;
+    if (CId) {
+      FetchMyFavoriteProducts(atob(CId));
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
 
 
   const handleProductWeightChange = (event, ProductWeightLists) => {
