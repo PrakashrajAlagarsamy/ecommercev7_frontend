@@ -4,6 +4,7 @@ import { Box, Typography, Button, Avatar, List, ListItem, ListItemText, ListItem
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { ServerURL } from '../../server/serverUrl';
 import { ImagePathRoutes } from '../../routes/ImagePathRoutes';
+import ConfirmationPopup from '../modalPopup/confirmationPopup';
 import { useTheme } from '@mui/material/styles';
 
 const OrderDetails = ({ setActiveComponent }) => {
@@ -12,6 +13,11 @@ const OrderDetails = ({ setActiveComponent }) => {
   const [totalMRP, setTotalMRP] = useState(0);
   const [totalSalePrice, setTotalSalePrice] = useState(0);
   const [totalSavings, setTotalSavings] = useState(0);
+  const [modalState, setModalState] = useState({
+    confirmationModalOpen: false,
+    orderId: 0,
+  });
+
 
   useEffect(() => {
     let order = JSON.parse(sessionStorage.getItem("OrderDetails"));
@@ -29,9 +35,7 @@ const OrderDetails = ({ setActiveComponent }) => {
         const validPrice = parseFloat(item.Price) || 0; // Ensure Price is numeric
         const validQuantity = parseInt(item.ItemQty) || 1; // Default Quantity to 1 if missing
         return acc + (validPrice * validQuantity);
-      }, 0);
-
-      
+      }, 0);      
 
       // Update total MRP and Sale Price
       setTotalMRP(prevMRP => prevMRP + mrp);
@@ -73,12 +77,43 @@ const OrderDetails = ({ setActiveComponent }) => {
     )
   };
 
+  const handleOrderCancel = (event, order) => {
+      event.stopPropagation();
+      setModalState({
+          ...modalState,
+          confirmationModalOpen: true,
+          orderId: order.Id,
+        });      
+  };
+
+  const handleConfirmationAction = async(event) => {
+      if (event.target.value === 'Yes') {
+        if(modalState.orderId !== 0){
+          
+        }      
+      }
+      handleModalClose();
+  };
+
+  const handleModalClose = () => {
+      setModalState({
+        ...modalState,
+        confirmationModalOpen: false,
+        orderId: 0,
+      });
+  };
+
   return (
     <>
+      <ConfirmationPopup
+        ConfirmationModalOpen={modalState.confirmationModalOpen}
+        handleConfirmationModalClose={handleModalClose}
+        handleConfirmationClick={handleConfirmationAction}
+      />
       {OrderIdDetail.length !== 0 && (
         <Box sx={{ background: '#f0f4f9', maxHeight: '700px', overflowY: 'scroll', borderRadius: 2 }}>
           {/* Header */}
-          <Box sx={{ backgroundColor: theme.palette.whitecolorCode.main || '#FFF', py: 2, px: 2, borderBottom: '1px solid #ececec' }} display="flex" justifyContent="space-between" alignItems="center">
+          <Box sx={{ backgroundColor: '#FFF', py: 2, px: 2, borderBottom: '1px solid #ececec' }} display="flex" justifyContent="space-between" alignItems="center">
             <Button onClick={() => setActiveComponent('Orders')} startIcon={<ArrowBackIosIcon />} sx={{ color: '#000', fontWeight: 500 }}>Back</Button>
             <Button>
               Order Id #{ServerURL.COMPANY_REF_ID + ' ' + btoa(OrderIdDetail.OrderNo)}
@@ -86,21 +121,25 @@ const OrderDetails = ({ setActiveComponent }) => {
           </Box>
 
           {/* Order Status */}
-          <Box sx={{ backgroundColor: theme.palette.whitecolorCode.main || '#FFF', py: 2, px: 2, borderBottom: '1px solid #ececec', display: 'flex', alignItems: 'center' }}>
+          <Box sx={{ backgroundColor: '#FFF', py: 2, px: 2, borderBottom: '1px solid #ececec', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             {/* <CancelIcon sx={{ fontSize: 20, color: '#f44336' }} /> */}
-            {OrderIdDetail.orderstatus === 'Pending' ? <OrderPendingSvg />
-              : OrderIdDetail.orderstatus === "Accepted" ? <OrderAcceptedSvg />
-                : OrderIdDetail.orderstatus === "Delivered" ? <OrderDeliveredSvg />
-                  : OrderIdDetail.orderstatus === "Cancel" ? <OrderCancelledSvg /> : ''}
-            <Box ml={1}>
-              <Typography variant="p" fontWeight="600" sx={{ fontSize: 18 }}>
-                {OrderIdDetail.OrderDetails ? OrderIdDetail.OrderDetails.length : 0} item{OrderIdDetail.OrderDetails && OrderIdDetail.OrderDetails.length !== 1 ? 's' : ''}  {OrderIdDetail.orderstatus}
-              </Typography>
+            
+            <Box ml={1} display='flex' alignItems='center' justifyContent='space-between'>
+              {OrderIdDetail.orderstatus === 'Pending' ? <OrderPendingSvg />
+                : OrderIdDetail.orderstatus === "Accepted" ? <OrderAcceptedSvg />
+                  : OrderIdDetail.orderstatus === "Delivered" ? <OrderDeliveredSvg />
+                    : OrderIdDetail.orderstatus === "Cancel" ? <OrderCancelledSvg /> : ''}
+                <Typography variant="p" fontWeight="600" sx={{ fontSize: 18 }}>
+                  {OrderIdDetail.OrderDetails ? OrderIdDetail.OrderDetails.length : 0} item{OrderIdDetail.OrderDetails && OrderIdDetail.OrderDetails.length !== 1 ? 's' : ''}  {OrderIdDetail.orderstatus}
+                </Typography>             
             </Box>
+              <Box>
+                <Button size='small' sx={{ p: 0, background: '#FFF', color: 'red', border: '1px solid red'}}>Cancel</Button>
+              </Box>
           </Box>
 
           {/* Order Items */}
-          <Box sx={{ backgroundColor: theme.palette.whitecolorCode.main || '#FFF', py: 2, px: 2 }}>
+          <Box sx={{ backgroundColor: '#FFF', py: 2, px: 2 }}>
             <Typography align="left" variant="body1" fontWeight="bold">{OrderIdDetail.OrderDetails ? OrderIdDetail.OrderDetails.length : 0} item{OrderIdDetail.OrderDetails && OrderIdDetail.OrderDetails.length !== 1 ? 's' : ''} in order</Typography>
             <List>
               {OrderIdDetail.OrderDetails && Array.isArray(OrderIdDetail.OrderDetails) && OrderIdDetail.OrderDetails.length > 0 ? (
@@ -132,12 +171,12 @@ const OrderDetails = ({ setActiveComponent }) => {
           </Box>
 
           {/* Bill Summary */}
-          <Box sx={{ backgroundColor: theme.palette.whitecolorCode.main || '#FFF', py: 2, px: 2, my: 1.5, boxShadow: '0 0 #0000, 0 0 #0000, 0px 0px 0px 0px rgba(0, 0, 0, 0.1), 0px 0px 0px 0px rgba(0, 0, 0, 0.1)' }}>
+          <Box sx={{ backgroundColor: '#FFF', py: 2, px: 2, my: 1.5, boxShadow: '0 0 #0000, 0 0 #0000, 0px 0px 0px 0px rgba(0, 0, 0, 0.1), 0px 0px 0px 0px rgba(0, 0, 0, 0.1)' }}>
             <Typography align='left' variant="h6" gutterBottom>
               Bill Summary
             </Typography>
             <Box display="flex" alignItems="center" justifyContent="space-between" my={1}>
-              <Typography variant="body2" sx={{ color: '#262a33', fontSize: '12px', fontWeight: 450, borderBottom: 'dashed 1px lightgray', display: 'inline' }}>Item Total & GST</Typography>
+              <Typography variant="body2" sx={{ color: '#262a33', fontSize: '12px', fontWeight: 450, borderBottom: 'dashed 1px lightgray', display: 'inline' }}>Total Amount</Typography>
               <Typography variant="body2">{OrderIdDetail.Grossamt ? OrderIdDetail.Grossamt.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '₹0.00'}</Typography>
             </Box>
             <Box display="none" alignItems="center" justifyContent="space-between" my={1}>
@@ -157,7 +196,7 @@ const OrderDetails = ({ setActiveComponent }) => {
               <Typography variant="body2">{OrderIdDetail.WalletAmount ? OrderIdDetail.WalletAmount.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '₹0.00'}</Typography>
             </Box>
             <Box display="flex" alignItems="center" justifyContent="space-between" my={1}>
-              <Typography variant="body2" sx={{ color: '#000', fontSize: '12px', fontWeight: 450, borderBottom: 'dashed 1px lightgray', display: 'inline' }}>Savings</Typography>
+              <Typography variant="body2" sx={{ color: '#000', fontSize: '12px', fontWeight: 450, borderBottom: 'dashed 1px lightgray', display: 'inline' }}>Total Savings</Typography>
               <Typography variant="body2">{(totalMRP - OrderIdDetail.Grossamt) ? (totalMRP - OrderIdDetail.Grossamt).toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '₹0.00'}</Typography>
             </Box>
             <Box display="flex" mt={2} justifyContent="space-between">
@@ -178,11 +217,11 @@ const OrderDetails = ({ setActiveComponent }) => {
           </Box>
 
           {/* Order Details */}
-          <Box sx={{ backgroundColor: theme.palette.whitecolorCode.main || '#FFF', py: 2, px: 2 }} align='left'>
+          <Box sx={{ backgroundColor: '#FFF', py: 2, px: 2 }} align='left'>
             <Box display="flex" justifyContent="space-between" alignItems="center">
               <Typography variant="body1" fontWeight="bold" gutterBottom>Order Details</Typography>
               <Box sx={{ display: 'none' }} mt={2}>
-                <Button size="small" sx={{ background: theme.palette.shadowcolorCode.main || '#3bb77e1c', color: theme.palette.basecolorCode.main || '#3BB77E', border: '0.1px solid', borderColor: theme.palette.lightblackcolorCode.main || '#3BB77E', borderRadius: 0 }}>
+                <Button size="small" sx={{ background: theme.palette.shadowcolorCode.main, color: theme.palette.basecolorCode.main, border: '0.1px solid', borderColor: theme.palette.lightblackcolorCode.main || '#3BB77E', borderRadius: 0 }}>
                   Download Invoice
                 </Button>
               </Box>

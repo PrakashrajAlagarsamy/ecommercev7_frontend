@@ -51,7 +51,7 @@ const PasswordSettings = ({ customerDetails }) => {
     <Box
       align="left"
       sx={{
-        background: theme.palette.whitecolorCode.main || '#FFF',
+        background: '#FFF',
         maxHeight: '700px',
         overflowY: 'scroll',
         p: 2,
@@ -110,6 +110,7 @@ const PasswordSettings = ({ customerDetails }) => {
         <Button
           variant="contained"
           sx={{
+            background: theme.palette.basecolorCode.main, color: theme.palette.whitecolorCode.main, '&:hover': {background: theme.palette.basecolorCode.main, color: theme.palette.whitecolorCode.main},
             marginTop: '16px',
             textTransform: 'none',
             float: 'right',

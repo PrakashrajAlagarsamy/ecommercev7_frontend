@@ -133,27 +133,30 @@ export const API_InsertCustomerDetails = async (customerDetails) => {
 // Function to Insert the customer address
 export const API_UpdateCustomerPassword = async (UserId, oldPassword, newPassword, confirmPassword) => {
   let objData = "";
+  let data;
+  let objlist = {
+    Comid: ServerURL.COMPANY_REF_ID,
+  };
   try {
-    const response = await fetch(`${APIRoutes.UPDATE_CUSTOMER_PASSWORD}?`, {
+    const response = await fetch(`${APIRoutes.UPDATE_CUSTOMER_PASSWORD}?Id=${Number(UserId)}&OldPassword=${oldPassword}&NewPassword=${newPassword}`, {
       method: 'POST',
       headers: {
         "Content-Type": "application/json",
         objData: objData,
       },
-      //body: JSON.stringify(customerDetails),
+      body: JSON.stringify(objlist),
     });
+    data = await response.json();
 
-    if (response.ok) {
-      const data = await response.json();
+    if (response.ok) {      
       return data;
     } else {
-      console.error("Failed to create account.");
-      return null;
+      console.error("Failed to update password.");      
+      return data;
     }
   } catch (error) {
     console.error("Error:", error);
-    throw new Error("An error occurred while creating the account.");
-  }
+  }  
 };
 
 
@@ -308,7 +311,7 @@ export const API_DeleteMyFavoriteProducts = async (ProductId, UserId) => {
     {
       ItemmasterRefid: ProductId,
       CustomerRefid: UserId,
-      DeleteStatus: 0,
+      DeleteStatus: 1,
       Comid: ServerURL.COMPANY_REF_ID,
     },
   ];
@@ -321,9 +324,11 @@ export const API_DeleteMyFavoriteProducts = async (ProductId, UserId) => {
       },
       body: JSON.stringify(objlist)
     });
+    const data = await response.json();
     if (!response.ok) {
       throw new Error('Network response was not ok.');
-    }
+    }   
+    return data;
   } catch (error) {
     console.error('Failed to delete favorite product list:', error);
     throw error; // Re-throw so the calling function can handle it

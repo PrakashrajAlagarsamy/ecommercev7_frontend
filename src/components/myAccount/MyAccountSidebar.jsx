@@ -14,13 +14,13 @@ const Sidebar = ({ CustomerDetails, setActiveComponent }) => {
         <Box>
           <Box display="flex" alignItems="center" mb={2}
             sx={{
-              background: theme.palette.basecolorCode.secondary || '#3bb77e1c',
+              background: theme.palette.shadowcolorCode.main,
               padding: '1rem',
               borderTopLeftRadius: '.75rem',
               borderTopRightRadius: '.75rem'
             }}
           >
-            <Avatar sx={{ bgcolor: theme.palette.basecolorCode.main || '#3BB77E' }}></Avatar>
+            <Avatar sx={{ bgcolor: theme.palette.basecolorCode.main }}></Avatar>
             <Box ml={2}>
               <Typography sx={{display: {xs: 'none', sm: 'none', md: 'block'}}} variant="h6">{customerName}</Typography>
               <Typography sx={{display: {xs: 'none', sm: 'none', md: 'block'}, textAlign: 'left'}} variant="body2" color="textSecondary">

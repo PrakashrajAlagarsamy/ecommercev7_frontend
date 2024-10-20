@@ -3,9 +3,11 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, Paper, Button } from '@mui/material';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import CloseIcon from '@mui/icons-material/Close';
 import { ServerURL } from '../../server/serverUrl';
 import { ImagePathRoutes } from '../../routes/ImagePathRoutes';
 import { API_FetchMyOrders } from '../../services/userServices';
+import ConfirmationPopup from '../modalPopup/confirmationPopup';
 import { useTheme } from '@mui/material/styles';
 
 const OrderPendingSvg = () => {
@@ -37,6 +39,10 @@ const Orders = ({ setActiveComponent }) => {
     const [isLoading, setIsLoading] = useState(true);
     const [visibleOrders, setVisibleOrders] = useState(5);
     const [orderLists, setOrderLists] = useState([]);
+    const [modalState, setModalState] = useState({
+        confirmationModalOpen: false,
+        orderId: 0,
+      });
 
     const loadMoreOrders = () => {
         setVisibleOrders((prev) => prev + 5);
@@ -71,9 +77,40 @@ const Orders = ({ setActiveComponent }) => {
             alert('');
         }
     };
+
+    const handleOrderCancel = (event, order) => {
+        event.stopPropagation();
+        setModalState({
+            ...modalState,
+            confirmationModalOpen: true,
+            orderId: order.Id,
+          });      
+    };
+    
+    const handleConfirmationAction = async(event) => {
+        if (event.target.value === 'Yes') {
+          if(modalState.orderId !== 0){
+            
+          }      
+        }
+        handleModalClose();
+    };
+
+    const handleModalClose = () => {
+        setModalState({
+          ...modalState,
+          confirmationModalOpen: false,
+          orderId: 0,
+        });
+    };
     
     return (
         <>
+        <ConfirmationPopup
+        ConfirmationModalOpen={modalState.confirmationModalOpen}
+        handleConfirmationModalClose={handleModalClose}
+        handleConfirmationClick={handleConfirmationAction}
+      />
             <Box sx={{ background: '#f0f4f9', maxHeight: '700px', overflowY: 'scroll', p: 2, borderRadius: 2 }}>
                 {/* Check if orderLists.OrderDetails is defined and is an array */}
                 {orderLists && Array.isArray(orderLists) && orderLists.length > 0 ? (
@@ -84,7 +121,10 @@ const Orders = ({ setActiveComponent }) => {
                                     <img src={order.Img0 ? ImagePathRoutes.ProductImagePath + order.Img0 : "https://www.healthysteps.in/productimages/48b699ca-b8bc-4ac1-8f86-5370ae8e3634.png"}
                                         style={{ width: '50px', height: '50px', borderRadius: '.5rem', objectFit: 'contain' }} />
                                 </Box>
-                                <Box><Typography sx={{ textAlign: 'left', fontSize: 16, fontWeight: 500, cursor: 'pointer' }}>View<KeyboardArrowRightIcon size="small" sx={{ width: '18px', height: '18px', fontWeight: 600 }} /></Typography></Box>
+                                <Box sx={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', gap: '10px' }}>
+                                    <Box><Typography sx={{ textAlign: 'left', fontSize: 16, fontWeight: 500, cursor: 'pointer' }}>View<KeyboardArrowRightIcon size="small" sx={{ width: '18px', height: '18px', fontWeight: 600 }} /></Typography></Box>
+                                    <Box onClick={(event) => handleOrderCancel(event, order)}><Typography sx={{ color: 'red', textAlign: 'left', fontSize: 16, fontWeight: 500, cursor: 'pointer' }}>Cancel<CloseIcon size="small" sx={{ width: '18px', height: '18px', fontWeight: 600 }} /></Typography></Box>
+                                </Box>                                
                             </Box>
                             <Box sx={{ mb: 2, p: 2, pt: 0, pb: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <Box>

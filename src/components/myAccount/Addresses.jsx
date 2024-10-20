@@ -128,13 +128,13 @@ const Address = () => {
         handleConfirmationClick={handleConfirmationAction}
       />
 
-      <Box sx={{ background: theme.palette.whitecolorCode.main, maxHeight: '700px', overflowY: 'scroll', p: 2, borderRadius: 2 }}>
+      <Box sx={{ background: '#FFF', maxHeight: '700px', overflowY: 'scroll', p: 2, borderRadius: 2 }}>
         <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
           <Typography variant="h6" fontWeight="bold" sx={{ color: theme.palette.colorCode.main }}>All Saved Addresses</Typography>
           <Button
             variant="contained"
             onClick={() => handleModalOpen('New', objlist, 0)}
-            sx={{ backgroundColor: theme.palette.basecolorCode.main, color: theme.palette.whitecolorCode.main }}
+            sx={{ background: theme.palette.basecolorCode.main, color: theme.palette.whitecolorCode.main, '&:hover': {background: theme.palette.basecolorCode.main, color: theme.palette.whitecolorCode.main}  }}
           >
             Add New Address
           </Button>
