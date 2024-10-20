@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable no-unused-vars */
-import React from 'react';
+import React, {useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { styled, useTheme } from '@mui/material/styles';
 import Grid from '@mui/material/Grid';
@@ -97,6 +97,13 @@ export default function AppCart({ CartDrawerOpen, setLoginDrawerOpen, handleAuth
     setSelectedAddress(address);
     setModalOpen(false);
   };
+
+  useEffect(() => {
+    if(CartDrawerOpen === true){
+      const selectedAddress = JSON.parse(sessionStorage.getItem("selectedAddress"));
+      setSelectedAddress(selectedAddress);
+    }    
+  }, [CartDrawerOpen]);
 
   const handleBrowseProducts = () => {
     handleAuthDrawerToggle(false);

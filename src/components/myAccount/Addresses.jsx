@@ -41,7 +41,7 @@ const Address = () => {
         currentAddress: address,
         Id: Id,
         ParentId: ParentId
-      });      
+      });
     }
     modalState.currentAddress = address;
   };
@@ -55,12 +55,12 @@ const Address = () => {
     });
   };
 
-  const handleConfirmationAction = async(event) => {
+  const handleConfirmationAction = async (event) => {
     if (event.target.value === 'Yes') {
-      if(modalState.type === "Delete" && modalState.Id !== 0){
+      if (modalState.type === "Delete" && modalState.Id !== 0) {
         await DeleteCustomerAddress(modalState.Id);
         await FetchCustomerAddress(modalState.ParentId);
-      }      
+      }
     }
     handleModalClose();
   };
@@ -70,6 +70,16 @@ const Address = () => {
     try {
       const address = await API_FetchCustomerAddress(userId);
       setcustomerDetails(address);
+      const selectedAddress = JSON.parse(sessionStorage.getItem("selectedAddress"));
+      // Check if selectedAddress exists and update sessionStorage if it matches
+      if (selectedAddress) {
+        address.forEach((add) => {
+          if (selectedAddress.Id === add.Id) {
+            sessionStorage.setItem('selectedAddress', JSON.stringify(add));
+          }
+        });
+      }
+
       objlist = {
         ParentId: address[0].Id,
         CustomerName: address[0].CustomerName,
@@ -88,7 +98,7 @@ const Address = () => {
   //Delete adderess
   const DeleteCustomerAddress = async (userId) => {
     try {
-      const response = await API_DeleteCustomerAddress(userId);      
+      const response = await API_DeleteCustomerAddress(userId);
       setIsLoading(false);
     } catch (error) {
       console.error("Error fetching customer address:", error);
@@ -103,7 +113,7 @@ const Address = () => {
       setUserId(atob(CId));
       FetchCustomerAddress(atob(CId));
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -112,14 +122,14 @@ const Address = () => {
 
   return (
     <>
-     <CircularLoader showLoader={showLoader} />
-      <AddAddressModal        
+      <CircularLoader showLoader={showLoader} />
+      <AddAddressModal
         AddressModalOpen={modalState.addressModalOpen}
         AddressModalType={modalState.addressModalType}
         handleAddressModalClose={handleModalClose}
         AddressDetails={modalState.currentAddress}
-        UserId={UserId} 
-        setUserId={setUserId} 
+        UserId={UserId}
+        setUserId={setUserId}
         fetchCustomerAddress={FetchCustomerAddress}
       />
       <ConfirmationPopup
@@ -134,7 +144,7 @@ const Address = () => {
           <Button
             variant="contained"
             onClick={() => handleModalOpen('New', objlist, 0)}
-            sx={{ background: theme.palette.basecolorCode.main, color: theme.palette.whitecolorCode.main, '&:hover': {background: theme.palette.basecolorCode.main, color: theme.palette.whitecolorCode.main}  }}
+            sx={{ background: theme.palette.basecolorCode.main, color: theme.palette.whitecolorCode.main, '&:hover': { background: theme.palette.basecolorCode.main, color: theme.palette.whitecolorCode.main } }}
           >
             Add New Address
           </Button>

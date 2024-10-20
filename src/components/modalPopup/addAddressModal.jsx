@@ -74,7 +74,7 @@ const AddAddressModal = ({ EditAddressModalOpen = true, AddressModalOpen, handle
             });
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [defaultAddressDetails]);
 
     const geocodeAddress = useCallback((address) => {
         if (!isLoaded) return;
