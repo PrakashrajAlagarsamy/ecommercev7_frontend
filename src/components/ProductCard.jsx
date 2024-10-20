@@ -27,12 +27,12 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts, newPr
   const [favProductLists, setFavProductLists] = useState([]);
 
   //Fav product lists
-  const FetchMyFavoriteProducts = async (userId) => {
+  const FetchMyFavoriteProducts = async (userId, ProductId) => {
     try {
       const favlist = await API_FetchMyFavoriteProducts(userId);
       if (favlist.length !== 0) {
         setFavProductLists(favlist);
-        const productId = product?.Productid ? product.Productid : product?.Id;
+        const productId = ProductId !== 0 ? ProductId : product?.Productid ? product.Productid : product?.Id;
         const selectedFavList = favlist.find(item => item.Id === productId);
         if (selectedFavList.length !== 0) {
           setIsFavoriteProduct(1);
@@ -46,7 +46,6 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts, newPr
       }
     } catch (error) {
       setFavProductLists([]);
-      console.error("Error fetching favorite product lists:", error);
     }
   };
 
@@ -54,7 +53,7 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts, newPr
     const userId = localStorage.getItem("userId");
     const CId = userId ? decodeURIComponent(userId) : null;
     if (CId) {
-      FetchMyFavoriteProducts(atob(CId));
+      FetchMyFavoriteProducts(atob(CId), 0);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -197,33 +196,36 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts, newPr
   //Add fav product
   const handleAddFavProduct = async (ProductId, event, status) => {
     event.stopPropagation();
-    setIsFavoriteProduct(status === 'Add' ? 1 : 0);
+    setIsFavoriteProduct(1);
     let userId = localStorage.getItem("userId");
-    userId = Number(atob(userId));
+    userId = userId ? decodeURIComponent(userId) : null;
     try {
-      const response = await API_InsertMyFavoriteProducts(ProductId, userId);
-      if (!response.ok) {
-        setIsFavoriteProduct(status === 'Add' ? 0 : 1);
-        console.error("Error updating favorite status:", response);
+      const response = await API_InsertMyFavoriteProducts(ProductId,  Number(atob(userId)));
+      if (response.DeleteStatus === 0 && response.ItemmasterRefid !== 0) {
+        await FetchMyFavoriteProducts(atob(userId), ProductId);
+        setIsFavoriteProduct(1);
+      }
+      else{
+        setIsFavoriteProduct(0);
       }
     } catch (error) {
-      // Revert the optimistic UI update on error
-      setIsFavoriteProduct(status === 'Add' ? 0 : 1);
-      console.error("Error handling favorite product:", error);
+      setIsFavoriteProduct(0);
     }
   };
 
   //Remove fav list
-  const handleRemoveFavProduct = async (ProductId) => {
+  const handleRemoveFavProduct = async (ProductId, event) => {
+    event.stopPropagation();
     let userId = localStorage.getItem("userId");
     userId = userId ? decodeURIComponent(userId) : null;
     try {
       const response = await API_DeleteMyFavoriteProducts(ProductId, Number(atob(userId)));
       if (response.DeleteStatus === 1 && response.ItemmasterRefid !== 0) {
         //await FetchMyFavoriteProducts(atob(userId));
+        setIsFavoriteProduct(0);
       }
     } catch (error) {
-      console.error("Error removing favorite product lists:", error);
+      setIsFavoriteProduct(1);
     }
   };
 
@@ -310,7 +312,7 @@ const ProductCard = ({ product, isLoading, offerProducts, relatedProducts, newPr
             }}
             id={product.isFavorite !== null ? product.isFavorite : isFavoriteProduct}
           >
-            {isFavoriteProduct !== 0 ? <FavoriteIcon size="small" sx={{ color: '#ee4372', fontSize: '18px' }} onClick={(event) => { handleAddFavProduct(product?.Productid ? product.Productid : product?.Id, event, 'Remove'); }} /> : <FavoriteBorderIcon onClick={(event) => { handleAddFavProduct(product?.Productid ? product.Productid : product?.Id, event, 'Add'); }} size="small" sx={{ color: '#ee4372', fontSize: '18px' }} />}
+            {isFavoriteProduct !== 0 ? <FavoriteIcon size="small" sx={{ color: '#ee4372', fontSize: '18px' }} onClick={(event) => { handleRemoveFavProduct(product?.Productid ? product.Productid : product?.Id, event); }} /> : <FavoriteBorderIcon onClick={(event) => { handleAddFavProduct(product?.Productid ? product.Productid : product?.Id, event, 'Add'); }} size="small" sx={{ color: '#ee4372', fontSize: '18px' }} />}
           </Box>
         </Box>
       )}

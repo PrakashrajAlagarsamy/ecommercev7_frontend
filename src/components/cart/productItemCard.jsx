@@ -32,7 +32,7 @@ const ProductItemCard = ({ product }) => {
             index === existingProductIndex
               ? { ...item, item: item.item + 1, totalMRP: product.MRP * (item.item + 1), totalPrice: (product.selectedPrice > 0 ? product.selectedPrice : product.Price) * (item.item + 1),
                 selectedPrice: product.selectedPrice,
-                selectedMRP: product.selectedMRP
+                selectedMRP: product.MRP * (item.item + 1)
                }
               : item
           );
@@ -77,7 +77,7 @@ const ProductItemCard = ({ product }) => {
                 totalMRP: (product.selectedMRP > 0 ? product.selectedMRP : product.MRP) * updatedQuantity,
                 totalPrice: (product.selectedPrice > 0 ? product.selectedPrice : product.Price) * updatedQuantity,
                 selectedPrice: product.selectedPrice,
-                selectedMRP: product.selectedMRP,
+                selectedMRP: (product.MRP) * updatedQuantity,
               }
               : item
           );

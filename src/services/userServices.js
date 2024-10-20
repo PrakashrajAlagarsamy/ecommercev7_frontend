@@ -319,9 +319,11 @@ export const API_InsertMyFavoriteProducts = async (ProductId, UserId) => {
       },
       body: JSON.stringify(objlist)
     });
+    const data = await response.json();
     if (!response.ok) {
       throw new Error('Network response was not ok.');
     }    
+    return data;
   } catch (error) {
     console.error('Failed to insert favorite product list:', error);
     throw error; // Re-throw so the calling function can handle it
