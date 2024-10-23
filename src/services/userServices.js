@@ -80,7 +80,7 @@ export const loginUser = async (mobileNumber, password) => {
 };
 
 // Function to login the user
-export const forgetpasswordUser = async (Email, CompanyName, CompanyMobile, CompanyEmail) => {
+export const forgetpasswordUser = async (Email, COMPANY_REF_ID, CompanyName, CompanyMobile, CompanyEmail) => {
   const apiEndpoint = APIRoutes.APP_FORGET_PASSWORD;
   try {
     const response = await fetch(apiEndpoint, {
@@ -93,7 +93,7 @@ export const forgetpasswordUser = async (Email, CompanyName, CompanyMobile, Comp
         CompanyEmail: CompanyEmail
       },
       body: JSON.stringify({
-        Comid: ServerURL.COMPANY_REF_ID,
+        Comid: COMPANY_REF_ID,
       }),
     });
 

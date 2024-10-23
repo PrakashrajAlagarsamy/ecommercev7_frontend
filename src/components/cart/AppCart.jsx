@@ -310,7 +310,7 @@ export default function AppCart({ CartDrawerOpen, setLoginDrawerOpen, handleAuth
                               width: '100%',
                               marginRight: 0,
                             }}
-                          >{selectedAddress.Address1}, {selectedAddress.City} - {selectedAddress.Pincode}</Typography>
+                          >{selectedAddress?.Address1}, {selectedAddress?.Address2}, {selectedAddress?.City} - {selectedAddress?.Pincode}</Typography>
                           : <Typography component={'span'} color='error'>No address selected</Typography>}
                       </Typography>
                     </Box>

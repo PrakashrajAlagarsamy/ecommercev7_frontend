@@ -177,7 +177,7 @@ const OrderDetails = ({ setActiveComponent }) => {
                   {OrderIdDetail.OrderDetails ? OrderIdDetail.OrderDetails.length : 0} item{OrderIdDetail.OrderDetails && OrderIdDetail.OrderDetails.length !== 1 ? 's' : ''}  {OrderIdDetail.orderstatus}
                 </Typography>             
             </Box>
-              <Box>
+              <Box sx={{display: 'none'}}>
                 <Button disabled={cancelBtn || OrderIdDetail.orderstatus === "Cancel" ? true : false} onClick={(event) => handleOrderCancel(event, OrderIdDetail)} size='small' sx={{ px: 1, background: '#FFF', color: 'red', border: '1px solid red'}}>Cancel<CloseIcon size="small" sx={{ width: '18px', height: '18px', fontWeight: 600 }} /></Button>
               </Box>
           </Box>

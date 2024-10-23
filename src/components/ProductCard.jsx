@@ -385,14 +385,14 @@ const ProductCard = ({ get_fav_lists, product, isLoading, offerProducts, related
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '10px' }}>
               <Typography
                 variant="body2"
-                sx={{ color: theme.palette.lightblackcolorCode.main, fontSize: '14px', lineHeight: '24px', fontFamily: 'inherit' }}
+                sx={{ color: theme.palette.lightblackcolorCode.main, fontSize: '16px', lineHeight: '24px', fontFamily: 'inherit' }}
               >
                 {(currentPrice > 0 ? currentPrice : totalPrice).toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </Typography>
               {product.MRP && (
                 <Typography
                   variant="body2"
-                  sx={{ textDecoration: 'line-through', fontSize: '12px', fontWeight: 200, color: '#a3a4ae', fontFamily: 'inherit' }}
+                  sx={{ textDecoration: 'line-through', fontSize: '14px', fontWeight: 200, color: '#a3a4ae', fontFamily: 'inherit' }}
                 >
                   {'MRP:' + ((selectedMRP > 0 ? selectedMRP : product.MRP)).toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </Typography>
