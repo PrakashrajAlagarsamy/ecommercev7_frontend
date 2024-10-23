@@ -133,7 +133,6 @@ export const API_InsertCustomerDetails = async (customerDetails) => {
 // Function to Insert the customer address
 export const API_UpdateCustomerPassword = async (UserId, oldPassword, newPassword, confirmPassword) => {
   let objData = "";
-  let data;
   let objlist = {
     Comid: ServerURL.COMPANY_REF_ID,
   };
@@ -146,13 +145,12 @@ export const API_UpdateCustomerPassword = async (UserId, oldPassword, newPasswor
       },
       body: JSON.stringify(objlist),
     });
-    data = await response.json();
 
     if (response.ok) {      
-      return data;
+      return response;
     } else {
       console.error("Failed to update password.");      
-      return data;
+      return response;
     }
   } catch (error) {
     console.error("Error:", error);

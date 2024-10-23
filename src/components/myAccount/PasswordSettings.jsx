@@ -32,15 +32,14 @@ const PasswordSettings = ({ customerDetails }) => {
 
     try {
       const response = await API_UpdateCustomerPassword(atob(CId), oldPassword, newPassword, confirmPassword);
-      const data = await response.json();
       if (response.ok) {
-        alert('Password updated successfully');
+        setErrorMessage('Password updated successfully');
         // Reset form fields
         setOldPassword('');
         setNewPassword('');
         setConfirmPassword('');
       } else {
-        setErrorMessage(data.message || 'Error updating password');
+        setErrorMessage(response.message || 'Error updating password');
       }
     } catch (error) {
       setErrorMessage('Failed to update password. Please try again later.');
