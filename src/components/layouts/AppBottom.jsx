@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
@@ -10,24 +9,31 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import CategoryIcon from '@mui/icons-material/Category';
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import { Badge, IconButton } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import AppCart from '../cart/AppCart';
 import { useAuth } from '../../context/authContext';
+import { useCart } from '../../context/CartContext';
+import { useTheme } from '@mui/material/styles';
 import AppLogin from '../authentication/AppLogin';
 
 export default function AppBottomNavigation() {
+  const theme = useTheme();
   const { isAuthenticated } = useAuth();
+  const {cartItems} = useCart();
   const [value, setValue] = useState(0);
   const navigate = useNavigate();
   const ref = React.useRef(null);
   const [cartDrawerOpen, setCartDrawerOpen] = useState(false);
   const [loginDrawerOpen, setLoginDrawerOpen] = useState(false);
+  const [cartItemsCount, setCartItemsCount] = useState(0);
 
   useEffect(() => {
     if(isAuthenticated === true){
         setLoginDrawerOpen(false);
     }
-  }, [isAuthenticated]);
+    setCartItemsCount(cartItems.length ? cartItems.length : 0);
+  }, [isAuthenticated, cartItems]);
 
   const handleAuthDrawerToggle = (event, flag) => {
     if (flag === 1) {
@@ -84,7 +90,18 @@ export default function AppBottomNavigation() {
             <BottomNavigationAction label="Home" icon={<HomeIcon />} />
             {isAuthenticated ? <BottomNavigationAction label="Favorites" icon={<FavoriteIcon />} /> : null}
             <BottomNavigationAction label="Categories" icon={<CategoryIcon />} />
-            <BottomNavigationAction label="Cart" icon={<ShoppingBagIcon />} />
+            <BottomNavigationAction label="Cart" icon={
+              <IconButton color="inherit" onClick={handleAuthDrawerToggle}>
+              <Badge badgeContent={cartItemsCount} sx={{
+                  '& .MuiBadge-badge': {
+                    backgroundColor: theme.palette.basecolorCode.main, 
+                    color: theme.palette.footertextcolorCode.main
+                  },
+                }}>
+                <ShoppingBagIcon />
+              </Badge>
+            </IconButton>
+            } />
             {isAuthenticated ? <BottomNavigationAction label="Account" icon={<ManageAccountsIcon />} /> : null}
             {!isAuthenticated ? <BottomNavigationAction label="Login" icon={<ManageAccountsIcon />} /> : null}
           </BottomNavigation>
