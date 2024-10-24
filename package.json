@@ -8,7 +8,6 @@
     "@mui/icons-material": "^5.16.7",
     "@mui/joy": "^5.0.0-beta.48",
     "@mui/material": "^5.16.7",
-    "@mui/toolpad": "^0.1.51",
     "@mui/x-date-pickers": "^7.18.0",
     "@mui/x-internals": "^7.18.0",
     "@react-google-maps/api": "^2.19.3",

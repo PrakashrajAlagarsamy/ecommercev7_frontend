@@ -9,7 +9,7 @@ import { ServerURL } from '../server/serverUrl';
 import { API_InsertMyFavoriteProducts, API_DeleteMyFavoriteProducts, API_FetchMyFavoriteProducts } from '../services/userServices';
 import { useCart } from '../context/CartContext';
 import { useTheme } from '@mui/material/styles';
-import * as actionType from '../redux1/actionType';
+import * as actionType from '../redux/actionType';
 import { connect } from 'react-redux';
 
 const ProductCard = ({ get_fav_lists, product, isLoading, offerProducts, relatedProducts, newProducts }) => {

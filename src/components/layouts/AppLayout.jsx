@@ -9,7 +9,7 @@ import { Container, Box } from '@mui/material';
 import { API_FetchSettings } from '../../services/settings';
 import { API_FetchCategory } from '../../services/categoryServices';
 import { API_FetchMyFavoriteProducts } from '../../services/userServices';
-import * as actionType from '../../redux1/actionType';
+import * as actionType from '../../redux/actionType';
 import { connect } from 'react-redux';
 
 const AppLayout = (props) => {

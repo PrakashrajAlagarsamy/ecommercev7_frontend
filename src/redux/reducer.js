@@ -1,4 +1,4 @@
-import * as actionType from '../redux1/actionType';
+import * as actionType from '../redux/actionType';
 
 const initial_state = {
     get_settings_lists: [],

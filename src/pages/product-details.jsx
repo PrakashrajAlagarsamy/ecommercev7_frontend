@@ -17,7 +17,7 @@ import { API_InsertMyFavoriteProducts, API_FetchMyFavoriteProducts, API_DeleteMy
 import { useCart } from '../context/CartContext';
 import { useTheme } from '@mui/material/styles';
 import { connect } from 'react-redux';
-import * as actionType from '../redux1/actionType';
+import * as actionType from '../redux/actionType';
 
 const ProductDetails = (props) => {
     const theme = useTheme();
