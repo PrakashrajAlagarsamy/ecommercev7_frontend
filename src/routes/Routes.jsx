@@ -26,12 +26,7 @@ function AppRouter() {
     let [themeLists, setThemeLists] = useState([]);
     const [isLoading, setIsLoading] = useState(true);    
     const theme = useTheme();    
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm', 'xs'));
-
-    useEffect(() => {
-    FetchMySettings();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm', 'xs'));   
 
     const FetchMySettings = async () => {
         try {
@@ -48,7 +43,12 @@ function AppRouter() {
             console.error("Error fetching order lists:", error);
             setIsLoading(false);
         }
-    };    
+    };   
+    
+    useEffect(() => {
+        FetchMySettings();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const ThemeSettingsLists = ThemeSettings(themeLists);
 

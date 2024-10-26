@@ -186,14 +186,18 @@ const ProductCard = ({ get_fav_lists, product, isLoading, offerProducts, related
   //Add fav product
   const handleAddFavProduct = async (ProductId, event, status) => {
     event.stopPropagation();
-    setIsFavoriteProduct(1);
     let userId = localStorage.getItem("userId");
     userId = userId ? decodeURIComponent(userId) : null;
     try {
-      const response = await API_InsertMyFavoriteProducts(ProductId,  Number(atob(userId)));
-      if (response.DeleteStatus === 0 && response.ItemmasterRefid !== 0) {
-        await FetchMyFavoriteProducts(ProductId);
-        setIsFavoriteProduct(1);
+      if(userId){
+        const response = await API_InsertMyFavoriteProducts(ProductId,  Number(atob(userId)));
+        if (response.DeleteStatus === 0 && response.ItemmasterRefid !== 0) {
+          await FetchMyFavoriteProducts(ProductId);
+          setIsFavoriteProduct(1);
+        }
+        else{
+          setIsFavoriteProduct(0);
+        }
       }
       else{
         setIsFavoriteProduct(0);

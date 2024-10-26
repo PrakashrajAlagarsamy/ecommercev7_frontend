@@ -6,33 +6,18 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import CategoryHeader from '../category/categoryHeader';
 import ImageCategorySlider from './ImageCategorySlider';
-import { API_FetchCategory } from '../../services/categoryServices';
-import { API_FetchProductByIndexPage } from '../../services/productListServices';
 import { useTheme } from '@mui/material/styles';
 import { connect } from 'react-redux';
 
 const ProductByIndexPage = (props) => {
   const theme = useTheme();
-  const [categoryLists, setCategoryLists] = useState([]);
   const [productsByCategory, setProductsByCategory] = useState({});
   const [categoryImageLists, setCategoryImageLists] = useState({});
   const [loading, setLoading] = useState(true);
-
-  const GetCategoryLists = async () => {
-    try {
-      const categoryList = await API_FetchCategory();
-      setCategoryLists(categoryList);
-      return categoryList;
-    } catch (error) {
-      console.error("Error fetching categories:", error);
-      setLoading(false);
-      return [];
-    }
-  };
-
+  
   const GetProductsByCategory = async (categories) => {
     try {
-      const products = await API_FetchProductByIndexPage();
+      const products = await props.get_product_by_category_index_page;
       const productsByCategory = categories.reduce((acc, category) => {
         const filteredProducts = products.data1.filter(product => product.CId === category.Id);
         if (filteredProducts.length > 0) {
@@ -59,12 +44,9 @@ const ProductByIndexPage = (props) => {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      const categories = await GetCategoryLists();
-      GetProductsByCategory(categories);
-    };
-    fetchData();
-  }, []);
+    GetProductsByCategory(props.get_catgory_lists);  
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.get_catgory_lists, props.get_product_by_category_index_page]);
 
   const sliderArrowStyles = {
     arrow: {
@@ -150,7 +132,7 @@ const ProductByIndexPage = (props) => {
       {loading ? (
         <Skeleton variant="text" height={40} width="30%" />
       ) : (
-        categoryLists.map((category) => {
+        props.get_catgory_lists.map((category) => {
           const products = productsByCategory[category.Id];
           const categoryImages = categoryImageLists[category.Id];
 
@@ -189,7 +171,9 @@ const ProductByIndexPage = (props) => {
 
 const mapStateToProps = (state) => {
   return {
-    get_fav_lists: state.get_fav_lists, // Get favourite lists from Redux state (Wishlists)
+    get_catgory_lists: state.get_catgory_lists,
+    get_product_by_category_index_page: state.get_product_by_category_index_page,
+    get_fav_lists: state.get_fav_lists,
   };
 };
 

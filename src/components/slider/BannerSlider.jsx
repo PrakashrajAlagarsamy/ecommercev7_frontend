@@ -2,27 +2,19 @@ import React, { useState, useEffect } from 'react';
 import Slider from "react-slick";
 import { Container, Box } from '@mui/material';
 import Skeleton from '@mui/material/Skeleton'; // Import Skeleton
-import { API_FetchBannerOfferPost } from '../../services/bannerOfferPostServices';
 import { ImagePathRoutes } from '../../routes/ImagePathRoutes';
+import { connect } from 'react-redux';
 
-export default function BannerSlider() {
+const BannerSlider = (props) => {
   const [bannerSliderLists, setBannerSliderLists] = useState([]);
-  const [isLoading, setIsLoading] = useState(true); // Loading state
+  const [isLoading, setIsLoading] = useState(true);
 
-  const GetBannerSliderLists = async () => {
-      try {
-          const bannerList = await API_FetchBannerOfferPost();
-          setBannerSliderLists(bannerList);
-          setIsLoading(false); // Stop loading when data is fetched
-      } catch (error) {
-          console.error("Error fetching categories:", error);
-          setIsLoading(false); // Stop loading in case of error
-      }
-  };
-
+  
   useEffect(() => {
-    GetBannerSliderLists();
-  }, []);
+    setIsLoading(true);
+    setBannerSliderLists(props.get_offer_banner_lists);
+    setIsLoading(false);
+  }, [props.get_offer_banner_lists]);
 
   // Slider settings, adjusted for single banner scenario
   const settings = {
@@ -60,7 +52,7 @@ export default function BannerSlider() {
           ))
         ) : (
           // Show the actual banner images once data is fetched
-          bannerSliderLists.map((item) => (
+          props.get_offer_banner_lists.map((item) => (
             <Box key={item.id} sx={{ textAlign: 'center' }}>
               <Box
                 component="img"
@@ -84,4 +76,12 @@ export default function BannerSlider() {
       </Slider>
     </Container>
   );
-}
+};
+
+const mapStateToProps = (state) => {
+  return {
+    get_offer_banner_lists: state.get_offer_banner_lists,
+  };
+};
+
+export default connect(mapStateToProps, null)(BannerSlider);

@@ -127,7 +127,9 @@ const AddressChangeModal = ({ UserId, setUserId, ModalOpen, handleChangeAddressC
                                             </Typography>
                                         </Box>
                                         <Typography align="left" variant="body2" fontSize={16} sx={{ color: '#7E7E7E' }}>
-                                            {`${address.Address1}, ${address.Address2}, ${address.City} - ${address.Pincode}`}
+                                        {(address && [address.Address1, address.Address2, address.City, address.Pincode]
+                                        .filter(Boolean)
+                                        .join(', ')) || ''}                                          
                                         </Typography>
                                         {address.Landmark && (
                                             <Typography align="left" variant="body2" fontSize={16} sx={{ color: '#7E7E7E' }}>

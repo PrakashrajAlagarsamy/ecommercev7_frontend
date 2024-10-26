@@ -189,31 +189,28 @@ const ProductList = () => {
   const handleProductFilterChange = (event) => {
     const filterName = event.target.value;
     setProductFilterName(filterName);
-  };
 
-  // Apply filtering logic whenever the product list or filter name changes
-  useEffect(() => {
     let sortedProducts = [...productLists];
 
     switch (productFilterName) {
       case "Price(Low > High)":
-        sortedProducts.sort((a, b) => a.price - b.price);
+        sortedProducts.sort((a, b) => a.Price - b.Price);
         break;
       case "Price(High > Low)":
-        sortedProducts.sort((a, b) => b.price - a.price);
+        sortedProducts.sort((a, b) => b.Price - a.Price);
         break;
       case "Alphabetical":
-        sortedProducts.sort((a, b) => a.name.localeCompare(b.name));
+        sortedProducts.sort((a, b) => a.Description.localeCompare(b.Description));
         break;
       case "Alphabetical Reverse":
-        sortedProducts.sort((a, b) => b.name.localeCompare(a.name));
+        sortedProducts.sort((a, b) => b.Description.localeCompare(a.Description));
         break;
       default:
         sortedProducts = [...productLists];
     }
 
-    setFilteredProductLists(sortedProducts);
-  }, [productFilterName, productLists]);
+    setProductLists(sortedProducts);
+  };  
 
   useEffect(() => {
     const handleScroll = () => {

@@ -158,8 +158,12 @@ export default function ProductCheckout() {
     };
 
     //Place order function
-    const handlePlaceOrder = async() => {          
-        if (Deliverytime === '' && DeliveryType === 'Delivery' && DeliveryTimeList.length !== 0) {
+    const handlePlaceOrder = async() => {   
+        if(selectedAddress.Pincode === "0"){
+            setInfoStatus('Please choose valid address');
+            handleAlertOpen(true);
+        }
+        else if (Deliverytime === '' && DeliveryType === 'Delivery' && DeliveryTimeList.length !== 0) {
             setInfoStatus('Please choose delivery time');
             handleAlertOpen(true);
         }
@@ -179,7 +183,6 @@ export default function ProductCheckout() {
             }
             else{
                 setOnlinePayment(true);
-                console.log("call");
                 //PlaceOrder();
             }            
         }

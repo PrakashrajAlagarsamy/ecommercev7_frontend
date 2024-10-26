@@ -5,29 +5,18 @@ import ProductCard from '../ProductCard';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import CategoryHeader from '../category/categoryHeader';
-import { API_FetchOfferFastMovingProduct } from '../../services/productListServices';
 import { useTheme } from '@mui/material/styles';
 import { connect } from 'react-redux';
 
 const OfferFastMovingProduct = (props) => {
   const theme = useTheme();
   const [productLists, setProductLists] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  const GetOfferProductLists = async () => {
-      try {
-          const objLists = await API_FetchOfferFastMovingProduct();
-          setProductLists(objLists);
-      } catch (error) {
-          console.error("Error fetching categories:", error);
-      } finally {
-          setLoading(false);
-      }
-  };
+  const [loading, setLoading] = useState(true);    
 
   useEffect(() => {
-    GetOfferProductLists();
-  }, []);
+    setProductLists(props.get_offer_product_lists);
+    setLoading(false);
+  }, [props.get_offer_product_lists]);
 
   const sliderArrowStyles = {
     arrow: {
@@ -149,7 +138,8 @@ const OfferFastMovingProduct = (props) => {
 
 const mapStateToProps = (state) => {
   return {
-    get_fav_lists: state.get_fav_lists, // Get favourite lists from Redux state (Wishlists)
+    get_fav_lists: state.get_fav_lists, 
+    get_offer_product_lists: state.get_offer_product_lists
   };
 };
 

@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -10,7 +9,6 @@ import Avatar from '@mui/material/Avatar';
 import Skeleton from '@mui/material/Skeleton';
 import { Container } from '@mui/material';
 import { ImagePathRoutes } from '../../routes/ImagePathRoutes';
-import { API_FetchCategory } from '../../services/categoryServices';
 import { useTheme } from '@mui/material/styles';
 import AllCategories from '../../assets/All-categories.png';
 import TopOffers from '../../assets/top-offers.png';
@@ -39,21 +37,8 @@ const TopCategory = (props) => {
       navigate(`/categories?cid=${btoa(id)}&cname=${btoa(value)}`);
     }
   };
-
-
-  const FetchTopCategoryLists = async () => {
-    try {
-      const categoryList = await API_FetchCategory();
-      setCategoryLists(categoryList);
-      setIsLoading(false);
-    } catch (error) {
-      console.error("Error fetching categories:", error);
-      setIsLoading(false);
-    }
-  };
-
+  
   useEffect(() => {
-    FetchTopCategoryLists();
     if(location.pathname.startsWith('/product-list')){
       setIsActiveCategory(true);
     }
@@ -65,16 +50,14 @@ const TopCategory = (props) => {
 
   useEffect(() => {
     if (props.get_catgory_lists && props.get_catgory_lists.length > 0) {
-      // Set categories from Redux store if available
-      // setCategoryLists(props.get_catgory_lists);
-      setIsLoading(false); // Data is loaded, stop the loading state
+      setCategoryLists(props.get_catgory_lists);
+      setIsLoading(false); 
     }
 
     const params = new URLSearchParams(location.search);
     const pcid = params.get('pcid');
     const pcname = params.get('pcname');
     if (pcid && pcname) {
-      const decodedPcid = atob(pcid);
       const decodedPcname = atob(pcname);
       setCategoryValue(decodedPcname);      
     }

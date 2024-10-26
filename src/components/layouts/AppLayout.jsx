@@ -7,70 +7,89 @@ import AppFooter from './AppFooter';
 import FooterCategories from '../category/FooterCategory';
 import { Container, Box } from '@mui/material';
 import { API_FetchSettings } from '../../services/settings';
+import { API_FetchBannerOfferPost } from '../../services/bannerOfferPostServices';
 import { API_FetchCategory } from '../../services/categoryServices';
+import { API_FetchOfferFastMovingProduct, API_FetchProductByIndexPage } from '../../services/productListServices';
 import { API_FetchMyFavoriteProducts } from '../../services/userServices';
 import * as actionType from '../../redux/actionType';
 import { connect } from 'react-redux';
 
 const AppLayout = (props) => {
 
-  const { children, get_catgory_lists, SetGlobalSettings, SetGlobalCategories, CompanyDetails } = props;
-  const [settingsLists, setSettingsLists] = React.useState([]);
+  const { children, get_settings_lists, get_offer_banner_lists, get_offer_product_lists, get_catgory_lists, get_product_by_category_index_page, get_fav_lists, SetGlobalSettings, SetGlobalOfferBanners, SetGlobalOfferProductLists, SetGlobalCategories, SetGlobalProductByCategoryIndexPage, setFavouriteLists, CompanyDetails } = props;
+
   const FetchSettingsLists = async () => {
     try {
-      const settingsResponse = await API_FetchSettings(); // Fetch settings
-      let colorSelect = settingsResponse.data[0];
-      console.log(colorSelect);
-
-      const root = document.documentElement;
-
-      // Set the value of --primary-color to the value received from the API
-      root.style.setProperty('--primary-color', colorSelect.basecolorCode);
-      root.style.setProperty('--secondary-background', colorSelect.shadowcolorCode);
-      root.style.setProperty('--color-black', colorSelect.lightblackcolorCode);
-      root.style.setProperty('--color-grey-dark-3', colorSelect.whitecolorCode);
-      root.style.setProperty('--secondary-color', colorSelect.colorCode);
-
-      setSettingsLists(settingsResponse.data[0]);
-      SetGlobalSettings(settingsResponse.data[0]); 
+      const settingsResponse = await API_FetchSettings();
+      SetGlobalSettings(settingsResponse.data[0]);
     } catch (error) {
       console.error('Error fetching settings:', error);
     }
   };
 
+  const FetchBannerSliderLists = async () => {
+    try {
+      const bannerList = await API_FetchBannerOfferPost();
+      SetGlobalOfferBanners(bannerList);
+    } catch (error) {
+      console.error("Error fetching offer banner lists:", error);
+    }
+  };
+
+  const GetOfferProductLists = async () => {
+    try {
+      const objLists = await API_FetchOfferFastMovingProduct();
+      SetGlobalOfferProductLists(objLists);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    } 
+  };
+
+
   const FetchTopCategoryLists = async () => {
     try {
-      const categoryList = await API_FetchCategory(); 
-      SetGlobalCategories(categoryList); 
+      const categoryList = await API_FetchCategory();
+      SetGlobalCategories(categoryList);
     } catch (error) {
       console.error('Error fetching categories:', error);
     }
   };
 
+
+  const FetchProductsByCategoryIndexPage = async () => {
+    try {
+      const products = await API_FetchProductByIndexPage();
+      SetGlobalProductByCategoryIndexPage(products);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
+
   useEffect(() => {
     //setIsActiveCategory(false);
-    //FetchSettingsLists();
-    //FetchTopCategoryLists();
+    FetchBannerSliderLists();
+    FetchTopCategoryLists();
+    FetchProductsByCategoryIndexPage();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const FetchMyFavoriteProducts = async (userId) => {
     try {
-        const favlist = await API_FetchMyFavoriteProducts(userId);
-        if(favlist !== undefined && favlist.length !== 0){
-          props.setFavouriteLists(favlist);
-        }        
+      const favlist = await API_FetchMyFavoriteProducts(userId);
+      if (favlist !== undefined && favlist.length !== 0) {
+        setFavouriteLists(favlist);
+      }
     } catch (error) {
-        console.error("Error fetching favorite product lists:", error);
+      console.error("Error fetching favorite product lists:", error);
     }
-};
+  };
 
   useEffect(() => {
     const userId = localStorage.getItem("userId");
-        const CId = userId ? decodeURIComponent(userId) : null;
-        if (CId) {
-            FetchMyFavoriteProducts(atob(CId));
-        }
+    const CId = userId ? decodeURIComponent(userId) : null;
+    if (CId) {
+      FetchMyFavoriteProducts(atob(CId));
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -93,13 +112,23 @@ const AppLayout = (props) => {
 
 const mapStateToProps = (state) => {
   return {
-    get_catgory_lists: state.get_catgory_lists || [], 
+    get_settings_lists: state.get_settings_lists || [],
+    get_offer_banner_lists: state.get_offer_banner_lists || [],
+    get_offer_product_lists: state.get_offer_product_lists || [],
+    get_catgory_lists: state.get_catgory_lists || [],
+    get_product_by_category_index_page: state.get_product_by_category_index_page || [],
+    get_fav_lists: state.get_fav_lists || [],
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
-  return {    
-    setFavouriteLists: (data) => dispatch({type: actionType.GET_GLOBAL_FAVOURITE_LISTS, payload: data})
+  return {
+    SetGlobalSettings: (data) => dispatch({ type: actionType.GET_GLOBAL_SETTINGS, payload: data }),
+    SetGlobalOfferBanners: (data) => dispatch({ type: actionType.GET_OFFER_BANNER, payload: data }),
+    SetGlobalOfferProductLists: (data) => dispatch({ type: actionType.GET_OFFER_PRODUCTS, payload: data }),
+    SetGlobalCategories: (data) => dispatch({ type: actionType.GET_GLOBAL_CATEGORIES, payload: data }),
+    SetGlobalProductByCategoryIndexPage: (data) => dispatch({ type: actionType.GET_GLOBAL_PRODUCT_CATEGORY_INDEX_PAGE, payload: data }),
+    setFavouriteLists: (data) => dispatch({ type: actionType.GET_GLOBAL_FAVOURITE_LISTS, payload: data })
   };
 };
 

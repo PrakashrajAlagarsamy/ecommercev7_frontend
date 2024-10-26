@@ -167,7 +167,7 @@ const Address = () => {
                     {address.AddressType ? address.AddressType : 'Home'}
                   </Typography>
                   <Typography align="left" variant="body1" fontSize={16} sx={{ color: '#7E7E7E' }}>
-                    {`${address.Address1}, ${address.Address2} ${address.City} -${address.Pincode}`}
+                    {(address && [address.Address1, address.Address2, address.City, address.Pincode].filter(Boolean).join(', '))}
                   </Typography>
                   <Typography align="left" variant="body1" fontSize={16} sx={{ color: '#7E7E7E' }}>
                     {`${address.Landmark !== null ? address.Landmark : ''}`}
