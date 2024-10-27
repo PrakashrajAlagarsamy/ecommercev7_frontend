@@ -150,26 +150,25 @@ export default function AppCart({ CartDrawerOpen, setLoginDrawerOpen, handleAuth
       handleAuthDrawerToggle(false);
       setLoginDrawerOpen(true);  
     }
-    else if (selectedAddress?.Pincode !== 0 && selectedAddress?.Address1 !== "") {
-      const CartTotalAmount = cartTotalAmountCheck();
-      FetchMinimumOrderAmount();
-      navigate(`/product-checkout`);
-      // if (CartTotalAmount >= MinimumOrderAmount) {
-      //   if (useWallet === true) {
-      //     handleAuthDrawerToggle(false);
-      //     navigate(`/product-checkout?Wallet=${btoa(WalletAmount)}`);
-      //   }
-      //   else {
-      //     handleAuthDrawerToggle(false);
-      //     navigate(`/product-checkout`);
-      //   }
-      // }
-      // else {
-      //   setMinAmountCheck(true);
-      // }      
+    else if (!selectedAddress) {
+      setModalOpen(true);
     }
     else {
-      setModalOpen(true);
+      const CartTotalAmount = cartTotalAmountCheck();
+      FetchMinimumOrderAmount();
+      if (CartTotalAmount >= MinimumOrderAmount) {
+        if (useWallet === true) {
+          handleAuthDrawerToggle(false);
+          navigate(`/product-checkout?Wallet=${btoa(WalletAmount)}`);
+        }
+        else {
+          handleAuthDrawerToggle(false);
+          navigate(`/product-checkout`);
+        }
+      }
+      else {
+        setMinAmountCheck(true);
+      }            
     }
   };
 
