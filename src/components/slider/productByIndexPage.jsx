@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import Slider from 'react-slick';
 import { Box, Container, Skeleton } from '@mui/material';
@@ -129,7 +130,7 @@ const ProductByIndexPage = (props) => {
 
   return (
     <Container maxWidth="xl" sx={{ pt: 1, pb: 1, px: { xs: 0, sm: 0, lg: 3 } }}>
-      {loading ? (
+      {props.is_data_loading ? (
         <Skeleton variant="text" height={40} width="30%" />
       ) : (
         props.get_catgory_lists.map((category) => {
@@ -171,6 +172,7 @@ const ProductByIndexPage = (props) => {
 
 const mapStateToProps = (state) => {
   return {
+    is_data_loading: state.is_data_loading,
     get_catgory_lists: state.get_catgory_lists,
     get_product_by_category_index_page: state.get_product_by_category_index_page,
     get_fav_lists: state.get_fav_lists,

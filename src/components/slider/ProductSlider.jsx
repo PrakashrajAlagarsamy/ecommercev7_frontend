@@ -20,7 +20,7 @@ const ProductSlider = ({productLits, categoryLists}) => {
   };
 
   useEffect(() => {
-    GetBannerSliderLists();
+    //GetBannerSliderLists();
   }, []);
 
 

@@ -85,7 +85,7 @@ export default function ProductCheckout() {
     const handleChangeAddressClose = () => {
         setModalOpen(false);
         let address = JSON.parse(sessionStorage.getItem('selectedAddress'));
-        setSelectedAddress(address);
+        setSelectedAddress(address ? address : {});
     };
 
     //Load delivery time lists
@@ -159,7 +159,11 @@ export default function ProductCheckout() {
 
     //Place order function
     const handlePlaceOrder = async() => {   
-        if(selectedAddress.Pincode === "0"){
+        if(selectedAddress?.Pincode === 0 && selectedAddress?.Address1 === ""){
+            setInfoStatus('Please choose valid address');
+            handleAlertOpen(true);
+        }
+        else if(selectedAddress?.Address1 === ""){
             setInfoStatus('Please choose valid address');
             handleAlertOpen(true);
         }
@@ -179,13 +183,83 @@ export default function ProductCheckout() {
             if(PaymentType === 'COD'){
                 setOnlinePayment(false);
                 setAlertOpen(false);
-                PlaceOrder(0, '');
+                PlaceOrder();
             }
             else{
                 setOnlinePayment(true);
-                //PlaceOrder();
             }            
         }
+    };    
+
+    const PlaceOrder = async() => {
+        await setShowLoader(true);
+        const OrderDetails = [];
+        if (cartItems.length > 0 && cartItems != null) {
+            for (let i = 0; i < cartItems.length; i++) {
+                let detailslist = {};
+                detailslist.ProductId = cartItems[i].Id;
+                detailslist.ProductName = cartItems[i].Description;
+                detailslist.MRP = cartItems[i].MRP;
+                detailslist.ItemQty = cartItems[i].item;
+                detailslist.DiscountAmt = (Number(cartItems[i].MRP) * 0) / 100;
+                detailslist.Salerate = cartItems[i].Price;
+                detailslist.WeightType = cartItems[i].UnitType;
+                detailslist.CPrice = cartItems[i].totalPrice;
+                OrderDetails[i] = detailslist;
+            }
+        };
+
+        const master = [
+            {
+                Id: 0,
+                CustomerRefId: Number(atob(localStorage.getItem("userId"))),
+                CutomerName: atob(localStorage.getItem("userName")),
+                MobileNo: atob(localStorage.getItem("userMobileNo")),
+                Email: atob(localStorage.getItem("userEmail")),
+                Address1: selectedAddress?.Address1,
+                Address2: selectedAddress?.Address2,
+                City: selectedAddress?.City,
+                LandMark: selectedAddress?.LandMark,
+                Pincode: selectedAddress?.Pincode,
+                lattitude: selectedAddress?.Latitude,
+                longitude: selectedAddress?.Langitude,
+
+                CompanyRefid: ServerURL.COMPANY_REF_ID,
+                CompanyName: ServerURL.COMPANY_NAME,
+                CompanyMobile: ServerURL.COMPANY_MOBILE,
+                CompanyEmail: ServerURL.COMPANY_EMAIL,
+                
+                SaleDate: DateValue,
+                DeliveryDate: DateValue,
+                DeliveryTime: Deliverytime, 
+                DeliveryMode: DeliveryType,   
+                PaymentMode: PaymentType,
+                PaymentId: sessionStorage.getItem('onlinePaymentId'),
+                AreaMasterId: null,
+                deliveryStoreName: null,                
+                DeliveryStatus: 0,                
+                NewCustomerStatus: 0,
+                CouponDiscount: 0.0,
+                CouponRefId: 0,
+                OrderCount: 1,
+                ReferalAmount: 0.0,                
+                disper: 0,
+                discamount: 0,
+                schargeamount: 0,                
+                ReferalBalance: 0,
+                coinage: 0,
+                DeliveryCharge: DeliveryFee,
+                WalletAmount: walletAmount,
+                WalletStatus: walletAmount > 0 ? 1 : 0,
+                WalletPayment: walletAmount,                
+                TodaySaving: SavingsAmount,
+                Grossamt: Number(TotalPrice),
+                NetAmount: Number(TotalPrice), //Final Total Amount                                 
+                SaleOrderDetails: OrderDetails,     
+                Remarks: sessionStorage.getItem('onlinePaymentId') ? sessionStorage.getItem('onlinePaymentId') : "",                    
+            },
+        ];
+        await InsertSaleOrderSave(master);
     };
 
     //Order save API function
@@ -215,82 +289,11 @@ export default function ProductCheckout() {
         }
     };
 
-    const PlaceOrder = async(onlinePStatus, onlinePaymentId) => {
-        setShowLoader(true);
-        const OrderDetails = [];
-        if (cartItems.length > 0 && cartItems != null) {
-            for (let i = 0; i < cartItems.length; i++) {
-                let detailslist = {};
-                detailslist.ProductId = cartItems[i].Id;
-                detailslist.ProductName = cartItems[i].Description;
-                detailslist.MRP = cartItems[i].MRP;
-                detailslist.ItemQty = cartItems[i].item;
-                detailslist.DiscountAmt = (Number(cartItems[i].MRP) * 0) / 100;
-                detailslist.Salerate = cartItems[i].Price;
-                detailslist.WeightType = cartItems[i].UnitType;
-                detailslist.CPrice = cartItems[i].totalPrice;
-                OrderDetails[i] = detailslist;
-            }
-        };
-
-        const master = [
-            {
-                Id: 0,
-                CustomerRefId: Number(atob(localStorage.getItem("userId"))),
-                CutomerName: atob(localStorage.getItem("userName")),
-                MobileNo: atob(localStorage.getItem("userMobileNo")),
-                Email: atob(localStorage.getItem("userEmail")),
-                Address1: selectedAddress.Address1,
-                Address2: selectedAddress.Address2,
-                City: selectedAddress.City,
-                LandMark: selectedAddress.LandMark,
-                Pincode: selectedAddress.Pincode,
-                lattitude: selectedAddress.Latitude,
-                longitude: selectedAddress.Langitude,
-
-                CompanyRefid: selectedAddress.CompanyRefId,
-                CompanyName: ServerURL.COMPANY_NAME,
-                CompanyMobile: ServerURL.COMPANY_MOBILE,
-                CompanyEmail: ServerURL.COMPANY_EMAIL,
-                
-                SaleDate: DateValue,
-                DeliveryDate: DateValue,
-                DeliveryTime: Deliverytime, 
-                DeliveryMode: DeliveryType,   
-                PaymentMode: PaymentType,
-                PaymentId: onlinePaymentId,
-                AreaMasterId: null,
-                deliveryStoreName: null,                
-                DeliveryStatus: 0,                
-                NewCustomerStatus: 0,
-                CouponDiscount: 0.0,
-                CouponRefId: 0,
-                OrderCount: 1,
-                ReferalAmount: 0.0,                
-                disper: 0,
-                discamount: 0,
-                schargeamount: 0,                
-                ReferalBalance: 0,
-                coinage: 0,
-                DeliveryCharge: DeliveryFee,
-                WalletAmount: walletAmount,
-                WalletStatus: walletAmount > 0 ? 1 : 0,
-                WalletPayment: walletAmount,                
-                TodaySaving: SavingsAmount,
-                Grossamt: Number(TotalPrice),
-                NetAmount: Number(TotalPrice), //Final Total Amount                                 
-                SaleOrderDetails: OrderDetails,     
-                Remarks: "",                    
-            },
-        ];
-        await InsertSaleOrderSave(master);
-    };
-
     return (
         <>
             <CircularLoader showLoader={showLoader} />
             {OnlinePayment && (
-                <RazorpayPayment PlaceOrder={InsertSaleOrderSave} OnlinePayment={OnlinePayment} payableamount={(TotalPrice + DeliveryFee + HandlingCharge - ExtraDiscount)} usedwalledamount={walletAmount} Customer={selectedAddress}/>
+                <RazorpayPayment PlaceOrder={PlaceOrder} OnlinePayment={OnlinePayment} payableamount={(TotalPrice + DeliveryFee + HandlingCharge - ExtraDiscount)} usedwalledamount={walletAmount} Customer={selectedAddress}/>
             )}
             <AddressChangeModal UserId={UserId} setUserId={setUserId} ModalOpen={ModalOpen} handleChangeAddressClose={handleChangeAddressClose} handleAddressSelect={handleChangeAddress} />
             <Modal
@@ -367,19 +370,19 @@ export default function ProductCheckout() {
                             {/* Address Form */}
                             <Grid container spacing={2}>
                                 <Grid item xs={12} sm={6}>
-                                    <TextField fullWidth label="Address-1" value={selectedAddress.Address1} />
+                                    <TextField fullWidth label="Address-1" value={selectedAddress?.Address1 ? selectedAddress?.Address1 : ""} />
                                 </Grid>
                                 <Grid item xs={12} sm={6}>
-                                    <TextField fullWidth label="Address-2" value={selectedAddress.Address2} />
+                                    <TextField fullWidth label="Address-2" value={selectedAddress?.Address2} />
                                 </Grid>
                                 <Grid item xs={12} sm={6}>
-                                    <TextField fullWidth label="City" value={selectedAddress.City} />
+                                    <TextField fullWidth label="City" value={selectedAddress?.City} />
                                 </Grid>
                                 <Grid item xs={12} sm={6}>
-                                    <TextField fullWidth label="Pincode" value={selectedAddress.Pincode} />
+                                    <TextField fullWidth label="Pincode" value={selectedAddress?.Pincode} />
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <TextField fullWidth label="Landmark" value={selectedAddress.Landmark} />
+                                    <TextField fullWidth label="Landmark" value={selectedAddress?.Landmark} />
                                 </Grid>
                             </Grid>
                         </Box>

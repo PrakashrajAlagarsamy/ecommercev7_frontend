@@ -11,11 +11,18 @@ import { useCart } from '../context/CartContext';
 import { useTheme } from '@mui/material/styles';
 import * as actionType from '../redux/actionType';
 import { connect } from 'react-redux';
+import AppLogin from '../components/authentication/AppLogin';
+import AppRegister from '../components/authentication/AppRegister';
+import AppForgetPassword from '../components/authentication/AppForgetPassword';
 
 const ProductCard = ({ get_fav_lists, product, isLoading, offerProducts, relatedProducts, newProducts }) => {
   const navigate = useNavigate();
   const theme = useTheme();
   const { cartItems, setCartItems } = useCart();
+  const [registerDrawerOpen, setRegisterDrawerOpen] = useState(false);
+  const [loginDrawerOpen, setLoginDrawerOpen] = useState(false);
+  const [cartDrawerOpen, setCartDrawerOpen] = useState(false);
+  const [forgetPasswordDrawerOpen, setForgetPasswordDrawerOpen] = useState(false);
   const [quantity, setQuantity] = useState(0);
   const [totalPrice, setTotalPrice] = useState(product?.Price || 0);
   const [productId, setProductId] = useState(0);
@@ -201,6 +208,7 @@ const ProductCard = ({ get_fav_lists, product, isLoading, offerProducts, related
       }
       else{
         setIsFavoriteProduct(0);
+        setLoginDrawerOpen(true);
       }
     } catch (error) {
       setIsFavoriteProduct(0);
@@ -223,7 +231,46 @@ const ProductCard = ({ get_fav_lists, product, isLoading, offerProducts, related
     }
   };
 
+  const handleAuthDrawerToggle = (event) => {
+    if (event === false) {      
+      if (loginDrawerOpen === true) {        
+        setLoginDrawerOpen((prev) => !prev);
+      }
+      else if (forgetPasswordDrawerOpen === true) {
+        setRegisterDrawerOpen(false);
+        setLoginDrawerOpen(false);
+        setCartDrawerOpen(false);
+        setForgetPasswordDrawerOpen((prev) => !prev);
+      }
+      else {
+        setRegisterDrawerOpen(false);
+        setLoginDrawerOpen(false);
+        setForgetPasswordDrawerOpen(false);
+        setCartDrawerOpen((prev) => !prev);
+      }
+    }
+    else {
+      const id = event.currentTarget.id;
+      if (id === "register_btn") {
+        setLoginDrawerOpen(false);
+        setCartDrawerOpen(false);
+        setRegisterDrawerOpen((prev) => !prev);
+      }
+      else if (id === "login_btn") {
+        setRegisterDrawerOpen(false);
+        setCartDrawerOpen(false);
+        setLoginDrawerOpen((prev) => !prev);
+      }
+      else {
+        setRegisterDrawerOpen(false);
+        setLoginDrawerOpen(false);
+        setCartDrawerOpen((prev) => !prev);
+      }
+    }
+  };
+
   return (
+    <>
     <Card
       id={product?.Productid ? product.Productid : product?.Id}
       name={product.Description}
@@ -511,12 +558,17 @@ const ProductCard = ({ get_fav_lists, product, isLoading, offerProducts, related
         )}
       </CardContent>
     </Card>
+    <AppRegister RegisterDrawerOpen={registerDrawerOpen} setLoginDrawerOpen={setLoginDrawerOpen} handleAuthDrawerToggle={handleAuthDrawerToggle} />
+    <AppLogin LoginDrawerOpen={loginDrawerOpen} setRegisterDrawerOpen={setRegisterDrawerOpen} setForgetPasswordDrawerOpen={setForgetPasswordDrawerOpen} handleAuthDrawerToggle={handleAuthDrawerToggle} />
+    <AppForgetPassword ForgetPasswordDrawerOpen={forgetPasswordDrawerOpen} setLoginDrawerOpen={setLoginDrawerOpen} handleAuthDrawerToggle={handleAuthDrawerToggle} />
+    </>    
   );
 };
 
 const mapStateToProps = (state) => {
   return {
-    get_fav_lists: state.get_fav_lists, // Get favourite lists from Redux state (Wishlists)
+    is_data_loading: state.is_data_loading,
+    get_fav_lists: state.get_fav_lists,
   };
 };
 

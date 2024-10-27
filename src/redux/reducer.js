@@ -1,6 +1,7 @@
 import * as actionType from '../redux/actionType';
 
 const initial_state = {
+    is_data_loading: true,
     open_login: false,
     get_settings_lists: [],
     get_offer_banner_lists: [],
@@ -12,6 +13,11 @@ const initial_state = {
 
 const reducer = (state = initial_state, action) => {
     switch (action.type) {
+        case actionType.IS_DATA_LOADING:
+            return {
+                ...state, 
+                is_data_loading: action.payload 
+            }
         case actionType.OPEN_LOGIN:
             return {
                 ...state, 

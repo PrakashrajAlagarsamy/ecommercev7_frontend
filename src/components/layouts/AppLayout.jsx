@@ -16,9 +16,11 @@ import { connect } from 'react-redux';
 
 const AppLayout = (props) => {
 
-  const { children, get_settings_lists, get_offer_banner_lists, get_offer_product_lists, get_catgory_lists, get_product_by_category_index_page, get_fav_lists, SetGlobalSettings, SetGlobalOfferBanners, SetGlobalOfferProductLists, SetGlobalCategories, SetGlobalProductByCategoryIndexPage, setFavouriteLists, CompanyDetails } = props;
+  const { children, is_data_loading, get_settings_lists, get_offer_banner_lists, get_offer_product_lists, get_catgory_lists, get_product_by_category_index_page, get_fav_lists, SetGlobalIsDataLoading, SetGlobalSettings, SetGlobalOfferBanners, SetGlobalOfferProductLists, SetGlobalCategories, SetGlobalProductByCategoryIndexPage, setFavouriteLists, CompanyDetails } = props;
 
+  //Settings API (color code)
   const FetchSettingsLists = async () => {
+    SetGlobalIsDataLoading(true);
     try {
       const settingsResponse = await API_FetchSettings();
       SetGlobalSettings(settingsResponse.data[0]);
@@ -27,6 +29,7 @@ const AppLayout = (props) => {
     }
   };
 
+  //Home page slider banner API
   const FetchBannerSliderLists = async () => {
     try {
       const bannerList = await API_FetchBannerOfferPost();
@@ -36,7 +39,8 @@ const AppLayout = (props) => {
     }
   };
 
-  const GetOfferProductLists = async () => {
+  //Home page Offer products slider API
+  const FetchOfferProductLists = async () => {
     try {
       const objLists = await API_FetchOfferFastMovingProduct();
       SetGlobalOfferProductLists(objLists);
@@ -45,7 +49,7 @@ const AppLayout = (props) => {
     } 
   };
 
-
+  //Home page Top category API
   const FetchTopCategoryLists = async () => {
     try {
       const categoryList = await API_FetchCategory();
@@ -55,24 +59,27 @@ const AppLayout = (props) => {
     }
   };
 
-
+  //Home page product slider with category image slider API
   const FetchProductsByCategoryIndexPage = async () => {
     try {
       const products = await API_FetchProductByIndexPage();
       SetGlobalProductByCategoryIndexPage(products);
+      SetGlobalIsDataLoading(false);
     } catch (error) {
       console.error("Error fetching products:", error);
+      SetGlobalIsDataLoading(false);
     }
   };
 
-  useEffect(() => {
-    //setIsActiveCategory(false);
+  useEffect(() => {    
     FetchBannerSliderLists();
     FetchTopCategoryLists();
+    FetchOfferProductLists();
     FetchProductsByCategoryIndexPage();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  //Wishlists API
   const FetchMyFavoriteProducts = async (userId) => {
     try {
       const favlist = await API_FetchMyFavoriteProducts(userId);
@@ -112,6 +119,7 @@ const AppLayout = (props) => {
 
 const mapStateToProps = (state) => {
   return {
+    is_data_loading: state.is_data_loading || false,
     get_settings_lists: state.get_settings_lists || [],
     get_offer_banner_lists: state.get_offer_banner_lists || [],
     get_offer_product_lists: state.get_offer_product_lists || [],
@@ -123,6 +131,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    SetGlobalIsDataLoading: (data) => dispatch({ type: actionType.IS_DATA_LOADING, payload: data }),
     SetGlobalSettings: (data) => dispatch({ type: actionType.GET_GLOBAL_SETTINGS, payload: data }),
     SetGlobalOfferBanners: (data) => dispatch({ type: actionType.GET_OFFER_BANNER, payload: data }),
     SetGlobalOfferProductLists: (data) => dispatch({ type: actionType.GET_OFFER_PRODUCTS, payload: data }),

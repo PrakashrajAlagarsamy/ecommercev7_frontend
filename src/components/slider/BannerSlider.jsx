@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import Slider from "react-slick";
 import { Container, Box } from '@mui/material';
@@ -31,7 +32,7 @@ const BannerSlider = (props) => {
   return (
     <Container maxWidth="xl" sx={{ pt: 2, pb: 2, p: { xs: 0, sm: 0 } }}>
       <Slider {...settings}>
-        {isLoading ? (
+        {props.is_data_loading ? (
           // Show Skeleton loader while data is being fetched
           [...Array(3)].map((_, index) => (
             <Box key={index} sx={{ textAlign: 'center' }}>
@@ -80,6 +81,7 @@ const BannerSlider = (props) => {
 
 const mapStateToProps = (state) => {
   return {
+    is_data_loading: state.is_data_loading,
     get_offer_banner_lists: state.get_offer_banner_lists,
   };
 };

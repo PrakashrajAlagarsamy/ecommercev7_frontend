@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import Slider from 'react-slick';
 import { Box, Container, Skeleton } from '@mui/material';
@@ -94,14 +95,14 @@ const OfferFastMovingProduct = (props) => {
   };
 
   // Return null if there are no products or not enough products to display
-  if (!loading && (!productLists || productLists.length < 3)) {
+  if (!props.is_data_loading && (!productLists || productLists.length < 3)) {
     return null;
   }
 
   return (
     <Container maxWidth="xl" sx={{ pt: 1, pb: 1, p: { xs: 0, sm: 0, lg: 3 } }}>
       <Box sx={{ margin: 'auto' }}>
-        {loading ? (
+        {props.is_data_loading ? (
           <Skeleton variant="text" height={40} width="30%" />
         ) : (
           <CategoryHeader
@@ -112,7 +113,7 @@ const OfferFastMovingProduct = (props) => {
         )}
 
         <Slider {...settings}>
-          {loading ? (
+          {props.is_data_loading ? (
             // Render skeleton placeholders for products
             Array.from(new Array(5)).map((_, index) => (
               <Box key={index} sx={{ padding: 2 }}>
@@ -138,6 +139,7 @@ const OfferFastMovingProduct = (props) => {
 
 const mapStateToProps = (state) => {
   return {
+    is_data_loading: state.is_data_loading,
     get_fav_lists: state.get_fav_lists, 
     get_offer_product_lists: state.get_offer_product_lists
   };

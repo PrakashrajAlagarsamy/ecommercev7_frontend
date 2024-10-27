@@ -1,3 +1,4 @@
+export const IS_DATA_LOADING = "IS_DATA_LOADING";
 export const OPEN_LOGIN = "OPEN_LOGIN";
 export const GET_GLOBAL_SETTINGS = "GET_GLOBAL_SETTINGS";
 export const GET_OFFER_BANNER = "GET_OFFER_BANNER";

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -159,7 +160,7 @@ const TopCategory = (props) => {
           />
 
           {/* Dynamically loaded category list */}
-          {isLoading ? (
+          {props.is_data_loading ? (
             [...Array(18)].map((_, index) => (
               <Tab
                 key={index}
@@ -208,7 +209,8 @@ const TopCategory = (props) => {
 
 const mapStateToProps = (state) => {
   return {
-    get_catgory_lists: state.get_catgory_lists, // Get category lists from Redux state
+    is_data_loading: state.is_data_loading,
+    get_catgory_lists: state.get_catgory_lists, 
   };
 };
 

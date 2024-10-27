@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ServerURL } from '../server/serverUrl';
 import { useTheme } from '@mui/material/styles';
+import AppLogo from '../components/logo/logo.png';
 
 export default function RazorpayPayment({ PlaceOrder, OnlinePayment, payableamount, usedwalledamount, Customer }) {
     const theme = useTheme();
@@ -10,6 +11,10 @@ export default function RazorpayPayment({ PlaceOrder, OnlinePayment, payableamou
 
     const loadRazorpayScript = () => {
         return new Promise((resolve) => {
+            if (window.Razorpay) { 
+                resolve(true);
+                return;
+            }
             const script = document.createElement('script');
             script.src = 'https://checkout.razorpay.com/v1/checkout.js';
             script.onload = () => resolve(true);
@@ -18,51 +23,48 @@ export default function RazorpayPayment({ PlaceOrder, OnlinePayment, payableamou
         });
     };
 
-    const handlePayment = async () => {
-        try {
-            const res = await loadRazorpayScript();
-            if (!res || !window.Razorpay) {
-                alert('Failed to load Razorpay SDK. Please check your internet connection.');
-                return;
-            }
-
-            const options = {
-                key: ServerURL.COMPANY_PAYMENT_RAZ_KEY,
-                amount: parseInt(payableamount) * 100, 
-                currency: ServerURL.CURRENCY,
-                name: ServerURL.COMPANY_NAME,
-                description: ServerURL.COMPANY_ADDRESS,
-                order_id: ServerURL.COMPANY_REF_ID,
-                handler: function (response) {
-                    console.log("razorpay_payment_response:", response);
-                    const onlinePaymentId = response.razorpay_payment_id;
-                    sessionStorage.setItem('onlinePStatus', 1);
-                    sessionStorage.setItem('onlinePaymentId', onlinePaymentId);
-                    PlaceOrder(1, onlinePaymentId); 
-                },
-                prefill: {
-                    id: Number(atob(localStorage.getItem("userId"))),
-                    name: atob(localStorage.getItem("userName")),
-                    contact: atob(localStorage.getItem("userMobileNo")),
-                    email: atob(localStorage.getItem("userEmail")),
-                },
-                theme: {
-                    color: theme.palette.basecolorCode.main
-                },
-            };
-
-            const rzp1 = new window.Razorpay(options);
-
-            rzp1.on('payment.failed', function (response) {
-                alert(`Payment failed: ${response.error.description}. Reason: ${response.error.reason}.`);
-                rzp1.close();
-                navigate('/product-checkout'); 
-            });
-
-            rzp1.open();
-        } catch (error) {
-            console.error("Payment process error:", error);
+    const handlePaymentSuccess = async (response) => {
+        console.log("razorpay_payment_response:", response);
+        const onlinePaymentId = response.razorpay_payment_id;
+        sessionStorage.setItem('onlinePStatus', 1);
+        sessionStorage.setItem('onlinePaymentId', onlinePaymentId);
+        if (onlinePaymentId) {
+            await PlaceOrder(); 
         }
+    };
+
+    const handlePayment = async () => {
+        const isScriptLoaded = await loadRazorpayScript();
+        if (!isScriptLoaded) {
+            alert("Failed to load Razorpay SDK");
+            return;
+        }
+
+        const options = {
+            key: ServerURL.COMPANY_PAYMENT_RAZ_KEY,
+            amount: parseInt(payableamount) * 100,
+            currency: ServerURL.CURRENCY,
+            name: ServerURL.COMPANY_NAME,
+            description: ServerURL.COMPANY_ADDRESS,
+            image: '../components/logo/logo.png', 
+            handler: handlePaymentSuccess, 
+            prefill: {
+                id: Number(atob(localStorage.getItem("userId"))),
+                name: atob(localStorage.getItem("userName")),
+                contact: atob(localStorage.getItem("userMobileNo")),
+                email: atob(localStorage.getItem("userEmail")),
+            },
+            notes: {
+                address: ServerURL.COMPANY_ADDRESS
+            },
+            theme: {
+                color: theme.palette.basecolorCode.main,
+                hide_topbar: false
+            }
+        };
+
+        var rzp1 = new window.Razorpay(options);
+        rzp1.open();
     };
 
     useEffect(() => {
@@ -70,7 +72,7 @@ export default function RazorpayPayment({ PlaceOrder, OnlinePayment, payableamou
             handlePayment();
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [OnlinePayment]);
 
     return null; 
 }
